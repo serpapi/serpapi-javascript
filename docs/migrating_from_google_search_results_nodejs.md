@@ -56,17 +56,16 @@ migrate over to the `serpapi` npm package.
   engine.htmlBySearchId(searchId, console.log);
   ```
 
-- The `account` and `location` methods are now `getAccountInformation` and
-  `getLocations`. The `q` and `limit` parameters for `getLocations` are now
-  optional.
+- The `account` and `location` methods are now `getAccount` and `getLocations`.
+  The `q` and `limit` parameters for `getLocations` are now optional.
   ```js
   // ❌ Previous way, was part of the engine class.
   engine.account(console.log);
   engine.location("Austin", 5, console.log);
 
   // ✅ New way, functions not tied to a class.
-  import { getAccountInformation, getLocations } from "serpapi";
-  getAccountInformation(API_KEY, console.log);
+  import { getAccount, getLocations } from "serpapi";
+  getAccount(API_KEY, console.log);
   getLocations({ q: "Austin" }, console.log);
   ```
 

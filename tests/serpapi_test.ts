@@ -5,25 +5,25 @@ import {
   assertRejects,
 } from "https://deno.land/std@0.166.0/testing/asserts.ts";
 import { MissingApiKeyError } from "../src/errors.ts";
-import { getAccountInformation, getLocations } from "../src/serpapi.ts";
+import { getAccount, getLocations } from "../src/serpapi.ts";
 
 config({ export: true });
 const SERPAPI_KEY = Deno.env.get("SERPAPI_KEY") ?? "";
 const HAS_API_KEY = SERPAPI_KEY.length > 0;
 
-Deno.test("getAccountInformation with no apiKey", () => {
+Deno.test("getAccount with no apiKey", () => {
   assertRejects(
-    async () => await getAccountInformation(""),
+    async () => await getAccount(""),
     MissingApiKeyError,
   );
 });
 
-Deno.test("getAccountInformation (async/await)", {
+Deno.test("getAccount (async/await)", {
   ignore: !HAS_API_KEY,
   sanitizeOps: false, // TODO(seb): look into how we can avoid setting these to false
   sanitizeResources: false,
 }, async () => {
-  const info = await getAccountInformation(SERPAPI_KEY);
+  const info = await getAccount(SERPAPI_KEY);
   assertEquals(Object.keys(info).sort(), [
     "account_email",
     "account_id",
@@ -41,14 +41,14 @@ Deno.test("getAccountInformation (async/await)", {
   ]);
 });
 
-Deno.test("getAccountInformation (callback)", {
+Deno.test("getAccount (callback)", {
   ignore: !HAS_API_KEY,
   sanitizeOps: false,
   sanitizeResources: false,
 }, async () => {
-  const info = await new Promise<
-    Awaited<ReturnType<typeof getAccountInformation>>
-  >((res) => getAccountInformation(SERPAPI_KEY, res));
+  const info = await new Promise<Awaited<ReturnType<typeof getAccount>>>(
+    (res) => getAccount(SERPAPI_KEY, res),
+  );
   assertEquals(Object.keys(info).sort(), [
     "account_email",
     "account_id",

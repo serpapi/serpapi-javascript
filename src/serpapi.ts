@@ -40,7 +40,11 @@ const DEFAULT_TIMEOUT_MS = 10000;
 const ACCOUNT_PATH = "/account";
 const LOCATIONS_PATH = "/locations.json";
 
-export async function getAccountInformation(
+/**
+ * Get account information of an API key.
+ * https://serpapi.com/account-api
+ */
+export async function getAccount(
   apiKey: string,
   callback?: (info: AccountInformation) => void,
 ) {
@@ -55,6 +59,10 @@ export async function getAccountInformation(
   return info;
 }
 
+/**
+ * Get supported locations.
+ * https://serpapi.com/locations-api
+ */
 export async function getLocations(
   parameters?: LocationsApiParams,
   callback?: (locations: Locations) => void,
