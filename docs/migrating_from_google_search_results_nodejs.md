@@ -95,4 +95,5 @@ migrate over to the `serpapi` npm package.
   ```js
   const google = new Google(""); // Throws `MissingApiKeyError`
   google.apiKey = ""; // Throws `MissingApiKeyError`
+  google.timeout = 0; // Throws `InvalidTimeoutError`
   ```
