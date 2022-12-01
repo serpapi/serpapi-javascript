@@ -1,8 +1,19 @@
 {
   "tasks": {
     "test": "ENV_TYPE=test deno test tests/ --allow-env --allow-read --allow-net",
+    "test:ci": "deno test tests/ --allow-env --allow-read --allow-net",
     "test:watch": "deno task test --watch",
     "test:cov": "ENV_TYPE=test deno test tests/ --coverage=cov_profile --allow-env --allow-read --allow-net && deno coverage cov_profile",
-    "npm": "deno run -A scripts/build_npm.ts 0.0.1"
+    "npm": "deno run -A scripts/build_npm.ts"
+  },
+  "fmt": {
+    "files": {
+      "exclude": ["npm/"]
+    }
+  },
+  "lint": {
+    "files": {
+      "exclude": ["npm/"]
+    }
   }
 }
