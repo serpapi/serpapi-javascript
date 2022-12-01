@@ -89,7 +89,7 @@ export class SearchEngine<
       engine: this.#engine,
       output: "json",
     }, this.timeout);
-    const json: R = await response.json();
+    const json = await response.json() as R;
     callback?.(json);
     return json;
   }
@@ -136,7 +136,7 @@ export class SearchEngine<
       },
       this.timeout,
     );
-    const json: R = await response.json();
+    const json = await response.json() as R;
     callback?.(json);
     return json;
   }

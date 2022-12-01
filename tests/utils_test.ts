@@ -1,5 +1,6 @@
 import {
   assertSpyCallArg,
+  assertSpyCalls,
   resolvesNext,
   stub,
 } from "https://deno.land/std@0.166.0/testing/mock.ts";
@@ -7,7 +8,7 @@ import {
   assertEquals,
   assertRejects,
 } from "https://deno.land/std@0.166.0/testing/asserts.ts";
-import { BASE_URL, buildUrl, execute } from "../src/utils.ts";
+import { _internals, BASE_URL, buildUrl, execute } from "../src/utils.ts";
 
 Deno.test("buildUrl with empty path and empty parameters", () => {
   assertEquals(buildUrl("", {}), `${BASE_URL}?`);
@@ -31,17 +32,22 @@ Deno.test("buildUrl with undefined parameters", () => {
   );
 });
 
-Deno.test("execute with path and parameters calls fetch with source appended", async () => {
+Deno.test("execute with path and parameters calls fetch with source appended", {
+  sanitizeOps: false,
+  sanitizeResources: false,
+}, async () => {
   const fetchStub = stub(
-    globalThis,
+    _internals,
     "fetch",
     resolvesNext([new Response("data")]),
   );
   try {
-    await execute("/search", { q: "coffee", gl: "us" }, 0);
+    await execute("/search", { q: "coffee", gl: "us" }, 4000);
   } finally {
     fetchStub.restore();
   }
+
+  assertSpyCalls(fetchStub, 1);
   assertSpyCallArg(
     fetchStub,
     0,
@@ -51,9 +57,7 @@ Deno.test("execute with path and parameters calls fetch with source appended", a
 });
 
 Deno.test("execute with short timeout", () => {
-  assertRejects(
-    async () => await execute("/search", { q: "coffee", gl: "us" }, 1),
-    DOMException,
-    "Signal timed out",
+  assertRejects(async () =>
+    await execute("/search", { q: "coffee", gl: "us" }, 1)
   );
 });

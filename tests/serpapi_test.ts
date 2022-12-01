@@ -1,4 +1,4 @@
-import "https://deno.land/x/dotenv@v3.2.0/load.ts";
+import { config } from "https://deno.land/x/dotenv@v3.2.0/mod.ts";
 import {
   assertEquals,
   assertInstanceOf,
@@ -7,6 +7,7 @@ import {
 import { MissingApiKeyError } from "../src/errors.ts";
 import { getAccountInformation, getLocations } from "../src/serpapi.ts";
 
+config({ export: true });
 const SERPAPI_KEY = Deno.env.get("SERPAPI_KEY") ?? "";
 const HAS_API_KEY = SERPAPI_KEY.length > 0;
 
@@ -19,7 +20,7 @@ Deno.test("getAccountInformation with no apiKey", () => {
 
 Deno.test("getAccountInformation (async/await)", {
   ignore: !HAS_API_KEY,
-  sanitizeOps: false,
+  sanitizeOps: false, // TODO(seb): look into how we can avoid setting these to false
   sanitizeResources: false,
 }, async () => {
   const info = await getAccountInformation(SERPAPI_KEY);

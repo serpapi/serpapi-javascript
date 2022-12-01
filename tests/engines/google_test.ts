@@ -1,4 +1,4 @@
-import "https://deno.land/x/dotenv@v3.2.0/load.ts";
+import { config } from "https://deno.land/x/dotenv@v3.2.0/mod.ts";
 import { delay } from "https://deno.land/std@0.166.0/async/delay.ts";
 import {
   assert,
@@ -8,6 +8,7 @@ import {
 } from "https://deno.land/std@0.166.0/testing/asserts.ts";
 import { Google } from "../../src/engines/google.ts";
 
+config({ export: true });
 const SERPAPI_KEY = Deno.env.get("SERPAPI_KEY") ?? "";
 const HAS_API_KEY = SERPAPI_KEY.length > 0;
 

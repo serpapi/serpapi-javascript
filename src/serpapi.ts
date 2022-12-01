@@ -50,7 +50,7 @@ export async function getAccountInformation(
   const response = await execute(ACCOUNT_PATH, {
     api_key: apiKey,
   }, DEFAULT_TIMEOUT_MS);
-  const info: AccountInformation = await response.json();
+  const info = await response.json() as AccountInformation;
   callback?.(info);
   return info;
 }
@@ -64,7 +64,7 @@ export async function getLocations(
     parameters ?? {},
     DEFAULT_TIMEOUT_MS,
   );
-  const locations: Locations = await response.json();
+  const locations = await response.json() as Locations;
   callback?.(locations);
   return locations;
 }
