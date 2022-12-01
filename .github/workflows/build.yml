@@ -6,14 +6,19 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
-      - uses: denoland/setup-deno@v1.1.1
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1.1.1
         with:
           deno-version: v1.x
 
-      - run: deno fmt --check
+      - name: Check formatting
+        run: deno fmt --check
 
-      - run: deno lint
+      - name: Run linter
+        run: deno lint
 
-      - run: deno task test:ci  # TODO(seb): figure out tests that hit prod
+      - name: Run tests
+        run: deno task test:ci  # TODO(seb): figure out tests that hit prod

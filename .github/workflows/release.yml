@@ -9,29 +9,35 @@ jobs:
   release:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
-      - uses: denoland/setup-deno@v1.1.1
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1.1.1
         with:
           deno-version: v1.x
 
-      - run: deno fmt --check
+      - name: Check formatting
+        run: deno fmt --check
 
-      - run: deno lint
+      - name: Run linter
+        run: deno lint
 
-      - run: deno task test:ci  # TODO(seb): figure out tests that hit prod
+      - name: Run tests
+        run: deno task test:ci  # TODO(seb): figure out tests that hit prod
       
       - name: Get tag version
         if: startsWith(github.ref, 'refs/tags/')
         id: get_tag_version
         run: echo ::set-output name=TAG_VERSION::${GITHUB_REF/refs\/tags\//}
       
-      - uses: actions/setup-node@v2
+      - name: Setup Node
+        uses: actions/setup-node@v2
         with:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
       
-      - name: npm build
+      - name: Build npm files
         run: deno task npm ${{steps.get_tag_version.outputs.TAG_VERSION}}
       
       # - name: npm publish
