@@ -1,0 +1,6 @@
+{
+  "tasks": {
+    "test": "ENV_TYPE=test deno test tests/ --allow-env --allow-read --allow-net",
+    "test:watch": "deno task test --watch"
+  }
+}
