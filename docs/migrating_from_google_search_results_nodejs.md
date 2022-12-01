@@ -62,6 +62,7 @@ migrate over to the `serpapi` npm package.
   ```js
   // ❌ Previous way, was part of the engine class.
   engine.account(console.log);
+  engine.location("Austin", 5, console.log);
 
   // ✅ New way, functions not tied to a class.
   import { getAccountInformation, getLocations } from "serpapi";
