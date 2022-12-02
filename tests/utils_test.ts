@@ -1,11 +1,11 @@
 import {
-  assertSpyCallArg,
   assertSpyCalls,
   resolvesNext,
   stub,
 } from "https://deno.land/std@0.166.0/testing/mock.ts";
 import {
   assertEquals,
+  assertMatch,
   assertRejects,
 } from "https://deno.land/std@0.166.0/testing/asserts.ts";
 import { _internals, BASE_URL, buildUrl, execute } from "../src/utils.ts";
@@ -48,11 +48,11 @@ Deno.test("execute with path and parameters calls fetch with source appended", {
   }
 
   assertSpyCalls(fetchStub, 1);
-  assertSpyCallArg(
-    fetchStub,
-    0,
-    0,
-    `${BASE_URL}/search?q=coffee&gl=us&source=nodejs`,
+  const url = fetchStub.calls[0].args[0] as string;
+  // e.g. deno@1.28.2
+  assertMatch(
+    url,
+    /source=(nodejs|deno)%40\d+\.\d+\.\d+$/,
   );
 });
 

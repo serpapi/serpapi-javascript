@@ -27,6 +27,25 @@ type UrlParameters = Record<
  */
 export const _internals = { fetch: fetch, execute: execute };
 
+// TODO(seb): get module version too
+function getSource() {
+  try {
+    // Check if running in Node.js
+    // deno-lint-ignore no-explicit-any
+    if ((globalThis as any)?.process?.version) {
+      // deno-lint-ignore no-explicit-any
+      const nodeVersion = (globalThis as any).process.version.replace("v", "");
+      return `nodejs@${nodeVersion}`;
+    }
+
+    // Assumes running in Deno instead
+    return `deno@${Deno.version.deno}`;
+  } catch {
+    // If something unexpectedly occurs, revert to "nodejs".
+    return "nodejs";
+  }
+}
+
 export function buildUrl<P extends UrlParameters>(
   path: string,
   parameters: P,
@@ -45,7 +64,7 @@ export async function execute<P extends UrlParameters>(
 ): Promise<Response> {
   const url = buildUrl(path, {
     ...parameters,
-    source: "nodejs", // TODO(seb): add version of node/deno + library version
+    source: getSource(),
   });
   return await _internals.fetch(url, {
     signal: AbortSignal.timeout(timeout),
