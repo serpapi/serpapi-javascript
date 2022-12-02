@@ -1,4 +1,4 @@
-import { config } from "https://deno.land/x/dotenv@v3.2.0/mod.ts";
+import { configSync } from "https://deno.land/std@0.166.0/dotenv/mod.ts";
 import { delay } from "https://deno.land/std@0.166.0/async/delay.ts";
 import {
   assertSpyCallArg,
@@ -16,7 +16,7 @@ import { Google } from "../../src/engines/google.ts";
 import { _internals } from "../../src/utils.ts";
 import { MissingApiKeyError } from "../../src/errors.ts";
 
-config({ export: true });
+configSync({ export: true });
 const SERPAPI_KEY = Deno.env.get("SERPAPI_KEY") ?? "";
 const HAS_API_KEY = SERPAPI_KEY.length > 0;
 
