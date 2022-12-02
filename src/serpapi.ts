@@ -43,6 +43,14 @@ const LOCATIONS_PATH = "/locations.json";
 /**
  * Get account information of an API key.
  * https://serpapi.com/account-api
+ *
+ * ```ts
+ * // async/await
+ * const info = await getAccount(API_KEY);
+ *
+ * // callback
+ * getAccount(API_KEY, console.log);
+```
  */
 export async function getAccount(
   apiKey: string,
@@ -62,6 +70,14 @@ export async function getAccount(
 /**
  * Get supported locations.
  * https://serpapi.com/locations-api
+ *
+ * ```ts
+ * // async/await
+ * const locations = await getLocations({ limit: 3 });
+ *
+ * // callback
+ * getLocations({ limit: 3 }, console.log);
+```
  */
 export async function getLocations(
   parameters?: LocationsApiParams,

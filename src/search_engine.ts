@@ -58,9 +58,9 @@ export class SearchEngine<
   }
 
   /**
-   * API key value obtained from https://serpapi.com/dashboard
-   * - Can be modified after instantiation
-   * - Can be overridden when calling `json` and `html` methods
+   * API key value obtained from https://serpapi.com/dashboard.
+   * - Can be modified after instantiation.
+   * - Can be overridden when calling `json` and `html` methods.
    *
    * ```ts
    * // "api_key_1" is set at instantiation.
@@ -83,14 +83,14 @@ export class SearchEngine<
   }
 
   /**
-   * Timeout value in milliseconds
-   * - Defaults to 60 seconds
-   * - Must be positive
-   * - Can be modified after instantiation
+   * Timeout duration of requests. In milliseconds.
+   * - Defaults to 60 seconds.
+   * - Must be positive.
+   * - Can be modified after instantiation.
    *
    * ```ts
    * // timeout set to 60 seconds
-   * const engine = new Google("api_key", 60000);
+   * const engine = new Google(API_KEY, 60000);
    *
    * // timeout of 10 seconds will be used in subsequent method calls.
    * engine.timeout = 10000;
@@ -172,7 +172,12 @@ export class SearchEngine<
    * const response = await engine.json({ async: true, q: "coffee" });
    * const searchId = response["search_metadata"]["id"];
    * await delay(1000); // wait for the request to be processed.
+   *
+   * // async/await
    * const json = await engine.jsonBySearchId(searchId);
+   *
+   * // callback
+   * engine.jsonBySearchId(searchId, console.log);
    * ```
    */
   async jsonBySearchId(
@@ -203,7 +208,12 @@ export class SearchEngine<
    * const response = await engine.json({ async: true, q: "coffee" });
    * const searchId = response["search_metadata"]["id"];
    * await delay(1000); // wait for the request to be processed.
+   *
+   * // async/await
    * const html = await engine.htmlBySearchId(searchId);
+   *
+   * // callback
+   * engine.htmlBySearchId(searchId, console.log);
    * ```
    */
   async htmlBySearchId(
