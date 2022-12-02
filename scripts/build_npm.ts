@@ -2,6 +2,13 @@ import { build, emptyDir } from "https://deno.land/x/dnt@0.32.0/mod.ts";
 
 await emptyDir("./npm");
 
+const version = Deno.args[0];
+if (!version) {
+  throw new Error(
+    "Specify a version as the first argument, e.g. `deno task npm 0.0.1`",
+  );
+}
+
 await build({
   entryPoints: ["./src/mod.ts"],
   outDir: "./npm",
@@ -12,7 +19,7 @@ await build({
   },
   package: {
     name: "serpapi",
-    version: Deno.args[0],
+    version,
     description: "Scrape and parse search engine results using SerpApi.",
     license: "MIT",
     repository: {
