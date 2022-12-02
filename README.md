@@ -5,7 +5,7 @@ search results from Google, Bing, Baidu, Yandex, Yahoo, Home Depot, eBay and
 more.
 
 | 🪧 Coming from `google-search-results-nodejs`? <br /> Check out the [migration document](/docs/migrating_from_google_search_results_nodejs.md) to find out how to upgrade. |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 
 ## Usage
 
