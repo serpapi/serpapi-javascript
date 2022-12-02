@@ -1,7 +1,9 @@
 import { InvalidTimeoutError, MissingApiKeyError } from "./errors.ts";
-import { execute } from "./utils.ts";
+import { _internals } from "./utils.ts";
 
 export type BaseParameters = {
+  /** Overrides the API key specified during class instantiation  */
+  api_key?: string;
   device?: "desktop" | "tablet" | "mobile";
   no_cache?: boolean;
   async?: boolean;
@@ -55,37 +57,74 @@ export class SearchEngine<
     this.timeout = timeout;
   }
 
+  /**
+   * API key value obtained from https://serpapi.com/dashboard
+   * - Can be modified after instantiation
+   * - Can be overridden when calling `json` and `html` methods
+   *
+   * ```ts
+   * // "api_key_1" is set at instantiation.
+   * const engine = new Google("api_key_1");
+   *
+   * // "api_key_2" will be used in subsequent method calls.
+   * engine.apiKey = "api_key_2";
+   *
+   * // "api_key_3" will be used if passed as a parameter.
+   * engine.json({ api_key: "api_key_3", q: "coffee" });
+   * ```
+   */
   get apiKey(): string {
     return this.#apiKey;
   }
 
   set apiKey(value: string) {
-    if (value.length === 0) {
-      throw new MissingApiKeyError();
-    }
+    if (value.length === 0) throw new MissingApiKeyError();
     this.#apiKey = value;
   }
 
+  /**
+   * Timeout value in milliseconds
+   * - Defaults to 60 seconds
+   * - Must be positive
+   * - Can be modified after instantiation
+   *
+   * ```ts
+   * // timeout set to 60 seconds
+   * const engine = new Google("api_key", 60000);
+   *
+   * // timeout of 10 seconds will be used in subsequent method calls.
+   * engine.timeout = 10000;
+   * ```
+   */
   get timeout(): number {
     return this.#timeout;
   }
 
-  /** Timeout value in milliseconds */
   set timeout(value: number) {
-    if (value <= 0) {
-      throw new InvalidTimeoutError();
-    }
+    if (value <= 0) throw new InvalidTimeoutError();
     this.#timeout = value;
   }
 
   /**
    * Get a JSON response based on search parameters.
-   * Accepts an optional callback.
+   * - Accepts an optional callback.
+   *
+   * ```ts
+   * // async/await
+   * const json = await engine.json({ q: "coffee" });
+   *
+   * // callback
+   * engine.json({ q: "coffee" }, console.log);
+   * ```
    */
   async json(parameters: P, callback?: (json: R) => void) {
-    const response = await execute<P>(SEARCH_PATH, {
+    // `api_key` can be undefined to support unmetered queries.
+    const apiKey = "api_key" in parameters ? parameters.api_key : this.apiKey;
+    if (apiKey?.length === 0) throw new MissingApiKeyError();
+
+    const response = await _internals.execute<P>(SEARCH_PATH, {
       ...parameters,
-      api_key: this.apiKey,
+      api_key: apiKey,
       engine: this.#engine,
       output: "json",
     }, this.timeout);
@@ -98,11 +137,23 @@ export class SearchEngine<
    * Get a HTML response based on search parameters.
    * - Accepts an optional callback.
    * - Responds with a JSON string if the search request hasn't completed.
+   *
+   * ```ts
+   * // async/await
+   * const html = await engine.html({ q: "coffee" });
+   *
+   * // callback
+   * engine.html({ q: "coffee" }, console.log);
+   * ```
    */
   async html(parameters: P, callback?: (html: string) => void) {
-    const response = await execute<P>(SEARCH_PATH, {
+    // `api_key` can be undefined to support unmetered queries.
+    const apiKey = "api_key" in parameters ? parameters.api_key : this.apiKey;
+    if (apiKey?.length === 0) throw new MissingApiKeyError();
+
+    const response = await _internals.execute<P>(SEARCH_PATH, {
       ...parameters,
-      api_key: this.apiKey,
+      api_key: apiKey,
       engine: this.#engine,
       output: "html",
     }, this.timeout);
@@ -128,7 +179,7 @@ export class SearchEngine<
     searchId: string,
     callback?: (json: R) => void,
   ) {
-    const response = await execute(
+    const response = await _internals.execute(
       `${SEARCH_ARCHIVE_PATH}/${searchId}`,
       {
         api_key: this.apiKey,
@@ -159,7 +210,7 @@ export class SearchEngine<
     searchId: string,
     callback?: (html: string) => void,
   ) {
-    const response = await execute(
+    const response = await _internals.execute(
       `${SEARCH_ARCHIVE_PATH}/${searchId}`,
       {
         api_key: this.apiKey,

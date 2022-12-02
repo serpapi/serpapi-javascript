@@ -10,7 +10,7 @@ import {
 } from "https://deno.land/std@0.166.0/testing/asserts.ts";
 import { _internals, BASE_URL, buildUrl, execute } from "../src/utils.ts";
 
-Deno.test("buildUrl with empty path and empty parameters", () => {
+Deno.test("buildUrl with blank path and empty parameters", () => {
   assertEquals(buildUrl("", {}), `${BASE_URL}?`);
 });
 

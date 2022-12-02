@@ -7,7 +7,7 @@ import { InvalidTimeoutError, MissingApiKeyError } from "../src/errors.ts";
 
 const ENGINE = "google";
 
-Deno.test("init with no apiKey", () => {
+Deno.test("init with blank apiKey", () => {
   assertThrows(() => new SearchEngine(ENGINE, ""), MissingApiKeyError);
 });
 
@@ -22,14 +22,14 @@ Deno.test("init with invalid timeout", () => {
   );
 });
 
-Deno.test("update api key", () => {
+Deno.test("update apiKey", () => {
   const engine = new SearchEngine(ENGINE, "api_key_1");
   assertEquals(engine.apiKey, "api_key_1");
   engine.apiKey = "api_key_2";
   assertEquals(engine.apiKey, "api_key_2");
 });
 
-Deno.test("update to empty api key", () => {
+Deno.test("update to blank apiKey", () => {
   const engine = new SearchEngine(ENGINE, "api_key_1");
   assertEquals(engine.apiKey, "api_key_1");
   assertThrows(() => engine.apiKey = "", MissingApiKeyError);

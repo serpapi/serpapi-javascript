@@ -9,7 +9,9 @@ type UrlParameters = Record<
 >;
 
 /**
- * This is needed to support stubbing of fetch.
+ * This `_internals` object is needed to support stubbing/spying of fetch and execute.
+ * https://deno.land/manual@v1.28.3/basics/testing/mocking
+ *
  * If fetch is stubbed via `globalThis`, the test phase of the npm build fails.
  * ```ts
  * const fetchStub = stub(globalThis, "fetch", resolvesNext([new Response("data")]));
@@ -23,7 +25,7 @@ type UrlParameters = Record<
  * As a workaround, the `_internals` object serves as an indirection and we
  * stub the `fetch` key of this object instead.
  */
-export const _internals = { fetch: fetch };
+export const _internals = { fetch: fetch, execute: execute };
 
 export function buildUrl<P extends UrlParameters>(
   path: string,

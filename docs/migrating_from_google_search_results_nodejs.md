@@ -22,25 +22,11 @@ migrate over to the `serpapi` npm package.
 
 - Search engine classes require an API key during instantiation.
   ```js
-  // ❌ Previous way, API key could be blank.
+  // ❌ Previous way, API key could be omitted.
   const engine = new GoogleSearch();
 
   // ✅ New way, API key is required.
   const engine = new Google(API_KEY);
-  ```
-
-- If an `api_key` is provided in the parameters for `json` and `html`, it will
-  be overriden by the API key specified during class instantiation.
-  ```js
-  // ❌ Previous way, API_KEY_2 will be used in the API call.
-  const engine = new GoogleSearch(API_KEY_1);
-  engine.json({ q: "coffee", api_key: API_KEY_2 });
-
-  // ✅ New way, API_KEY_1 will be used in the API call.
-  // Note that if you use TypeScript, specifying the
-  // `api_key` attribute will display a warning.
-  const engine = new Google(API_KEY_1);
-  engine.json({ q: "coffee", api_key: API_KEY_2 });
   ```
 
 - The `search_archive` method is replaced by `jsonBySearchId` and

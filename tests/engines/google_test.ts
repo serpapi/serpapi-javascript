@@ -1,24 +1,34 @@
 import { config } from "https://deno.land/x/dotenv@v3.2.0/mod.ts";
 import { delay } from "https://deno.land/std@0.166.0/async/delay.ts";
 import {
+  assertSpyCallArg,
+  assertSpyCalls,
+  spy,
+} from "https://deno.land/std@0.166.0/testing/mock.ts";
+import {
   assert,
   assertArrayIncludes,
   assertEquals,
+  assertRejects,
   assertStringIncludes,
 } from "https://deno.land/std@0.166.0/testing/asserts.ts";
 import { Google } from "../../src/engines/google.ts";
+import { _internals } from "../../src/utils.ts";
+import { MissingApiKeyError } from "../../src/errors.ts";
 
 config({ export: true });
 const SERPAPI_KEY = Deno.env.get("SERPAPI_KEY") ?? "";
 const HAS_API_KEY = SERPAPI_KEY.length > 0;
 
-Deno.test("json (async/await)", {
-  ignore: !HAS_API_KEY,
+Deno.test("json for an unmetered query (async/await)", {
   sanitizeOps: false,
   sanitizeResources: false,
 }, async () => {
-  const engine = new Google(SERPAPI_KEY);
-  const json = await engine.json({ q: "coffee", gl: "us", hl: "en" });
+  const engine = new Google("does_not_matter");
+  const json = await engine.json({
+    api_key: undefined, // undefined to support the "coffee" unmetered query
+    q: "coffee",
+  });
   assertArrayIncludes(Object.keys(json).sort(), [
     "organic_results",
     "pagination",
@@ -29,15 +39,18 @@ Deno.test("json (async/await)", {
   ]);
 });
 
-Deno.test("json (callback)", {
-  ignore: !HAS_API_KEY,
+Deno.test("json for an unmetered query (callback)", {
   sanitizeOps: false,
   sanitizeResources: false,
 }, async () => {
-  const engine = new Google(SERPAPI_KEY);
-  const json = await new Promise<Awaited<ReturnType<typeof engine.json>>>((
-    res,
-  ) => engine.json({ q: "coffee", gl: "us", hl: "en" }, res));
+  const engine = new Google("does_not_matter");
+  const json = await new Promise<Awaited<ReturnType<typeof engine.json>>>(
+    (res) =>
+      engine.json({
+        api_key: undefined,
+        q: "coffee",
+      }, res),
+  );
   assertArrayIncludes(Object.keys(json).sort(), [
     "organic_results",
     "pagination",
@@ -48,48 +61,123 @@ Deno.test("json (callback)", {
   ]);
 });
 
-Deno.test("html (async/await)", {
-  ignore: !HAS_API_KEY,
+Deno.test("json with api_key param overrides api key from instantiation", {
   sanitizeOps: false,
   sanitizeResources: false,
 }, async () => {
-  const engine = new Google(SERPAPI_KEY);
-  const html = await engine.html({ q: "coffee", gl: "us", hl: "en" });
+  const executeSpy = spy(_internals, "execute");
+  const engine = new Google("test_initial_api_key");
+  try {
+    await engine.json({
+      api_key: "test_override_api_key",
+      q: "coffee",
+    });
+  } finally {
+    executeSpy.restore();
+  }
+  assertSpyCalls(executeSpy, 1);
+  assertSpyCallArg(executeSpy, 0, 1, {
+    api_key: "test_override_api_key",
+    engine: "google",
+    output: "json",
+    q: "coffee",
+  });
+});
+
+Deno.test("json with blank api_key param", () => {
+  const engine = new Google("does_not_matter");
+  assertRejects(async () =>
+    await engine.json({
+      api_key: "",
+      q: "coffee",
+    }), MissingApiKeyError);
+});
+
+Deno.test("html for an unmetered query (async/await)", {
+  sanitizeOps: false,
+  sanitizeResources: false,
+}, async () => {
+  const engine = new Google("does_not_matter");
+  const html = await engine.html({
+    api_key: undefined,
+    q: "coffee",
+  });
   assertStringIncludes(html, "<html");
   assertStringIncludes(html, "<body");
   assertStringIncludes(html, "</body>");
   assertStringIncludes(html, "</html>");
 });
 
-Deno.test("html (callback)", {
-  ignore: !HAS_API_KEY,
+Deno.test("html for an unmetered query (callback)", {
   sanitizeOps: false,
   sanitizeResources: false,
 }, async () => {
-  const engine = new Google(SERPAPI_KEY);
-  const html = await new Promise<Awaited<ReturnType<typeof engine.html>>>((
-    res,
-  ) => engine.html({ q: "coffee", gl: "us", hl: "en" }, res));
+  const engine = new Google("does_not_matter");
+  const html = await new Promise<Awaited<ReturnType<typeof engine.html>>>(
+    (res) =>
+      engine.html({
+        api_key: undefined,
+        q: "coffee",
+      }, res),
+  );
   assertStringIncludes(html, "<html");
   assertStringIncludes(html, "<body");
   assertStringIncludes(html, "</body>");
   assertStringIncludes(html, "</html>");
+});
+
+Deno.test("html with api_key param overrides api key from instantiation", {
+  sanitizeOps: false,
+  sanitizeResources: false,
+}, async () => {
+  const executeSpy = spy(_internals, "execute");
+  const engine = new Google("test_initial_api_key");
+  try {
+    await engine.html({
+      api_key: "test_override_api_key",
+      q: "coffee",
+    });
+  } finally {
+    executeSpy.restore();
+  }
+  assertSpyCalls(executeSpy, 1);
+  assertSpyCallArg(executeSpy, 0, 1, {
+    api_key: "test_override_api_key",
+    engine: "google",
+    output: "html",
+    q: "coffee",
+  });
+});
+
+Deno.test("html with blank api_key param", () => {
+  const engine = new Google("does_not_matter");
+  assertRejects(async () =>
+    await engine.html({
+      api_key: "",
+      q: "coffee",
+    }), MissingApiKeyError);
 });
 
 Deno.test("html with async parameter returns json", {
-  ignore: !HAS_API_KEY,
   sanitizeOps: false,
   sanitizeResources: false,
 }, async () => {
-  const engine = new Google(SERPAPI_KEY);
-  const html = await engine.html({ async: true, no_cache: true, q: "tea" });
+  const engine = new Google("does_not_matter");
+  const html = await engine.html({
+    api_key: undefined,
+    async: true,
+    no_cache: true,
+    q: "coffee",
+  });
   const json = JSON.parse(html);
-  assertArrayIncludes(Object.keys(json).sort(), [
+  assertEquals(Object.keys(json).sort(), [
     "search_metadata",
     "search_parameters",
   ]);
+  assertEquals(json["search_metadata"]["status"], "Processing");
 });
 
+// (json|html)BySearchId always require a valid API key even for unmetered queries
 Deno.test("(json|html)BySearchId", {
   ignore: !HAS_API_KEY,
   sanitizeOps: false,
