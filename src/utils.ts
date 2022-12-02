@@ -1,5 +1,5 @@
-const IS_TEST_ENV = Deno.env.get("ENV_TYPE") === "test";
-export const BASE_URL = IS_TEST_ENV
+const IS_LOCAL = Deno.env.get("ENV_TYPE") === "local";
+export const BASE_URL = IS_LOCAL
   ? "http://localhost:3000"
   : "https://serpapi.com";
 
