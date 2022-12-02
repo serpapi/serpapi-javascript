@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "test": "ENV_TYPE=local deno test tests/ --allow-env --allow-read --allow-net",
+    "test": "ENV_TYPE=local deno test tests/ --allow-env --allow-read --allow-net --fail-fast",
     "test:ci": "deno test tests/ --allow-env --allow-read --allow-net",
     "test:watch": "deno task test --watch",
     "test:cov": "deno task test --coverage=cov_profile && deno coverage cov_profile",
