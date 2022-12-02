@@ -62,6 +62,19 @@ migrate over to the `serpapi` npm package.
 - The `SerpApiSearch` class is removed as a public class in favor of individual
   search engine classes.
 
+## Fixed
+
+- Setting the `api_key` parameter to `undefined` works for unmetered queries.
+  ```js
+  // ❌ Previously, error is thrown.
+  const engine = new GoogleSearch();
+  engine.json({ q: "coffee", api_key: undefined });
+
+  // ✅ Now, no error is thrown.
+  const engine = new Google(API_KEY);
+  engine.json({ q: "coffee", api_key: undefined });
+  ```
+
 ## Added
 
 - TypeScript types for supported parameters.
