@@ -194,10 +194,16 @@ engine.timeout = 10000;
 
 ## Functions
 
+This module exposes 2 functions that can be imported directly, e.g.
+
+```ts
+import { getAccount, getLocations } from "serpapi";
+```
+
 <details>
 <summary>
   <h3 style="display: inline-block">
-    <code>SearchEngine.getAccount(...)</code>
+    <code>getAccount(...)</code>
   </h3>
 </summary>
 
@@ -216,7 +222,7 @@ getAccount(API_KEY, console.log);
 <details>
 <summary>
   <h3 style="display: inline-block">
-    <code>SearchEngine.getLocations(...)</code>
+    <code>getLocations(...)</code>
   </h3>
 </summary>
 
