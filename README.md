@@ -11,7 +11,7 @@ more.
 
 ### Node.js
 
-```
+```bash
 npm install serpapi
 ```
 
@@ -40,9 +40,18 @@ const json = await google.json({ q: "coffee", location: "Austin, Texas" });
 
 ## Class methods & variables
 
-See all available classes in [`src/mod.ts`](/src/mod.ts). Each class has a
-different set of accepted parameters. See the corresponding type declarations
-for more information e.g. [`GoogleParameters`](/src/engines/google.ts#L3).
+See all available search engine classes in [`src/mod.ts`](/src/mod.ts). Each
+search engine class has a different set of accepted query parameters. See the
+corresponding type declarations for more information e.g.
+[`GoogleParameters`](/src/engines/google.ts#L3).
+
+```ts
+import { Bing, Google } from "serpapi";
+const google = new Google(API_KEY);
+const bing = new Bing(API_KEY);
+```
+
+All search engine classes expose the same set of methods and instance variables:
 
 <details>
 <summary>
