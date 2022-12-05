@@ -1,15 +1,11 @@
-const IS_LOCAL = Deno.env.get("ENV_TYPE") === "local";
-export const BASE_URL = IS_LOCAL
-  ? "http://localhost:3000"
-  : "https://serpapi.com";
-
 type UrlParameters = Record<
   string,
   string | number | boolean | undefined | null
 >;
 
 /**
- * This `_internals` object is needed to support stubbing/spying of fetch and execute.
+ * This `_internals` object is needed to support stubbing/spying of
+ * fetch, execute and getBaseUrl.
  * https://deno.land/manual@v1.28.3/basics/testing/mocking
  *
  * If fetch is stubbed via `globalThis`, the test phase of the npm build fails.
@@ -25,7 +21,16 @@ type UrlParameters = Record<
  * As a workaround, the `_internals` object serves as an indirection and we
  * stub the `fetch` key of this object instead.
  */
-export const _internals = { fetch: fetch, execute: execute };
+export const _internals = {
+  fetch: fetch,
+  execute: execute,
+  getBaseUrl: getBaseUrl,
+};
+
+/** Facilitates stubbing in tests, e.g. localhost as the base url */
+function getBaseUrl() {
+  return "https://serpapi.com";
+}
 
 // TODO(seb): get module version too
 function getSource() {
@@ -54,7 +59,7 @@ export function buildUrl<P extends UrlParameters>(
     .filter(([_, value]) => value !== undefined)
     .map(([key, value]) => [key, `${value}`]);
   const searchParams = new URLSearchParams(nonUndefinedParams);
-  return `${BASE_URL}${path}?${searchParams}`;
+  return `${_internals.getBaseUrl()}${path}?${searchParams}`;
 }
 
 export async function execute<P extends UrlParameters>(

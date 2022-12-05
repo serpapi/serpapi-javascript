@@ -8,7 +8,11 @@ import {
   assertMatch,
   assertRejects,
 } from "https://deno.land/std@0.166.0/testing/asserts.ts";
-import { _internals, BASE_URL, buildUrl, execute } from "../src/utils.ts";
+import { _internals, buildUrl, execute } from "../src/utils.ts";
+
+const BASE_URL = Deno.env.get("ENV_TYPE") === "local"
+  ? "http://localhost:3000"
+  : "https://serpapi.com";
 
 Deno.test("buildUrl with blank path and empty parameters", () => {
   assertEquals(buildUrl("", {}), `${BASE_URL}?`);
@@ -56,7 +60,10 @@ Deno.test("execute with path and parameters calls fetch with source appended", {
   );
 });
 
-Deno.test("execute with short timeout", () => {
+Deno.test("execute with short timeout", {
+  sanitizeOps: false,
+  sanitizeResources: false,
+}, () => {
   assertRejects(async () =>
     await execute("/search", { q: "coffee", gl: "us" }, 1)
   );
