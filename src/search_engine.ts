@@ -62,7 +62,6 @@ export type BaseParameters = {
   device?: "desktop" | "tablet" | "mobile";
   no_cache?: boolean;
   async?: boolean;
-  output?: "json" | "html";
 };
 
 export type BaseResponse<P extends BaseParameters = BaseParameters> = {
