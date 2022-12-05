@@ -24,7 +24,9 @@ jobs:
         run: deno lint
 
       - name: Run tests
-        run: deno task test:ci  # TODO(seb): figure out tests that hit prod
+        env:
+          SERPAPI_KEY: ${{ secrets.API_KEY }}
+        run: deno task test:ci
       
       - name: Get tag version
         if: startsWith(github.ref, 'refs/tags/')
