@@ -1,6 +1,61 @@
 import { InvalidTimeoutError, MissingApiKeyError } from "./errors.ts";
 import { _internals } from "./utils.ts";
 
+export const engines = [
+  "google",
+  "google_jobs",
+  "google_jobs_listing",
+  "google_reverse_image",
+  "google_scholar_profiles",
+  "google_scholar",
+  "google_scholar_cite",
+  "google_scholar_author",
+  "google_product",
+  "google_maps",
+  "google_maps_photos",
+  "google_maps_reviews",
+  "google_events",
+  "google_autocomplete",
+  "google_related_questions",
+  "google_trends",
+  "google_trends_autocomplete",
+  "google_finance_markets",
+  "google_immersive_product",
+  "bing",
+  "bing_news",
+  "bing_images",
+  "baidu",
+  "baidu_news",
+  "yahoo",
+  "yahoo_images",
+  "yahoo_videos",
+  "yahoo_shopping",
+  "ebay",
+  "yandex",
+  "yandex_images",
+  "yandex_videos",
+  "youtube",
+  "walmart",
+  "walmart_product",
+  "walmart_product_reviews",
+  "home_depot",
+  "home_depot_product",
+  "linkedin",
+  "linkedin_profile",
+  "duckduckgo",
+  "google_play_product",
+  "google_play",
+  "apple_app_store",
+  "apple_reviews",
+  "apple_product",
+  "naver",
+  "google_local_services",
+  "google_about_this_result",
+  "yelp",
+  "yelp_reviews",
+] as const;
+export type Engine = typeof engines[number];
+
 export type BaseParameters = {
   /** Overrides the API key specified during class instantiation  */
   api_key?: string;
@@ -48,7 +103,7 @@ export class SearchEngine<
   #timeout = DEFAULT_TIMEOUT_MS;
 
   constructor(
-    engine: string,
+    engine: Engine,
     apiKey: string,
     timeout = DEFAULT_TIMEOUT_MS,
   ) {
