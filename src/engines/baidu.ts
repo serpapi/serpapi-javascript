@@ -6,8 +6,8 @@ export type BaiduParameters = {
   pn?: string;
   rn?: string;
   gpc?: string;
-  q5?: any;
-  q6?: any;
+  q5?: string;
+  q6?: string;
   bs?: string;
   oq?: string;
   f?: string;
