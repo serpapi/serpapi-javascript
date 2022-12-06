@@ -6,10 +6,22 @@ type UrlParameters = Record<
   string | number | boolean | undefined | null
 >;
 
-export function validateApiKey(value: string | undefined): string {
-  const apiKey = value ?? config.apiKey;
-  if (!apiKey) throw new MissingApiKeyError();
-  return apiKey;
+export function validateApiKey(value: string | undefined): string;
+export function validateApiKey(
+  value: string | undefined,
+  allowUndefined: boolean,
+): string | undefined;
+export function validateApiKey(
+  value: string | undefined,
+  allowUndefined = false,
+): string | undefined {
+  // `api_key` can be undefined to support unmetered queries.
+  if (allowUndefined && value === undefined) {
+    return value;
+  }
+  const key = value ?? config.api_key;
+  if (!key) throw new MissingApiKeyError();
+  return key;
 }
 
 export function validateTimeout(value: number | undefined): number {

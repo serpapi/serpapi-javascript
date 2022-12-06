@@ -1,6 +1,5 @@
-import { BaseParameters, SearchEngine } from "../search_engine.ts";
-
 export type YahooImagesParameters = {
+  engine: "yahoo_images";
   p: string;
   yahoo_domain?: string;
   imgsz?: string;
@@ -12,10 +11,3 @@ export type YahooImagesParameters = {
   imgl?: string;
   b?: string;
 };
-
-export class YahooImages
-  extends SearchEngine<YahooImagesParameters & BaseParameters> {
-  constructor(apiKey: string, timeout?: number) {
-    super("yahoo_images", apiKey, timeout);
-  }
-}

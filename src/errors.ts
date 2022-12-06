@@ -1,7 +1,7 @@
 export class MissingApiKeyError extends Error {
   constructor() {
     super(
-      "apiKey is required, get it from: https://serpapi.com/manage-api-key",
+      "api_key is required, get it from: https://serpapi.com/manage-api-key",
     );
     Object.setPrototypeOf(this, MissingApiKeyError.prototype);
   }

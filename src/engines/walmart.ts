@@ -1,6 +1,5 @@
-import { BaseParameters, SearchEngine } from "../search_engine.ts";
-
 export type WalmartParameters = {
+  engine: "walmart";
   query: string;
   sort?: string;
   soft_sort?: boolean;
@@ -15,9 +14,3 @@ export type WalmartParameters = {
   page?: string;
   ps?: number;
 };
-
-export class Walmart extends SearchEngine<WalmartParameters & BaseParameters> {
-  constructor(apiKey: string, timeout?: number) {
-    super("walmart", apiKey, timeout);
-  }
-}

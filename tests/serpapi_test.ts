@@ -37,7 +37,7 @@ describe("getAccount", {
     urlStub.restore();
   });
 
-  it("with no apiKey", () => {
+  it("with no api_key", () => {
     assertRejects(
       async () => await getAccount({ api_key: "" }),
       MissingApiKeyError,
@@ -55,7 +55,7 @@ describe("getAccount", {
   it("with invalid timeout", {
     ignore: !HAS_API_KEY,
   }, () => {
-    config.apiKey = SERPAPI_KEY;
+    config.api_key = SERPAPI_KEY;
     assertRejects(
       async () => await getAccount({ timeout: 0 }),
       InvalidTimeoutError,
@@ -113,7 +113,7 @@ describe("getAccount", {
   it("rely on global config", {
     ignore: !HAS_API_KEY,
   }, async () => {
-    config.apiKey = SERPAPI_KEY;
+    config.api_key = SERPAPI_KEY;
     const info = await getAccount();
     assertEquals(Object.keys(info).sort(), [
       "account_email",

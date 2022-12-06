@@ -1,6 +1,5 @@
-import { BaseParameters, SearchEngine } from "../search_engine.ts";
-
 export type YandexVideosParameters = {
+  engine: "yandex_videos";
   text: string;
   yandex_domain?: string;
   duration?: string;
@@ -8,10 +7,3 @@ export type YandexVideosParameters = {
   within?: string;
   p?: string;
 };
-
-export class YandexVideos
-  extends SearchEngine<YandexVideosParameters & BaseParameters> {
-  constructor(apiKey: string, timeout?: number) {
-    super("yandex_videos", apiKey, timeout);
-  }
-}

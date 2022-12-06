@@ -1,6 +1,5 @@
-import { BaseParameters, SearchEngine } from "../search_engine.ts";
-
 export type YelpReviewsParameters = {
+  engine: "yelp_reviews";
   place_id: string;
   yelp_domain?: string;
   hl?: string;
@@ -8,10 +7,3 @@ export type YelpReviewsParameters = {
   sortby?: string;
   start?: number;
 };
-
-export class YelpReviews
-  extends SearchEngine<YelpReviewsParameters & BaseParameters> {
-  constructor(apiKey: string, timeout?: number) {
-    super("yelp_reviews", apiKey, timeout);
-  }
-}

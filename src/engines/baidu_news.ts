@@ -1,6 +1,5 @@
-import { BaseParameters, SearchEngine } from "../search_engine.ts";
-
 export type BaiduNewsParameters = {
+  engine: "baidu_news";
   q: string;
   ct?: string;
   pn?: string;
@@ -8,10 +7,3 @@ export type BaiduNewsParameters = {
   rtt?: string;
   medium?: string;
 };
-
-export class BaiduNews
-  extends SearchEngine<BaiduNewsParameters & BaseParameters> {
-  constructor(apiKey: string, timeout?: number) {
-    super("baidu_news", apiKey, timeout);
-  }
-}

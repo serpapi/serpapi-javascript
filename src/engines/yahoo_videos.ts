@@ -1,6 +1,5 @@
-import { BaseParameters, SearchEngine } from "../search_engine.ts";
-
 export type YahooVideosParameters = {
+  engine: "yahoo_videos";
   p: string;
   yahoo_domain?: string;
   durs?: string;
@@ -9,10 +8,3 @@ export type YahooVideosParameters = {
   vsite?: string;
   b?: string;
 };
-
-export class YahooVideos
-  extends SearchEngine<YahooVideosParameters & BaseParameters> {
-  constructor(apiKey: string, timeout?: number) {
-    super("yahoo_videos", apiKey, timeout);
-  }
-}

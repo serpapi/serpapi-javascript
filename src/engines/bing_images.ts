@@ -1,6 +1,5 @@
-import { BaseParameters, SearchEngine } from "../search_engine.ts";
-
 export type BingImagesParameters = {
+  engine: "bing_images";
   q: string;
   mkt?: string;
   cc?: string;
@@ -14,10 +13,3 @@ export type BingImagesParameters = {
   age?: string;
   license?: string;
 };
-
-export class BingImages
-  extends SearchEngine<BingImagesParameters & BaseParameters> {
-  constructor(apiKey: string, timeout?: number) {
-    super("bing_images", apiKey, timeout);
-  }
-}

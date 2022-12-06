@@ -1,13 +1,5 @@
-import { BaseParameters, SearchEngine } from "../search_engine.ts";
-
 export type GoogleAboutThisResultParameters = {
+  engine: "google_about_this_result";
   q: string;
   ilps: string;
 };
-
-export class GoogleAboutThisResult
-  extends SearchEngine<GoogleAboutThisResultParameters & BaseParameters> {
-  constructor(apiKey: string, timeout?: number) {
-    super("google_about_this_result", apiKey, timeout);
-  }
-}

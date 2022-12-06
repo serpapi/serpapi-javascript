@@ -1,6 +1,5 @@
-import { BaseParameters, SearchEngine } from "../search_engine.ts";
-
 export type YahooParameters = {
+  engine: "yahoo";
   p: string;
   yahoo_domain?: string;
   vc?: string;
@@ -11,9 +10,3 @@ export type YahooParameters = {
   vf?: string;
   fr2?: string;
 };
-
-export class Yahoo extends SearchEngine<YahooParameters & BaseParameters> {
-  constructor(apiKey: string, timeout?: number) {
-    super("yahoo", apiKey, timeout);
-  }
-}

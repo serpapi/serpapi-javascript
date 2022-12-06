@@ -20,9 +20,15 @@ import {
   assertRejects,
   assertStringIncludes,
 } from "https://deno.land/std@0.166.0/testing/asserts.ts";
-import { Google } from "../../src/engines/google.ts";
 import { _internals } from "../../src/utils.ts";
 import { MissingApiKeyError } from "../../src/errors.ts";
+import {
+  html,
+  htmlBySearchId,
+  json,
+  jsonBySearchId,
+} from "../../src/serpapi.ts";
+import { config } from "../../src/config.ts";
 
 configSync({ export: true });
 const SERPAPI_KEY = Deno.env.get("SERPAPI_KEY") ?? "";
@@ -36,6 +42,7 @@ describe("google", {
   sanitizeResources: false,
 }, () => {
   let urlStub: Stub;
+  const engine = "google";
 
   beforeAll(() => {
     urlStub = stub(_internals, "getBaseUrl", () => BASE_URL);
@@ -46,12 +53,12 @@ describe("google", {
   });
 
   it("json for an unmetered query (async/await)", async () => {
-    const engine = new Google("does_not_matter");
-    const json = await engine.json({
+    const response = await json({
+      engine,
       api_key: undefined, // undefined to support the "coffee" unmetered query
       q: "coffee",
     });
-    assertArrayIncludes(Object.keys(json).sort(), [
+    assertArrayIncludes(Object.keys(response).sort(), [
       "organic_results",
       "pagination",
       "search_information",
@@ -62,15 +69,15 @@ describe("google", {
   });
 
   it("json for an unmetered query (callback)", async () => {
-    const engine = new Google("does_not_matter");
-    const json = await new Promise<Awaited<ReturnType<typeof engine.json>>>(
+    const response = await new Promise<Awaited<ReturnType<typeof json>>>(
       (res) =>
-        engine.json({
+        json({
+          engine,
           api_key: undefined,
           q: "coffee",
         }, res),
     );
-    assertArrayIncludes(Object.keys(json).sort(), [
+    assertArrayIncludes(Object.keys(response).sort(), [
       "organic_results",
       "pagination",
       "search_information",
@@ -80,11 +87,12 @@ describe("google", {
     ]);
   });
 
-  it("json with api_key param overrides api key from instantiation", async () => {
+  it("json with api_key param overrides api key from config", async () => {
     const executeSpy = spy(_internals, "execute");
-    const engine = new Google("test_initial_api_key");
+    config.api_key = "test_initial_api_key";
     try {
-      await engine.json({
+      await json({
+        engine,
         api_key: "test_override_api_key",
         q: "coffee",
       });
@@ -94,53 +102,54 @@ describe("google", {
     assertSpyCalls(executeSpy, 1);
     assertSpyCallArg(executeSpy, 0, 1, {
       api_key: "test_override_api_key",
-      engine: "google",
+      engine,
       output: "json",
       q: "coffee",
     });
   });
 
   it("json with blank api_key param", () => {
-    const engine = new Google("does_not_matter");
     assertRejects(async () =>
-      await engine.json({
+      await json({
+        engine,
         api_key: "",
         q: "coffee",
       }), MissingApiKeyError);
   });
 
   it("html for an unmetered query (async/await)", async () => {
-    const engine = new Google("does_not_matter");
-    const html = await engine.html({
+    const response = await html({
+      engine,
       api_key: undefined,
       q: "coffee",
     });
-    assertStringIncludes(html, "<html");
-    assertStringIncludes(html, "<body");
-    assertStringIncludes(html, "</body>");
-    assertStringIncludes(html, "</html>");
+    assertStringIncludes(response, "<html");
+    assertStringIncludes(response, "<body");
+    assertStringIncludes(response, "</body>");
+    assertStringIncludes(response, "</html>");
   });
 
   it("html for an unmetered query (callback)", async () => {
-    const engine = new Google("does_not_matter");
-    const html = await new Promise<Awaited<ReturnType<typeof engine.html>>>(
+    const response = await new Promise<Awaited<ReturnType<typeof html>>>(
       (res) =>
-        engine.html({
+        html({
+          engine,
           api_key: undefined,
           q: "coffee",
         }, res),
     );
-    assertStringIncludes(html, "<html");
-    assertStringIncludes(html, "<body");
-    assertStringIncludes(html, "</body>");
-    assertStringIncludes(html, "</html>");
+    assertStringIncludes(response, "<html");
+    assertStringIncludes(response, "<body");
+    assertStringIncludes(response, "</body>");
+    assertStringIncludes(response, "</html>");
   });
 
-  it("html with api_key param overrides api key from instantiation", async () => {
+  it("html with api_key param overrides api key from config", async () => {
     const executeSpy = spy(_internals, "execute");
-    const engine = new Google("test_initial_api_key");
+    config.api_key = "test_initial_api_key";
     try {
-      await engine.html({
+      await html({
+        engine,
         api_key: "test_override_api_key",
         q: "coffee",
       });
@@ -157,23 +166,23 @@ describe("google", {
   });
 
   it("html with blank api_key param", () => {
-    const engine = new Google("does_not_matter");
     assertRejects(async () =>
-      await engine.html({
+      await html({
+        engine,
         api_key: "",
         q: "coffee",
       }), MissingApiKeyError);
   });
 
   it("html with async parameter returns json", async () => {
-    const engine = new Google("does_not_matter");
-    const html = await engine.html({
+    const response = await html({
+      engine,
       api_key: undefined,
       async: true,
       no_cache: true,
       q: "coffee",
     });
-    const json = JSON.parse(html);
+    const json = JSON.parse(response);
     assertEquals(Object.keys(json).sort(), [
       "search_metadata",
       "search_parameters",
@@ -185,11 +194,11 @@ describe("google", {
   it("(json|html)BySearchId", {
     ignore: !HAS_API_KEY,
   }, async (t) => {
-    const engine = new Google(SERPAPI_KEY);
-    let searchId: string;
+    let id: string;
 
     await t.step("initiate async request", async () => {
-      const response = await engine.json({
+      const response = await json({
+        engine,
         async: true,
         no_cache: true, // Ensure a new request is sent so we don't get cached results
         q: "apple",
@@ -201,15 +210,15 @@ describe("google", {
         "search_parameters",
       ]);
       let status;
-      ({ id: searchId, status } = response["search_metadata"]);
-      assert(searchId, "Missing searchId");
+      ({ id, status } = response["search_metadata"]);
+      assert(id, "Missing search id");
       assertEquals(status, "Processing");
     });
 
     await t.step("jsonBySearchId (async/await)", async () => {
       let json;
       while (true) {
-        json = await engine.jsonBySearchId(searchId);
+        json = await jsonBySearchId({ id, api_key: SERPAPI_KEY });
         const status = json["search_metadata"]["status"];
         if (status === "Processing") {
           await delay(500);
@@ -231,8 +240,30 @@ describe("google", {
       let json;
       while (true) {
         json = await new Promise<
-          Awaited<ReturnType<typeof engine.jsonBySearchId>>
-        >((res) => engine.jsonBySearchId(searchId, res));
+          Awaited<ReturnType<typeof jsonBySearchId>>
+        >((res) => jsonBySearchId({ id, api_key: SERPAPI_KEY }, res));
+        const status = json["search_metadata"]["status"];
+        if (status === "Processing") {
+          await delay(500);
+        } else {
+          break;
+        }
+      }
+      assertArrayIncludes(Object.keys(json).sort(), [
+        "organic_results",
+        "pagination",
+        "search_information",
+        "search_metadata",
+        "search_parameters",
+        "serpapi_pagination",
+      ]);
+    });
+
+    await t.step("jsonBySearchId with api_key from config", async () => {
+      let json;
+      config.api_key = SERPAPI_KEY;
+      while (true) {
+        json = await jsonBySearchId({ id });
         const status = json["search_metadata"]["status"];
         if (status === "Processing") {
           await delay(500);
@@ -253,7 +284,7 @@ describe("google", {
     await t.step("htmlBySearchId (async/await)", async () => {
       let html;
       while (true) {
-        html = await engine.htmlBySearchId(searchId);
+        html = await htmlBySearchId({ id, api_key: SERPAPI_KEY });
         try {
           JSON.parse(html);
         } catch { // If parsing fails, it means the request has completed
@@ -271,8 +302,8 @@ describe("google", {
       let html;
       while (true) {
         html = await new Promise<
-          Awaited<ReturnType<typeof engine.htmlBySearchId>>
-        >((res) => engine.htmlBySearchId(searchId, res));
+          Awaited<ReturnType<typeof htmlBySearchId>>
+        >((res) => htmlBySearchId({ id, api_key: SERPAPI_KEY }, res));
         try {
           JSON.parse(html);
         } catch { // If parsing fails, it means the request has completed

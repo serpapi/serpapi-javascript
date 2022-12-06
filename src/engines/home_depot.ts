@@ -1,6 +1,5 @@
-import { BaseParameters, SearchEngine } from "../search_engine.ts";
-
 export type HomeDepotParameters = {
+  engine: "home_depot";
   q: string;
   hd_sort?: string;
   hd_filter_tokens?: string;
@@ -12,10 +11,3 @@ export type HomeDepotParameters = {
   page?: string;
   ps?: number;
 };
-
-export class HomeDepot
-  extends SearchEngine<HomeDepotParameters & BaseParameters> {
-  constructor(apiKey: string, timeout?: number) {
-    super("home_depot", apiKey, timeout);
-  }
-}

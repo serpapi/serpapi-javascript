@@ -7,7 +7,7 @@ more.
 | 🪧 Coming from `google-search-results-nodejs`? <br /> Check out the [migration document](/docs/migrating_from_google_search_results_nodejs.md) to find out how to upgrade. |
 | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 
-## Usage
+## Quick start
 
 ### Node.js
 
@@ -16,17 +16,22 @@ npm install serpapi
 ```
 
 ```js
-import { Google } from "serpapi";
-const google = new Google(API_KEY); // Get your API_KEY from https://serpapi.com/manage-api-key
-const json = await google.json({ q: "coffee", location: "Austin, Texas" });
+import { json } from "serpapi";
+const response = await json({
+  engine: "google",
+  api_key: API_KEY, // Get your API_KEY from https://serpapi.com/manage-api-key
+  q: "coffee",
+  location: "Austin, Texas",
+});
+console.log(response);
 ```
 
 ### Deno
 
+Import directly from deno.land. Usage is otherwise the same as above.
+
 ```ts
-import { Google } from "https://deno.land/x/serpapi/mod.ts";
-const google = new Google(API_KEY); // Get your API_KEY from https://serpapi.com/manage-api-key
-const json = await google.json({ q: "coffee", location: "Austin, Texas" });
+import { json } from "https://deno.land/x/serpapi/mod.ts";
 ```
 
 ## Features
@@ -38,25 +43,66 @@ const json = await google.json({ q: "coffee", location: "Austin, Texas" });
 - (Planned) More examples.
 - (Planned) More error classes.
 
-## Class methods & variables
+## Configuration
 
-See all available search engine classes in [`src/mod.ts`](/src/mod.ts). Each
-search engine class has a different set of accepted query parameters. See the
-corresponding type declarations for more information e.g.
-[`GoogleParameters`](/src/engines/google.ts#L3).
+You can declare a global api_key and timeout value by modifying the config
+object. `timeout` is defined in milliseconds and defaults to 60 seconds.
 
-```ts
-import { Bing, Google } from "serpapi";
-const google = new Google(API_KEY);
-const bing = new Bing(API_KEY);
+```js
+import { config, json } from "serpapi";
+
+config.api_key = API_KEY;
+config.timeout = 60000;
+
+await json({ engine: "google", q: "coffee" }); // uses the API key defined in the config
 ```
 
-All search engine classes expose the same set of methods and instance variables:
+## Functions
+
+This module exposes functions that can be imported and used directly. `api_key`
+and `timeout` can be passed in as parameters and will override what was defined
+in `config`.
+
+Each search engine has a different set of accepted search query parameters. See
+the corresponding type declarations for more information e.g.
+[`GoogleParameters`](/src/engines/google.ts#L3).
+
+As we're constantly adding more engines, the type definitions may not always be
+up to date. Note that you can still use this module for new search engines
+albeit without the latest type definitions.
+
+Here's an overview of some of the available functions.
+
+```js
+import {
+  config,
+  getAccount,
+  getLocations,
+  json,
+  jsonBySearchId,
+} from "serpapi";
+
+const locations = await getLocations({ q: "Austin" });
+const location = locations[0].name;
+console.log(location); // Austin, TX
+
+config.api_key = API_KEY;
+
+const accountInfo = await getAccount();
+console.log(`searches left: ${accountInfo.plan_searches_left}`);
+
+const request = await json({ engine: "google", q: "coffee", async: true });
+const searchId = request.search_metadata.id;
+console.log(`processing ${searchId}`);
+
+const response = await jsonBySearchId({ id: searchId });
+console.log(`request took ${response.search_metadata.total_time_taken}s`);
+```
 
 <details>
 <summary>
   <h3 style="display: inline-block">
-    <code>SearchEngine.json(...)</code>
+    <code>json(...)</code>
   </h3>
 </summary>
 
@@ -66,10 +112,14 @@ Get a JSON response based on search parameters.
 
 ```ts
 // async/await
-const json = await engine.json({ q: "coffee" });
+const response = await json({
+  engine: "google",
+  api_key: API_KEY,
+  q: "coffee",
+});
 
 // callback
-engine.json({ q: "coffee" }, console.log);
+json({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
 ```
 
 </details>
@@ -77,7 +127,7 @@ engine.json({ q: "coffee" }, console.log);
 <details>
 <summary>
   <h3 style="display: inline-block">
-    <code>SearchEngine.html(...)</code>
+    <code>html(...)</code>
   </h3>
 </summary>
 
@@ -88,10 +138,14 @@ Get a HTML response based on search parameters.
 
 ```ts
 // async/await
-const html = await engine.html({ q: "coffee" });
+const response = await html({
+  engine: "google",
+  api_key: API_KEY,
+  q: "coffee",
+});
 
 // callback
-engine.html({ q: "coffee" }, console.log);
+html({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
 ```
 
 </details>
@@ -99,7 +153,7 @@ engine.html({ q: "coffee" }, console.log);
 <details>
 <summary>
   <h3 style="display: inline-block">
-    <code>SearchEngine.jsonBySearchId(...)</code>
+    <code>jsonBySearchId(...)</code>
   </h3>
 </summary>
 
@@ -111,15 +165,20 @@ Get a JSON response given a search ID.
 - Accepts an optional callback.
 
 ```ts
-const response = await engine.json({ async: true, q: "coffee" });
-const searchId = response["search_metadata"]["id"];
+const request = await json({
+  engine: "google",
+  api_key: API_KEY,
+  async: true,
+  q: "coffee",
+});
+const id = request.search_metadata.id;
 await delay(1000); // wait for the request to be processed.
 
 // async/await
-const json = await engine.jsonBySearchId(searchId);
+const response = await jsonBySearchId({ id });
 
 // callback
-engine.jsonBySearchId(searchId, console.log);
+jsonBySearchId({ id }, console.log);
 ```
 
 </details>
@@ -127,7 +186,7 @@ engine.jsonBySearchId(searchId, console.log);
 <details>
 <summary>
   <h3 style="display: inline-block">
-    <code>SearchEngine.htmlBySearchId(...)</code>
+    <code>htmlBySearchId(...)</code>
   </h3>
 </summary>
 
@@ -140,74 +199,23 @@ Get a HTML response given a search ID.
 - Responds with a JSON if the search request hasn't completed.
 
 ```ts
-const response = await engine.json({ async: true, q: "coffee" });
-const searchId = response["search_metadata"]["id"];
+const request = await json({
+  engine: "google",
+  api_key: API_KEY,
+  async: true,
+  q: "coffee",
+});
+const id = request.search_metadata.id;
 await delay(1000); // wait for the request to be processed.
 
 // async/await
-const html = await engine.htmlBySearchId(searchId);
+const response = await htmlBySearchId({ id, api_key: API_KEY });
 
 // callback
-engine.htmlBySearchId(searchId, console.log);
+htmlBySearchId({ id, api_key: API_KEY }, console.log);
 ```
 
 </details>
-
-<details>
-<summary>
-  <h3 style="display: inline-block">
-    <code>SearchEngine.apiKey</code>
-  </h3>
-</summary>
-
-API key value obtained from https://serpapi.com/manage-api-key.
-
-- Can be modified after instantiation.
-- Can be overridden when calling `json` and `html` methods.
-
-```ts
-// "api_key_1" is set at instantiation.
-const engine = new Google("api_key_1");
-
-// "api_key_2" will be used in subsequent method calls.
-engine.apiKey = "api_key_2";
-
-// "api_key_3" will be used if passed as a parameter.
-engine.json({ api_key: "api_key_3", q: "coffee" });
-```
-
-</details>
-
-<details>
-<summary>
-  <h3 style="display: inline-block">
-    <code>SearchEngine.timeout</code>
-  </h3>
-</summary>
-
-Timeout duration of requests. In milliseconds.
-
-- Defaults to 60 seconds.
-- Must be positive.
-- Can be modified after instantiation.
-
-```ts
-// timeout set to 60 seconds
-const engine = new Google(API_KEY, 60000);
-
-// timeout of 10 seconds will be used in subsequent method calls.
-engine.timeout = 10000;
-```
-
-</details>
-
-## Functions
-
-This module exposes 2 functions that can be imported directly, e.g.
-
-```ts
-import { getAccount, getLocations } from "serpapi";
-```
 
 <details>
 <summary>
@@ -220,10 +228,10 @@ Get account information of an API key. https://serpapi.com/account-api
 
 ```ts
 // async/await
-const info = await getAccount(API_KEY);
+const info = await getAccount({ api_key: API_KEY });
 
 // callback
-getAccount(API_KEY, console.log);
+getAccount({ api_key: API_KEY }, console.log);
 ```
 
 </details>
@@ -235,7 +243,8 @@ getAccount(API_KEY, console.log);
   </h3>
 </summary>
 
-Get supported locations. https://serpapi.com/locations-api
+Get supported locations. Does not require an API key.
+https://serpapi.com/locations-api
 
 ```ts
 // async/await

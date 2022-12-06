@@ -1,6 +1,5 @@
-import { BaseParameters, SearchEngine } from "../search_engine.ts";
-
 export type GooglePlayParameters = {
+  engine: "google_play";
   q?: string;
   gl?: string;
   hl?: string;
@@ -15,10 +14,3 @@ export type GooglePlayParameters = {
   see_more_token?: string;
   next_page_token?: string;
 };
-
-export class GooglePlay
-  extends SearchEngine<GooglePlayParameters & BaseParameters> {
-  constructor(apiKey: string, timeout?: number) {
-    super("google_play", apiKey, timeout);
-  }
-}

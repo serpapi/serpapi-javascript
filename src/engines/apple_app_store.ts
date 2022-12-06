@@ -1,6 +1,5 @@
-import { BaseParameters, SearchEngine } from "../search_engine.ts";
-
 export type AppleAppStoreParameters = {
+  engine: "apple_app_store";
   term: string;
   country?: string;
   lang?: string;
@@ -9,10 +8,3 @@ export type AppleAppStoreParameters = {
   disallow_explicit?: boolean;
   property?: string;
 };
-
-export class AppleAppStore
-  extends SearchEngine<AppleAppStoreParameters & BaseParameters> {
-  constructor(apiKey: string, timeout?: number) {
-    super("apple_app_store", apiKey, timeout);
-  }
-}

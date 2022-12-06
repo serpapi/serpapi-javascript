@@ -33,24 +33,24 @@ const BASE_URL = Deno.env.get("ENV_TYPE") === "local"
   : "https://serpapi.com";
 
 describe("validateApiKey", () => {
-  it("with no apiKey", () => {
+  it("with no api_key", () => {
     assertThrows(() => validateApiKey(""), MissingApiKeyError);
     assertThrows(() => validateApiKey(undefined), MissingApiKeyError);
   });
 
-  it("with apiKey set in config", () => {
-    config.apiKey = "api_key";
+  it("with api_key set in config", () => {
+    config.api_key = "api_key";
     assertThrows(() => validateApiKey(""), MissingApiKeyError);
     assertEquals(validateApiKey(undefined), "api_key");
   });
 
-  it("with empty apiKey set in config", () => {
-    config.apiKey = "";
+  it("with empty api_key set in config", () => {
+    config.api_key = "";
     assertThrows(() => validateApiKey(""), MissingApiKeyError);
     assertThrows(() => validateApiKey(undefined), MissingApiKeyError);
   });
 
-  it("with apiKey", () => {
+  it("with api_key", () => {
     assertEquals(validateApiKey("  "), "  ");
     assertEquals(validateApiKey("asd"), "asd");
   });

@@ -1,6 +1,5 @@
-import { BaseParameters, SearchEngine } from "../search_engine.ts";
-
 export type YandexImagesParameters = {
+  engine: "yandex_images";
   text: string;
   yandex_domain?: string;
   width?: string;
@@ -16,10 +15,3 @@ export type YandexImagesParameters = {
   crop_id?: string;
   p?: string;
 };
-
-export class YandexImages
-  extends SearchEngine<YandexImagesParameters & BaseParameters> {
-  constructor(apiKey: string, timeout?: number) {
-    super("yandex_images", apiKey, timeout);
-  }
-}

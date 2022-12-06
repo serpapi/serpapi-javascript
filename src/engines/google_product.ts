@@ -1,6 +1,5 @@
-import { BaseParameters, SearchEngine } from "../search_engine.ts";
-
 export type GoogleProductParameters = {
+  engine: "google_product";
   product_id: string;
   location?: string;
   uule?: string;
@@ -14,10 +13,3 @@ export type GoogleProductParameters = {
   reviews?: string;
   filter?: string;
 };
-
-export class GoogleProduct
-  extends SearchEngine<GoogleProductParameters & BaseParameters> {
-  constructor(apiKey: string, timeout?: number) {
-    super("google_product", apiKey, timeout);
-  }
-}

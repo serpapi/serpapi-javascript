@@ -1,6 +1,5 @@
-import { BaseParameters, SearchEngine } from "../search_engine.ts";
-
 export type GoogleTrendsParameters = {
+  engine: "google_trends";
   q: string;
   geo?: string;
   region?: string;
@@ -11,10 +10,3 @@ export type GoogleTrendsParameters = {
   date?: string;
   csv?: string;
 };
-
-export class GoogleTrends
-  extends SearchEngine<GoogleTrendsParameters & BaseParameters> {
-  constructor(apiKey: string, timeout?: number) {
-    super("google_trends", apiKey, timeout);
-  }
-}

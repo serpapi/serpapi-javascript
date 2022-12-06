@@ -7,26 +7,17 @@ migrate over to the `serpapi` npm package.
 
 ## Changed
 
-- Search engine class names are simplified.
+- Use functions rather than classes to access SerpApi. The `engine` parameter is
+  used to specify the target search engine.
   ```js
   // ❌ Previous way.
+  import { GoogleSearch } from "google-search-results-nodejs";
   const engine = new GoogleSearch(API_KEY);
+  engine.json(...);
 
-  // ✅ New way, shorter class names.
-  const engine = new Google(API_KEY);
-  ```
-  - You may find the full list of classes by looking at
-    [`src/mod.ts`](/src/mod.ts).
-  - If you're using TypeScript, you can rely on your IDE's intellisense to see
-    the supported classes.
-
-- Search engine classes require an API key during instantiation.
-  ```js
-  // ❌ Previous way, API key could be omitted.
-  const engine = new GoogleSearch();
-
-  // ✅ New way, API key is required.
-  const engine = new Google(API_KEY);
+  // ✅ New way, import and use functions directly.
+  import { json } from "serpapi";
+  json({ engine: "google", api_key: API_KEY, ... })
   ```
 
 - The `search_archive` method is replaced by `jsonBySearchId` and
@@ -36,10 +27,10 @@ migrate over to the `serpapi` npm package.
   engine.search_archive(searchId, console.log);
 
   // ✅ New way, use `jsonBySearchId`.
-  engine.jsonBySearchId(searchId, console.log);
+  jsonBySearchId({ id: searchId, api_key: API_KEY }, console.log);
 
   // ✅ New way, use `htmlBySearchId` if you want the HTML result.
-  engine.htmlBySearchId(searchId, console.log);
+  htmlBySearchId({ id: searchId, api_key: API_KEY }, console.log);
   ```
 
 - The `account` and `location` methods are now `getAccount` and `getLocations`.
@@ -51,16 +42,15 @@ migrate over to the `serpapi` npm package.
 
   // ✅ New way, functions not tied to a class.
   import { getAccount, getLocations } from "serpapi";
-  getAccount(API_KEY, console.log);
+  getAccount({ api_key: API_KEY }, console.log);
   getLocations({ q: "Austin" }, console.log);
   ```
 
 ## Removed
 
-- The `buildUrl`, `execute` and `search` methods are removed as public methods.
-  Use `json` and `html` instead.
-- The `SerpApiSearch` class is removed as a public class in favor of individual
-  search engine classes.
+- The `buildUrl`, `execute` and `search` methods are removed. Use `json` and
+  `html` functions instead.
+- The `SerpApiSearch` class is removed as a public class.
 
 ## Fixed
 
@@ -71,8 +61,7 @@ migrate over to the `serpapi` npm package.
   engine.json({ q: "coffee", api_key: undefined });
 
   // ✅ Now, no error is thrown.
-  const engine = new Google(API_KEY);
-  engine.json({ q: "coffee", api_key: undefined });
+  json({ engine: "google", q: "coffee", api_key: undefined });
   ```
 
 ## Added
@@ -83,16 +72,14 @@ migrate over to the `serpapi` npm package.
   const google = new Google(API_KEY);
   const json = await google.json({ q: "coffee", location: "Austin, Texas" });
   ```
-- The API key and timeout duration can be modified by directly modifying the
-  `apiKey` or `timeout` instance variables of the object. For example,
+- `config` object to configure global `api_key` and `timeout` values.
   ```js
-  const google = new Google(API_KEY);
-  google.apiKey = "new_api_key";
-  google.timeout = 20000; // 20 seconds
+  import { config } from "serpapi";
+  config.api_key = "new_api_key";
+  config.timeout = 20000; // 20 seconds
   ```
 - Error classes (`MissingApiKeyError` and `InvalidTimeoutError`).
   ```js
-  const google = new Google(""); // Throws `MissingApiKeyError`
-  google.apiKey = ""; // Throws `MissingApiKeyError`
-  google.timeout = 0; // Throws `InvalidTimeoutError`
+  json({ engine: "google", api_key: "" }); // Throws `MissingApiKeyError`
+  getAccount({ api_key: API_KEY, timeout: 0 }); // Throws `InvalidTimeoutError`
   ```

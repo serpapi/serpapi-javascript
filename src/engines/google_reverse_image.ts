@@ -1,6 +1,5 @@
-import { BaseParameters, SearchEngine } from "../search_engine.ts";
-
 export type GoogleReverseImageParameters = {
+  engine: "google_reverse_image";
   q?: string;
   location?: string;
   uule?: string;
@@ -11,10 +10,3 @@ export type GoogleReverseImageParameters = {
   start?: number;
   image_url: string;
 };
-
-export class GoogleReverseImage
-  extends SearchEngine<GoogleReverseImageParameters & BaseParameters> {
-  constructor(apiKey: string, timeout?: number) {
-    super("google_reverse_image", apiKey, timeout);
-  }
-}

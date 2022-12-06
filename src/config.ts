@@ -1,8 +1,8 @@
 export type Config = {
-  apiKey: string | null;
+  api_key: string | null;
   timeout: number;
 };
 export const config: Config = {
-  apiKey: null,
+  api_key: null,
   timeout: 60000,
 };

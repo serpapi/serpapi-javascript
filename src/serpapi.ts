@@ -1,46 +1,164 @@
-import { execute, validateApiKey, validateTimeout } from "./utils.ts";
-
-export type AccountApiParams = {
-  api_key?: string;
-  timeout?: number;
-};
-export type AccountInformation = {
-  account_email: string;
-  account_id: string;
-  account_rate_limit_per_hour: number;
-  api_key: string;
-  extra_credits: number;
-  last_hour_searches: number;
-  plan_id: string;
-  plan_name: string;
-  plan_searches_left: number;
-  searches_per_month: number;
-  this_hour_searches: number;
-  this_month_usage: number;
-  total_searches_left: number;
-};
-
-export type LocationsApiParams = {
-  q?: string;
-  limit?: number;
-  timeout?: number;
-};
-export type Location = {
-  canonical_name: string;
-  country_code: string;
-  google_id: number;
-  google_parent_id: number;
-  gps: [number, number];
-  id: string;
-  keys: string[];
-  name: string;
-  reach: number;
-  target_type: string;
-};
-export type Locations = Location[];
+import {
+  AccountApiParams,
+  AccountInformation,
+  BaseResponse,
+  GetBySearchIdParameters,
+  Locations,
+  LocationsApiParams,
+  SearchParameters,
+} from "./types.ts";
+import {
+  _internals,
+  execute,
+  validateApiKey,
+  validateTimeout,
+} from "./utils.ts";
 
 const ACCOUNT_PATH = "/account";
 const LOCATIONS_PATH = "/locations.json";
+const SEARCH_PATH = "/search";
+const SEARCH_ARCHIVE_PATH = `/searches`;
+
+/**
+ * Get a JSON response based on search parameters.
+ * - Accepts an optional callback.
+ *
+ * ```ts
+ * // async/await
+ * const response = await json({ engine: "google", api_key: API_KEY, q: "coffee" });
+ *
+ * // callback
+ * json({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
+ * ```
+ */
+export async function json<
+  P extends SearchParameters,
+  R extends BaseResponse<P> = BaseResponse<P>,
+>(
+  parameters: P,
+  callback?: (json: R) => void,
+) {
+  const key = validateApiKey(parameters.api_key, true);
+  const timeout = validateTimeout(parameters.timeout);
+  const response = await _internals.execute<P>(
+    SEARCH_PATH,
+    {
+      ...parameters,
+      api_key: key,
+      output: "json",
+    },
+    timeout,
+  );
+  const json = await response.json() as R;
+  callback?.(json);
+  return json;
+}
+
+/**
+ * Get a HTML response based on search parameters.
+ * - Accepts an optional callback.
+ * - Responds with a JSON string if the search request hasn't completed.
+ *
+ * ```ts
+ * // async/await
+ * const response = await html({ engine: "google", api_key: API_KEY, q: "coffee" });
+ *
+ * // callback
+ * html({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
+ * ```
+ */
+export async function html<P extends SearchParameters>(
+  parameters: P,
+  callback?: (html: string) => void,
+) {
+  const key = validateApiKey(parameters.api_key, true);
+  const timeout = validateTimeout(parameters.timeout);
+  const response = await _internals.execute<P>(SEARCH_PATH, {
+    ...parameters,
+    api_key: key,
+    output: "html",
+  }, timeout);
+  const html = await response.text();
+  callback?.(html);
+  return html;
+}
+
+/**
+ * Get a JSON response given a search ID.
+ * - This search ID can be obtained from the `search_metadata.id` key in the response.
+ * - Typically used together with the `async` parameter.
+ * - Accepts an optional callback.
+ *
+ * ```ts
+ * const request = await json({ engine: "google", api_key: API_KEY, async: true, q: "coffee" });
+ * const id = request.search_metadata.id;
+ * await delay(1000); // wait for the request to be processed.
+ *
+ * // async/await
+ * const response = await jsonBySearchId({ id });
+ *
+ * // callback
+ * jsonBySearchId({ id }, console.log);
+ * ```
+ */
+export async function jsonBySearchId<
+  R extends BaseResponse = BaseResponse<SearchParameters>,
+>(
+  parameters: GetBySearchIdParameters,
+  callback?: (json: R) => void,
+) {
+  const key = validateApiKey(parameters.api_key);
+  const timeout = validateTimeout(parameters.timeout);
+  const response = await _internals.execute(
+    `${SEARCH_ARCHIVE_PATH}/${parameters.id}`,
+    {
+      api_key: key,
+      output: "json",
+    },
+    timeout,
+  );
+  const json = await response.json() as R;
+  callback?.(json);
+  return json;
+}
+
+/**
+ * Get a HTML response given a search ID.
+ * - This search ID can be obtained from the `search_metadata.id` key in the response.
+ * - Typically used together with the `async` parameter.
+ * - Accepts an optional callback.
+ * - Responds with a JSON if the search request hasn't completed.
+ *
+ * ```ts
+ * const request = await json({ engine: "google", api_key: API_KEY, async: true, q: "coffee" });
+ * const id = request.search_metadata.id;
+ * await delay(1000); // wait for the request to be processed.
+ *
+ * // async/await
+ * const response = await htmlBySearchId({ id, api_key: API_KEY });
+ *
+ * // callback
+ * htmlBySearchId({ id, api_key: API_KEY}, console.log);
+ * ```
+ */
+export async function htmlBySearchId(
+  parameters: GetBySearchIdParameters,
+  callback?: (html: string) => void,
+) {
+  const key = validateApiKey(parameters.api_key);
+  const timeout = validateTimeout(parameters.timeout);
+  const response = await _internals.execute(
+    `${SEARCH_ARCHIVE_PATH}/${parameters.id}`,
+    {
+      api_key: key,
+      output: "html",
+    },
+    timeout,
+  );
+  const html = await response.text();
+  callback?.(html);
+  return html;
+}
 
 /**
  * Get account information of an API key.
@@ -58,10 +176,10 @@ export async function getAccount(
   parameters: AccountApiParams = {},
   callback?: (info: AccountInformation) => void,
 ) {
-  const apiKey = validateApiKey(parameters.api_key);
+  const key = validateApiKey(parameters.api_key);
   const timeout = validateTimeout(parameters.timeout);
   const response = await execute(ACCOUNT_PATH, {
-    api_key: apiKey,
+    api_key: key,
   }, timeout);
   const info = await response.json() as AccountInformation;
   callback?.(info);
@@ -69,7 +187,7 @@ export async function getAccount(
 }
 
 /**
- * Get supported locations.
+ * Get supported locations. Does not require an API key.
  * https://serpapi.com/locations-api
  *
  * ```ts

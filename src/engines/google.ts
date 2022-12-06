@@ -1,6 +1,5 @@
-import { BaseParameters, SearchEngine } from "../search_engine.ts";
-
 export type GoogleParameters = {
+  engine: "google";
   q: string;
   location?: string;
   uule?: string;
@@ -30,9 +29,3 @@ export type GoogleParameters = {
   num?: string;
   ijn?: string;
 };
-
-export class Google extends SearchEngine<GoogleParameters & BaseParameters> {
-  constructor(apiKey: string, timeout?: number) {
-    super("google", apiKey, timeout);
-  }
-}

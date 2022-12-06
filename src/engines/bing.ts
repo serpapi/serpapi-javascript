@@ -1,6 +1,5 @@
-import { BaseParameters, SearchEngine } from "../search_engine.ts";
-
 export type BingParameters = {
+  engine: "bing";
   q: string;
   location?: string;
   lat?: string;
@@ -12,9 +11,3 @@ export type BingParameters = {
   safeSearch?: string;
   filters?: string;
 };
-
-export class Bing extends SearchEngine<BingParameters & BaseParameters> {
-  constructor(apiKey: string, timeout?: number) {
-    super("bing", apiKey, timeout);
-  }
-}

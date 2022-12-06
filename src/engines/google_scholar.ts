@@ -1,6 +1,5 @@
-import { BaseParameters, SearchEngine } from "../search_engine.ts";
-
 export type GoogleScholarParameters = {
+  engine: "google_scholar";
   q: string;
   cites?: string;
   as_ylo?: string;
@@ -16,10 +15,3 @@ export type GoogleScholarParameters = {
   filter?: string;
   as_vis?: string;
 };
-
-export class GoogleScholar
-  extends SearchEngine<GoogleScholarParameters & BaseParameters> {
-  constructor(apiKey: string, timeout?: number) {
-    super("google_scholar", apiKey, timeout);
-  }
-}
