@@ -17,8 +17,8 @@ import { _internals } from "../src/utils.ts";
 import { config } from "../src/config.ts";
 
 configSync({ export: true });
-const SERPAPI_KEY = Deno.env.get("SERPAPI_KEY") ?? "";
-const HAS_API_KEY = SERPAPI_KEY.length > 0;
+const SERPAPI_TEST_KEY = Deno.env.get("SERPAPI_TEST_KEY") ?? "";
+const HAS_API_KEY = SERPAPI_TEST_KEY.length > 0;
 const BASE_URL = Deno.env.get("ENV_TYPE") === "local"
   ? "http://localhost:3000"
   : "https://serpapi.com";
@@ -55,7 +55,7 @@ describe("getAccount", {
   it("with invalid timeout", {
     ignore: !HAS_API_KEY,
   }, () => {
-    config.api_key = SERPAPI_KEY;
+    config.api_key = SERPAPI_TEST_KEY;
     assertRejects(
       async () => await getAccount({ timeout: 0 }),
       InvalidTimeoutError,
@@ -69,7 +69,10 @@ describe("getAccount", {
   it("async/await", {
     ignore: !HAS_API_KEY,
   }, async () => {
-    const info = await getAccount({ api_key: SERPAPI_KEY, timeout: 10000 });
+    const info = await getAccount({
+      api_key: SERPAPI_TEST_KEY,
+      timeout: 10000,
+    });
     assertEquals(Object.keys(info).sort(), [
       "account_email",
       "account_id",
@@ -91,7 +94,7 @@ describe("getAccount", {
     ignore: !HAS_API_KEY,
   }, async () => {
     const info = await new Promise<Awaited<ReturnType<typeof getAccount>>>(
-      (res) => getAccount({ api_key: SERPAPI_KEY, timeout: 10000 }, res),
+      (res) => getAccount({ api_key: SERPAPI_TEST_KEY, timeout: 10000 }, res),
     );
     assertEquals(Object.keys(info).sort(), [
       "account_email",
@@ -113,7 +116,7 @@ describe("getAccount", {
   it("rely on global config", {
     ignore: !HAS_API_KEY,
   }, async () => {
-    config.api_key = SERPAPI_KEY;
+    config.api_key = SERPAPI_TEST_KEY;
     const info = await getAccount();
     assertEquals(Object.keys(info).sort(), [
       "account_email",

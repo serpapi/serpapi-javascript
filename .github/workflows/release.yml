@@ -25,7 +25,7 @@ jobs:
 
       - name: Run tests
         env:
-          SERPAPI_KEY: ${{ secrets.API_KEY }}
+          SERPAPI_TEST_KEY: ${{ secrets.SERPAPI_TEST_KEY }}
         run: deno task test:ci
       
       - name: Get tag version

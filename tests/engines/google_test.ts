@@ -31,8 +31,8 @@ import {
 import { config } from "../../src/config.ts";
 
 configSync({ export: true });
-const SERPAPI_KEY = Deno.env.get("SERPAPI_KEY") ?? "";
-const HAS_API_KEY = SERPAPI_KEY.length > 0;
+const SERPAPI_TEST_KEY = Deno.env.get("SERPAPI_TEST_KEY") ?? "";
+const HAS_API_KEY = SERPAPI_TEST_KEY.length > 0;
 const BASE_URL = Deno.env.get("ENV_TYPE") === "local"
   ? "http://localhost:3000"
   : "https://serpapi.com";
@@ -199,7 +199,7 @@ describe("google", {
     await t.step("initiate async request", async () => {
       const response = await getJson({
         engine,
-        api_key: SERPAPI_KEY,
+        api_key: SERPAPI_TEST_KEY,
         async: true,
         no_cache: true, // Ensure a new request is sent so we don't get cached results
         q: "apple",
@@ -219,7 +219,7 @@ describe("google", {
     await t.step("getJsonBySearchId (async/await)", async () => {
       let json;
       while (true) {
-        json = await getJsonBySearchId({ id, api_key: SERPAPI_KEY });
+        json = await getJsonBySearchId({ id, api_key: SERPAPI_TEST_KEY });
         const status = json["search_metadata"]["status"];
         if (status === "Processing") {
           await delay(500);
@@ -242,7 +242,7 @@ describe("google", {
       while (true) {
         json = await new Promise<
           Awaited<ReturnType<typeof getJsonBySearchId>>
-        >((res) => getJsonBySearchId({ id, api_key: SERPAPI_KEY }, res));
+        >((res) => getJsonBySearchId({ id, api_key: SERPAPI_TEST_KEY }, res));
         const status = json["search_metadata"]["status"];
         if (status === "Processing") {
           await delay(500);
@@ -262,7 +262,7 @@ describe("google", {
 
     await t.step("getJsonBySearchId with api_key from config", async () => {
       let json;
-      config.api_key = SERPAPI_KEY;
+      config.api_key = SERPAPI_TEST_KEY;
       while (true) {
         json = await getJsonBySearchId({ id });
         const status = json["search_metadata"]["status"];
@@ -285,7 +285,7 @@ describe("google", {
     await t.step("getHtmlBySearchId (async/await)", async () => {
       let html;
       while (true) {
-        html = await getHtmlBySearchId({ id, api_key: SERPAPI_KEY });
+        html = await getHtmlBySearchId({ id, api_key: SERPAPI_TEST_KEY });
         try {
           JSON.parse(html);
         } catch { // If parsing fails, it means the request has completed
@@ -304,7 +304,7 @@ describe("google", {
       while (true) {
         html = await new Promise<
           Awaited<ReturnType<typeof getHtmlBySearchId>>
-        >((res) => getHtmlBySearchId({ id, api_key: SERPAPI_KEY }, res));
+        >((res) => getHtmlBySearchId({ id, api_key: SERPAPI_TEST_KEY }, res));
         try {
           JSON.parse(html);
         } catch { // If parsing fails, it means the request has completed
