@@ -16,21 +16,21 @@ migrate over to the `serpapi` npm package.
   engine.json(...);
 
   // ✅ New way, import and use functions directly.
-  import { json } from "serpapi";
-  json({ engine: "google", api_key: API_KEY, ... })
+  import { getJson } from "serpapi";
+  getJson({ engine: "google", api_key: API_KEY, ... })
   ```
 
-- The `search_archive` method is replaced by `jsonBySearchId` and
-  `htmlBySearchId`.
+- The `search_archive` method is replaced by `getJsonBySearchId` and
+  `getHtmlBySearchId`.
   ```js
   // ❌ Previous way, only supported JSON output.
   engine.search_archive(searchId, console.log);
 
-  // ✅ New way, use `jsonBySearchId`.
-  jsonBySearchId({ id: searchId, api_key: API_KEY }, console.log);
+  // ✅ New way, use `getJsonBySearchId`.
+  getJsonBySearchId({ id: searchId, api_key: API_KEY }, console.log);
 
-  // ✅ New way, use `htmlBySearchId` if you want the HTML result.
-  htmlBySearchId({ id: searchId, api_key: API_KEY }, console.log);
+  // ✅ New way, use `getHtmlBySearchId` if you want the HTML result.
+  getHtmlBySearchId({ id: searchId, api_key: API_KEY }, console.log);
   ```
 
 - The `account` and `location` methods are now `getAccount` and `getLocations`.
@@ -61,7 +61,7 @@ migrate over to the `serpapi` npm package.
   engine.json({ q: "coffee", api_key: undefined });
 
   // ✅ Now, no error is thrown.
-  json({ engine: "google", q: "coffee", api_key: undefined });
+  getJson({ engine: "google", q: "coffee", api_key: undefined });
   ```
 
 ## Added
@@ -69,8 +69,7 @@ migrate over to the `serpapi` npm package.
 - TypeScript types for supported parameters.
 - First-class Promises support.
   ```js
-  const google = new Google(API_KEY);
-  const json = await google.json({ q: "coffee", location: "Austin, Texas" });
+  const json = await getJson({ engine: "google", q: "coffee" });
   ```
 - `config` object to configure global `api_key` and `timeout` values.
   ```js
@@ -80,6 +79,6 @@ migrate over to the `serpapi` npm package.
   ```
 - Error classes (`MissingApiKeyError` and `InvalidTimeoutError`).
   ```js
-  json({ engine: "google", api_key: "" }); // Throws `MissingApiKeyError`
+  getJson({ engine: "google", api_key: "" }); // Throws `MissingApiKeyError`
   getAccount({ api_key: API_KEY, timeout: 0 }); // Throws `InvalidTimeoutError`
   ```

@@ -25,13 +25,13 @@ const SEARCH_ARCHIVE_PATH = `/searches`;
  *
  * ```ts
  * // async/await
- * const response = await json({ engine: "google", api_key: API_KEY, q: "coffee" });
+ * const json = await getJson({ engine: "google", api_key: API_KEY, q: "coffee" });
  *
  * // callback
- * json({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
+ * getJson({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
  * ```
  */
-export async function json<
+export async function getJson<
   P extends SearchParameters,
   R extends BaseResponse<P> = BaseResponse<P>,
 >(
@@ -61,13 +61,13 @@ export async function json<
  *
  * ```ts
  * // async/await
- * const response = await html({ engine: "google", api_key: API_KEY, q: "coffee" });
+ * const html = await getHtml({ engine: "google", api_key: API_KEY, q: "coffee" });
  *
  * // callback
- * html({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
+ * getHtml({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
  * ```
  */
-export async function html<P extends SearchParameters>(
+export async function getHtml<P extends SearchParameters>(
   parameters: P,
   callback?: (html: string) => void,
 ) {
@@ -90,18 +90,18 @@ export async function html<P extends SearchParameters>(
  * - Accepts an optional callback.
  *
  * ```ts
- * const request = await json({ engine: "google", api_key: API_KEY, async: true, q: "coffee" });
- * const id = request.search_metadata.id;
+ * const response = await getJson({ engine: "google", api_key: API_KEY, async: true, q: "coffee" });
+ * const id = response.search_metadata.id;
  * await delay(1000); // wait for the request to be processed.
  *
  * // async/await
- * const response = await jsonBySearchId({ id });
+ * const json = await getJsonBySearchId({ id });
  *
  * // callback
- * jsonBySearchId({ id }, console.log);
+ * getJsonBySearchId({ id }, console.log);
  * ```
  */
-export async function jsonBySearchId<
+export async function getJsonBySearchId<
   R extends BaseResponse = BaseResponse<SearchParameters>,
 >(
   parameters: GetBySearchIdParameters,
@@ -130,18 +130,18 @@ export async function jsonBySearchId<
  * - Responds with a JSON if the search request hasn't completed.
  *
  * ```ts
- * const request = await json({ engine: "google", api_key: API_KEY, async: true, q: "coffee" });
- * const id = request.search_metadata.id;
+ * const response = await getJson({ engine: "google", api_key: API_KEY, async: true, q: "coffee" });
+ * const id = response.search_metadata.id;
  * await delay(1000); // wait for the request to be processed.
  *
  * // async/await
- * const response = await htmlBySearchId({ id, api_key: API_KEY });
+ * const html = await getHtmlBySearchId({ id, api_key: API_KEY });
  *
  * // callback
- * htmlBySearchId({ id, api_key: API_KEY}, console.log);
+ * getHtmlBySearchId({ id, api_key: API_KEY}, console.log);
  * ```
  */
-export async function htmlBySearchId(
+export async function getHtmlBySearchId(
   parameters: GetBySearchIdParameters,
   callback?: (html: string) => void,
 ) {

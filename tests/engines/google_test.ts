@@ -23,10 +23,10 @@ import {
 import { _internals } from "../../src/utils.ts";
 import { MissingApiKeyError } from "../../src/errors.ts";
 import {
-  html,
-  htmlBySearchId,
-  json,
-  jsonBySearchId,
+  getHtml,
+  getHtmlBySearchId,
+  getJson,
+  getJsonBySearchId,
 } from "../../src/serpapi.ts";
 import { config } from "../../src/config.ts";
 
@@ -52,8 +52,8 @@ describe("google", {
     urlStub.restore();
   });
 
-  it("json for an unmetered query (async/await)", async () => {
-    const response = await json({
+  it("getJson for an unmetered query (async/await)", async () => {
+    const response = await getJson({
       engine,
       api_key: undefined, // undefined to support the "coffee" unmetered query
       q: "coffee",
@@ -68,10 +68,10 @@ describe("google", {
     ]);
   });
 
-  it("json for an unmetered query (callback)", async () => {
-    const response = await new Promise<Awaited<ReturnType<typeof json>>>(
+  it("getJson for an unmetered query (callback)", async () => {
+    const response = await new Promise<Awaited<ReturnType<typeof getJson>>>(
       (res) =>
-        json({
+        getJson({
           engine,
           api_key: undefined,
           q: "coffee",
@@ -87,11 +87,11 @@ describe("google", {
     ]);
   });
 
-  it("json with api_key param overrides api key from config", async () => {
+  it("getJson with api_key param overrides api key from config", async () => {
     const executeSpy = spy(_internals, "execute");
     config.api_key = "test_initial_api_key";
     try {
-      await json({
+      await getJson({
         engine,
         api_key: "test_override_api_key",
         q: "coffee",
@@ -108,17 +108,17 @@ describe("google", {
     });
   });
 
-  it("json with blank api_key param", () => {
+  it("getJson with blank api_key param", () => {
     assertRejects(async () =>
-      await json({
+      await getJson({
         engine,
         api_key: "",
         q: "coffee",
       }), MissingApiKeyError);
   });
 
-  it("html for an unmetered query (async/await)", async () => {
-    const response = await html({
+  it("getHtml for an unmetered query (async/await)", async () => {
+    const response = await getHtml({
       engine,
       api_key: undefined,
       q: "coffee",
@@ -129,10 +129,10 @@ describe("google", {
     assertStringIncludes(response, "</html>");
   });
 
-  it("html for an unmetered query (callback)", async () => {
-    const response = await new Promise<Awaited<ReturnType<typeof html>>>(
+  it("getHtml for an unmetered query (callback)", async () => {
+    const response = await new Promise<Awaited<ReturnType<typeof getHtml>>>(
       (res) =>
-        html({
+        getHtml({
           engine,
           api_key: undefined,
           q: "coffee",
@@ -144,11 +144,11 @@ describe("google", {
     assertStringIncludes(response, "</html>");
   });
 
-  it("html with api_key param overrides api key from config", async () => {
+  it("getHtml with api_key param overrides api key from config", async () => {
     const executeSpy = spy(_internals, "execute");
     config.api_key = "test_initial_api_key";
     try {
-      await html({
+      await getHtml({
         engine,
         api_key: "test_override_api_key",
         q: "coffee",
@@ -165,17 +165,17 @@ describe("google", {
     });
   });
 
-  it("html with blank api_key param", () => {
+  it("getHtml with blank api_key param", () => {
     assertRejects(async () =>
-      await html({
+      await getHtml({
         engine,
         api_key: "",
         q: "coffee",
       }), MissingApiKeyError);
   });
 
-  it("html with async parameter returns json", async () => {
-    const response = await html({
+  it("getHtml with async parameter returns json", async () => {
+    const response = await getHtml({
       engine,
       api_key: undefined,
       async: true,
@@ -190,15 +190,16 @@ describe("google", {
     assertEquals(json["search_metadata"]["status"], "Processing");
   });
 
-  // (json|html)BySearchId always require a valid API key even for unmetered queries
-  it("(json|html)BySearchId", {
+  // get(Json|Html)BySearchId always require a valid API key even for unmetered queries
+  it("get(Json|Html)BySearchId", {
     ignore: !HAS_API_KEY,
   }, async (t) => {
     let id: string;
 
     await t.step("initiate async request", async () => {
-      const response = await json({
+      const response = await getJson({
         engine,
+        api_key: SERPAPI_KEY,
         async: true,
         no_cache: true, // Ensure a new request is sent so we don't get cached results
         q: "apple",
@@ -215,10 +216,10 @@ describe("google", {
       assertEquals(status, "Processing");
     });
 
-    await t.step("jsonBySearchId (async/await)", async () => {
+    await t.step("getJsonBySearchId (async/await)", async () => {
       let json;
       while (true) {
-        json = await jsonBySearchId({ id, api_key: SERPAPI_KEY });
+        json = await getJsonBySearchId({ id, api_key: SERPAPI_KEY });
         const status = json["search_metadata"]["status"];
         if (status === "Processing") {
           await delay(500);
@@ -236,12 +237,12 @@ describe("google", {
       ]);
     });
 
-    await t.step("jsonBySearchId (callback)", async () => {
+    await t.step("getJsonBySearchId (callback)", async () => {
       let json;
       while (true) {
         json = await new Promise<
-          Awaited<ReturnType<typeof jsonBySearchId>>
-        >((res) => jsonBySearchId({ id, api_key: SERPAPI_KEY }, res));
+          Awaited<ReturnType<typeof getJsonBySearchId>>
+        >((res) => getJsonBySearchId({ id, api_key: SERPAPI_KEY }, res));
         const status = json["search_metadata"]["status"];
         if (status === "Processing") {
           await delay(500);
@@ -259,11 +260,11 @@ describe("google", {
       ]);
     });
 
-    await t.step("jsonBySearchId with api_key from config", async () => {
+    await t.step("getJsonBySearchId with api_key from config", async () => {
       let json;
       config.api_key = SERPAPI_KEY;
       while (true) {
-        json = await jsonBySearchId({ id });
+        json = await getJsonBySearchId({ id });
         const status = json["search_metadata"]["status"];
         if (status === "Processing") {
           await delay(500);
@@ -281,10 +282,10 @@ describe("google", {
       ]);
     });
 
-    await t.step("htmlBySearchId (async/await)", async () => {
+    await t.step("getHtmlBySearchId (async/await)", async () => {
       let html;
       while (true) {
-        html = await htmlBySearchId({ id, api_key: SERPAPI_KEY });
+        html = await getHtmlBySearchId({ id, api_key: SERPAPI_KEY });
         try {
           JSON.parse(html);
         } catch { // If parsing fails, it means the request has completed
@@ -298,12 +299,12 @@ describe("google", {
       assertStringIncludes(html, "</html>");
     });
 
-    await t.step("htmlBySearchId (callback)", async () => {
+    await t.step("getHtmlBySearchId (callback)", async () => {
       let html;
       while (true) {
         html = await new Promise<
-          Awaited<ReturnType<typeof htmlBySearchId>>
-        >((res) => htmlBySearchId({ id, api_key: SERPAPI_KEY }, res));
+          Awaited<ReturnType<typeof getHtmlBySearchId>>
+        >((res) => getHtmlBySearchId({ id, api_key: SERPAPI_KEY }, res));
         try {
           JSON.parse(html);
         } catch { // If parsing fails, it means the request has completed

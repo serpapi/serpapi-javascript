@@ -16,11 +16,11 @@ export type {
 } from "./types.ts";
 export {
   getAccount,
+  getHtml,
+  getHtmlBySearchId,
+  getJson,
+  getJsonBySearchId,
   getLocations,
-  html,
-  htmlBySearchId,
-  json,
-  jsonBySearchId,
 } from "./serpapi.ts";
 
 export type { GoogleParameters } from "./engines/google.ts";
