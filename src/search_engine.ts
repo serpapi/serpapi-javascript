@@ -112,7 +112,7 @@ export class SearchEngine<
   }
 
   /**
-   * API key value obtained from https://serpapi.com/dashboard.
+   * API key value obtained from https://serpapi.com/manage-api-key.
    * - Can be modified after instantiation.
    * - Can be overridden when calling `json` and `html` methods.
    *

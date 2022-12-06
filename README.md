@@ -17,7 +17,7 @@ npm install serpapi
 
 ```js
 import { Google } from "serpapi";
-const google = new Google(API_KEY); // Get your API_KEY from https://serpapi.com/dashboard
+const google = new Google(API_KEY); // Get your API_KEY from https://serpapi.com/manage-api-key
 const json = await google.json({ q: "coffee", location: "Austin, Texas" });
 ```
 
@@ -25,7 +25,7 @@ const json = await google.json({ q: "coffee", location: "Austin, Texas" });
 
 ```ts
 import { Google } from "https://deno.land/x/serpapi/mod.ts";
-const google = new Google(API_KEY); // Get your API_KEY from https://serpapi.com/dashboard
+const google = new Google(API_KEY); // Get your API_KEY from https://serpapi.com/manage-api-key
 const json = await google.json({ q: "coffee", location: "Austin, Texas" });
 ```
 
@@ -160,7 +160,7 @@ engine.htmlBySearchId(searchId, console.log);
   </h3>
 </summary>
 
-API key value obtained from https://serpapi.com/dashboard.
+API key value obtained from https://serpapi.com/manage-api-key.
 
 - Can be modified after instantiation.
 - Can be overridden when calling `json` and `html` methods.
