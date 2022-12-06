@@ -11,9 +11,10 @@ import {
   assertRejects,
 } from "https://deno.land/std@0.166.0/testing/asserts.ts";
 import { Stub, stub } from "https://deno.land/std@0.166.0/testing/mock.ts";
-import { MissingApiKeyError } from "../src/errors.ts";
+import { InvalidTimeoutError, MissingApiKeyError } from "../src/errors.ts";
 import { getAccount, getLocations } from "../src/serpapi.ts";
 import { _internals } from "../src/utils.ts";
+import { config } from "../src/config.ts";
 
 configSync({ export: true });
 const SERPAPI_KEY = Deno.env.get("SERPAPI_KEY") ?? "";
@@ -38,15 +39,37 @@ describe("getAccount", {
 
   it("with no apiKey", () => {
     assertRejects(
-      async () => await getAccount(""),
+      async () => await getAccount({ api_key: "" }),
       MissingApiKeyError,
+    );
+    assertRejects(
+      async () => await getAccount({}),
+      MissingApiKeyError,
+    );
+    assertRejects(
+      async () => await getAccount(),
+      MissingApiKeyError,
+    );
+  });
+
+  it("with invalid timeout", {
+    ignore: !HAS_API_KEY,
+  }, () => {
+    config.apiKey = SERPAPI_KEY;
+    assertRejects(
+      async () => await getAccount({ timeout: 0 }),
+      InvalidTimeoutError,
+    );
+    assertRejects(
+      async () => await getAccount({ timeout: -10 }),
+      InvalidTimeoutError,
     );
   });
 
   it("async/await", {
     ignore: !HAS_API_KEY,
   }, async () => {
-    const info = await getAccount(SERPAPI_KEY);
+    const info = await getAccount({ api_key: SERPAPI_KEY, timeout: 10000 });
     assertEquals(Object.keys(info).sort(), [
       "account_email",
       "account_id",
@@ -68,8 +91,30 @@ describe("getAccount", {
     ignore: !HAS_API_KEY,
   }, async () => {
     const info = await new Promise<Awaited<ReturnType<typeof getAccount>>>(
-      (res) => getAccount(SERPAPI_KEY, res),
+      (res) => getAccount({ api_key: SERPAPI_KEY, timeout: 10000 }, res),
     );
+    assertEquals(Object.keys(info).sort(), [
+      "account_email",
+      "account_id",
+      "account_rate_limit_per_hour",
+      "api_key",
+      "extra_credits",
+      "last_hour_searches",
+      "plan_id",
+      "plan_name",
+      "plan_searches_left",
+      "searches_per_month",
+      "this_hour_searches",
+      "this_month_usage",
+      "total_searches_left",
+    ]);
+  });
+
+  it("rely on global config", {
+    ignore: !HAS_API_KEY,
+  }, async () => {
+    config.apiKey = SERPAPI_KEY;
+    const info = await getAccount();
     assertEquals(Object.keys(info).sort(), [
       "account_email",
       "account_id",
@@ -100,6 +145,19 @@ describe("getLocations", {
 
   afterAll(() => {
     urlStub.restore();
+  });
+
+  it("with invalid timeout", {
+    ignore: !HAS_API_KEY,
+  }, () => {
+    assertRejects(
+      async () => await getLocations({ timeout: 0 }),
+      InvalidTimeoutError,
+    );
+    assertRejects(
+      async () => await getLocations({ timeout: -10 }),
+      InvalidTimeoutError,
+    );
   });
 
   it("async/await", {

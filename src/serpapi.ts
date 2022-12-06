@@ -1,6 +1,9 @@
-import { MissingApiKeyError } from "./errors.ts";
-import { execute } from "./utils.ts";
+import { execute, validateApiKey, validateTimeout } from "./utils.ts";
 
+export type AccountApiParams = {
+  api_key?: string;
+  timeout?: number;
+};
 export type AccountInformation = {
   account_email: string;
   account_id: string;
@@ -20,6 +23,7 @@ export type AccountInformation = {
 export type LocationsApiParams = {
   q?: string;
   limit?: number;
+  timeout?: number;
 };
 export type Location = {
   canonical_name: string;
@@ -35,8 +39,6 @@ export type Location = {
 };
 export type Locations = Location[];
 
-const DEFAULT_TIMEOUT_MS = 10000;
-
 const ACCOUNT_PATH = "/account";
 const LOCATIONS_PATH = "/locations.json";
 
@@ -46,22 +48,21 @@ const LOCATIONS_PATH = "/locations.json";
  *
  * ```ts
  * // async/await
- * const info = await getAccount(API_KEY);
+ * const info = await getAccount({ api_key: API_KEY });
  *
  * // callback
- * getAccount(API_KEY, console.log);
-```
+ * getAccount({ api_key: API_KEY }, console.log);
+ * ```
  */
 export async function getAccount(
-  apiKey: string,
+  parameters: AccountApiParams = {},
   callback?: (info: AccountInformation) => void,
 ) {
-  if (apiKey.length === 0) {
-    throw new MissingApiKeyError();
-  }
+  const apiKey = validateApiKey(parameters.api_key);
+  const timeout = validateTimeout(parameters.timeout);
   const response = await execute(ACCOUNT_PATH, {
     api_key: apiKey,
-  }, DEFAULT_TIMEOUT_MS);
+  }, timeout);
   const info = await response.json() as AccountInformation;
   callback?.(info);
   return info;
@@ -77,16 +78,17 @@ export async function getAccount(
  *
  * // callback
  * getLocations({ limit: 3 }, console.log);
-```
+ * ```
  */
 export async function getLocations(
-  parameters?: LocationsApiParams,
+  parameters: LocationsApiParams = {},
   callback?: (locations: Locations) => void,
 ) {
+  const timeout = validateTimeout(parameters.timeout);
   const response = await execute(
     LOCATIONS_PATH,
-    parameters ?? {},
-    DEFAULT_TIMEOUT_MS,
+    parameters,
+    timeout,
   );
   const locations = await response.json() as Locations;
   callback?.(locations);
