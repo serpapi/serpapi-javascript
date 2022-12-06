@@ -15,13 +15,70 @@ import {
   assertEquals,
   assertMatch,
   assertRejects,
+  assertThrows,
 } from "https://deno.land/std@0.166.0/testing/asserts.ts";
-import { _internals, buildUrl, execute } from "../src/utils.ts";
+import {
+  _internals,
+  buildUrl,
+  execute,
+  validateApiKey,
+  validateTimeout,
+} from "../src/utils.ts";
+import { config } from "../src/config.ts";
+import { InvalidTimeoutError, MissingApiKeyError } from "../src/errors.ts";
 
 configSync({ export: true });
 const BASE_URL = Deno.env.get("ENV_TYPE") === "local"
   ? "http://localhost:3000"
   : "https://serpapi.com";
+
+describe("validateApiKey", () => {
+  it("with no apiKey", () => {
+    assertThrows(() => validateApiKey(""), MissingApiKeyError);
+    assertThrows(() => validateApiKey(undefined), MissingApiKeyError);
+  });
+
+  it("with apiKey set in config", () => {
+    config.apiKey = "api_key";
+    assertThrows(() => validateApiKey(""), MissingApiKeyError);
+    assertEquals(validateApiKey(undefined), "api_key");
+  });
+
+  it("with empty apiKey set in config", () => {
+    config.apiKey = "";
+    assertThrows(() => validateApiKey(""), MissingApiKeyError);
+    assertThrows(() => validateApiKey(undefined), MissingApiKeyError);
+  });
+
+  it("with apiKey", () => {
+    assertEquals(validateApiKey("  "), "  ");
+    assertEquals(validateApiKey("asd"), "asd");
+  });
+});
+
+describe("validateTimeout", () => {
+  it("with invalid timeout", () => {
+    assertThrows(() => validateTimeout(0), InvalidTimeoutError);
+    assertThrows(() => validateTimeout(-10), InvalidTimeoutError);
+  });
+
+  it("with timeout set in config", () => {
+    config.timeout = 10000;
+    assertThrows(() => validateTimeout(0), InvalidTimeoutError);
+    assertEquals(validateTimeout(undefined), 10000);
+  });
+
+  it("with invalid timeout set in config", () => {
+    config.timeout = -1;
+    assertThrows(() => validateTimeout(0), InvalidTimeoutError);
+    assertThrows(() => validateTimeout(undefined), InvalidTimeoutError);
+  });
+
+  it("with valid timeout", () => {
+    assertEquals(validateTimeout(1), 1);
+    assertEquals(validateTimeout(10000), 10000);
+  });
+});
 
 describe("buildUrl", () => {
   let urlStub: Stub;

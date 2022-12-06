@@ -1,7 +1,22 @@
+import { config } from "./config.ts";
+import { InvalidTimeoutError, MissingApiKeyError } from "./errors.ts";
+
 type UrlParameters = Record<
   string,
   string | number | boolean | undefined | null
 >;
+
+export function validateApiKey(value: string | undefined): string {
+  const apiKey = value ?? config.apiKey;
+  if (!apiKey) throw new MissingApiKeyError();
+  return apiKey;
+}
+
+export function validateTimeout(value: number | undefined): number {
+  const timeout = value ?? config.timeout;
+  if (timeout <= 0) throw new InvalidTimeoutError();
+  return timeout;
+}
 
 /**
  * This `_internals` object is needed to support stubbing/spying of
