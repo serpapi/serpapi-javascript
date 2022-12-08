@@ -16,6 +16,12 @@ and this project adheres to
 
 ### Removed
 
+## [0.0.5] - 2022-12-08
+
+### Changed
+
+Enabled publishing to npm.
+
 ## [0.0.4] - 2022-12-08
 
 ### Fixed
@@ -37,6 +43,7 @@ The API signatures of all functions are as follows:
 - `getAccount(parameters?, callback?)`
 - `getLocations(parameters?, callback?)`
 
-[unreleased]: https://github.com/serpapi/serpapi-javascript/compare/0.0.4...HEAD
+[unreleased]: https://github.com/serpapi/serpapi-javascript/compare/0.0.5...HEAD
+[0.0.5]: https://github.com/serpapi/serpapi-javascript/compare/0.0.4...0.0.5
 [0.0.4]: https://github.com/serpapi/serpapi-javascript/compare/0.0.3...0.0.4
 [0.0.3]: https://github.com/serpapi/serpapi-javascript/releases/tag/0.0.3
