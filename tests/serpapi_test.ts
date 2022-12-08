@@ -182,4 +182,11 @@ describe("getLocations", {
     assertInstanceOf(locations, Array);
     assertEquals(locations.length, 3);
   });
+
+  it("without parameters", {
+    ignore: !HAS_API_KEY,
+  }, async () => {
+    const locations = await getLocations();
+    assertInstanceOf(locations, Array);
+  });
 });
