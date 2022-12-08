@@ -1,6 +1,7 @@
 import { configSync } from "https://deno.land/std@0.166.0/dotenv/mod.ts";
 import {
   afterAll,
+  afterEach,
   beforeAll,
   describe,
   it,
@@ -33,6 +34,10 @@ const BASE_URL = Deno.env.get("ENV_TYPE") === "local"
   : "https://serpapi.com";
 
 describe("validateApiKey", () => {
+  afterEach(() => {
+    config.api_key = null;
+  });
+
   it("with no api_key", () => {
     assertThrows(() => validateApiKey(""), MissingApiKeyError);
     assertThrows(() => validateApiKey(undefined), MissingApiKeyError);
@@ -57,6 +62,10 @@ describe("validateApiKey", () => {
 });
 
 describe("validateTimeout", () => {
+  afterEach(() => {
+    config.timeout = 60000;
+  });
+
   it("with invalid timeout", () => {
     assertThrows(() => validateTimeout(0), InvalidTimeoutError);
     assertThrows(() => validateTimeout(-10), InvalidTimeoutError);

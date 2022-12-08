@@ -1,6 +1,7 @@
 import { configSync } from "https://deno.land/std@0.166.0/dotenv/mod.ts";
 import {
   afterAll,
+  afterEach,
   beforeAll,
   describe,
   it,
@@ -31,6 +32,10 @@ describe("getAccount", {
 
   beforeAll(() => {
     urlStub = stub(_internals, "getBaseUrl", () => BASE_URL);
+  });
+
+  afterEach(() => {
+    config.api_key = null;
   });
 
   afterAll(() => {
