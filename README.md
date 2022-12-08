@@ -95,7 +95,7 @@ const response = await getJson({ engine: "google", q: "coffee", async: true });
 const searchId = response.search_metadata.id;
 console.log(`processing ${searchId}`);
 
-const json = await getJsonBySearchId({ id: searchId });
+const json = await getJsonBySearchId(searchId);
 console.log(`request took ${json.search_metadata.total_time_taken}s`);
 ```
 
@@ -175,10 +175,10 @@ const id = response.search_metadata.id;
 await delay(1000); // wait for the request to be processed.
 
 // async/await
-const json = await getJsonBySearchId({ id });
+const json = await getJsonBySearchId(id, { api_key: API_KEY });
 
 // callback
-getJsonBySearchId({ id }, console.log);
+getJsonBySearchId(id, { api_key: API_KEY }, console.log);
 ```
 
 </details>
@@ -209,10 +209,10 @@ const id = response.search_metadata.id;
 await delay(1000); // wait for the request to be processed.
 
 // async/await
-const json = await getHtmlBySearchId({ id, api_key: API_KEY });
+const json = await getHtmlBySearchId(id, { api_key: API_KEY });
 
 // callback
-getHtmlBySearchId({ id, api_key: API_KEY }, console.log);
+getHtmlBySearchId(id, { api_key: API_KEY }, console.log);
 ```
 
 </details>

@@ -27,10 +27,10 @@ migrate over to the `serpapi` npm package.
   engine.search_archive(searchId, console.log);
 
   // ✅ New way, use `getJsonBySearchId`.
-  getJsonBySearchId({ id: searchId, api_key: API_KEY }, console.log);
+  getJsonBySearchId(searchId, { api_key: API_KEY }, console.log);
 
   // ✅ New way, use `getHtmlBySearchId` if you want the HTML result.
-  getHtmlBySearchId({ id: searchId, api_key: API_KEY }, console.log);
+  getHtmlBySearchId(searchId, { api_key: API_KEY }, console.log);
   ```
 
 - The `account` and `location` methods are now `getAccount` and `getLocations`.

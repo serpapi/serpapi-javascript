@@ -182,7 +182,6 @@ export type BaseResponse<P extends BaseParameters = BaseParameters> = {
 export type SearchParameters = BaseParameters & EngineParameters;
 
 export type GetBySearchIdParameters = {
-  id: string;
   api_key?: string;
   timeout?: number;
 };

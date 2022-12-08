@@ -219,7 +219,7 @@ describe("google", {
     await t.step("getJsonBySearchId (async/await)", async () => {
       let json;
       while (true) {
-        json = await getJsonBySearchId({ id, api_key: SERPAPI_TEST_KEY });
+        json = await getJsonBySearchId(id, { api_key: SERPAPI_TEST_KEY });
         const status = json["search_metadata"]["status"];
         if (status === "Processing") {
           await delay(500);
@@ -242,7 +242,7 @@ describe("google", {
       while (true) {
         json = await new Promise<
           Awaited<ReturnType<typeof getJsonBySearchId>>
-        >((res) => getJsonBySearchId({ id, api_key: SERPAPI_TEST_KEY }, res));
+        >((res) => getJsonBySearchId(id, { api_key: SERPAPI_TEST_KEY }, res));
         const status = json["search_metadata"]["status"];
         if (status === "Processing") {
           await delay(500);
@@ -264,7 +264,7 @@ describe("google", {
       let json;
       config.api_key = SERPAPI_TEST_KEY;
       while (true) {
-        json = await getJsonBySearchId({ id });
+        json = await getJsonBySearchId(id);
         const status = json["search_metadata"]["status"];
         if (status === "Processing") {
           await delay(500);
@@ -285,7 +285,7 @@ describe("google", {
     await t.step("getHtmlBySearchId (async/await)", async () => {
       let html;
       while (true) {
-        html = await getHtmlBySearchId({ id, api_key: SERPAPI_TEST_KEY });
+        html = await getHtmlBySearchId(id, { api_key: SERPAPI_TEST_KEY });
         try {
           JSON.parse(html);
         } catch { // If parsing fails, it means the request has completed
@@ -304,7 +304,7 @@ describe("google", {
       while (true) {
         html = await new Promise<
           Awaited<ReturnType<typeof getHtmlBySearchId>>
-        >((res) => getHtmlBySearchId({ id, api_key: SERPAPI_TEST_KEY }, res));
+        >((res) => getHtmlBySearchId(id, { api_key: SERPAPI_TEST_KEY }, res));
         try {
           JSON.parse(html);
         } catch { // If parsing fails, it means the request has completed

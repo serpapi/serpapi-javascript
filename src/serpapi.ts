@@ -95,22 +95,23 @@ export async function getHtml<P extends SearchParameters>(
  * await delay(1000); // wait for the request to be processed.
  *
  * // async/await
- * const json = await getJsonBySearchId({ id });
+ * const json = await getJsonBySearchId(id, { api_key: API_KEY });
  *
  * // callback
- * getJsonBySearchId({ id }, console.log);
+ * getJsonBySearchId(id, { api_key: API_KEY }, console.log);
  * ```
  */
 export async function getJsonBySearchId<
   R extends BaseResponse = BaseResponse<SearchParameters>,
 >(
-  parameters: GetBySearchIdParameters,
+  searchId: string,
+  parameters: GetBySearchIdParameters = {},
   callback?: (json: R) => void,
 ) {
   const key = validateApiKey(parameters.api_key);
   const timeout = validateTimeout(parameters.timeout);
   const response = await _internals.execute(
-    `${SEARCH_ARCHIVE_PATH}/${parameters.id}`,
+    `${SEARCH_ARCHIVE_PATH}/${searchId}`,
     {
       api_key: key,
       output: "json",
@@ -135,20 +136,21 @@ export async function getJsonBySearchId<
  * await delay(1000); // wait for the request to be processed.
  *
  * // async/await
- * const html = await getHtmlBySearchId({ id, api_key: API_KEY });
+ * const html = await getHtmlBySearchId(id, { api_key: API_KEY });
  *
  * // callback
- * getHtmlBySearchId({ id, api_key: API_KEY}, console.log);
+ * getHtmlBySearchId(id, { api_key: API_KEY }, console.log);
  * ```
  */
 export async function getHtmlBySearchId(
-  parameters: GetBySearchIdParameters,
+  searchId: string,
+  parameters: GetBySearchIdParameters = {},
   callback?: (html: string) => void,
 ) {
   const key = validateApiKey(parameters.api_key);
   const timeout = validateTimeout(parameters.timeout);
   const response = await _internals.execute(
-    `${SEARCH_ARCHIVE_PATH}/${parameters.id}`,
+    `${SEARCH_ARCHIVE_PATH}/${searchId}`,
     {
       api_key: key,
       output: "html",
