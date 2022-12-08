@@ -35,12 +35,12 @@ import { getJson } from "https://deno.land/x/serpapi/mod.ts";
 
 ## Features
 
-*   TypeScript types such as supported parameters and function argument types.
-*   Works out-of-the-box with Node.js and Deno.
-*   Promises and async/await support.
-*   (Planned) Pagination support.
-*   (Planned) More examples.
-*   (Planned) More error classes.
+- TypeScript types such as supported parameters and function argument types.
+- Works out-of-the-box with Node.js and Deno.
+- Promises and async/await support.
+- (Planned) Pagination support.
+- (Planned) More examples.
+- (Planned) More error classes.
 
 ## Configuration
 
@@ -67,36 +67,40 @@ await getJson("google", { api_key: API_KEY_2, q: "coffee" }); // API_KEY_2 will 
 
 #### Table of Contents
 
-*   [getJson](#getjson)
-    *   [Parameters](#parameters)
-    *   [Examples](#examples)
-*   [getHtml](#gethtml)
-    *   [Parameters](#parameters-1)
-    *   [Examples](#examples-1)
-*   [getJsonBySearchId](#getjsonbysearchid)
-    *   [Parameters](#parameters-2)
-    *   [Examples](#examples-2)
-*   [getHtmlBySearchId](#gethtmlbysearchid)
-    *   [Parameters](#parameters-3)
-    *   [Examples](#examples-3)
-*   [getAccount](#getaccount)
-    *   [Parameters](#parameters-4)
-    *   [Examples](#examples-4)
-*   [getLocations](#getlocations)
-    *   [Parameters](#parameters-5)
-    *   [Examples](#examples-5)
+- [getJson](#getjson)
+  - [Parameters](#parameters)
+  - [Examples](#examples)
+- [getHtml](#gethtml)
+  - [Parameters](#parameters-1)
+  - [Examples](#examples-1)
+- [getJsonBySearchId](#getjsonbysearchid)
+  - [Parameters](#parameters-2)
+  - [Examples](#examples-2)
+- [getHtmlBySearchId](#gethtmlbysearchid)
+  - [Parameters](#parameters-3)
+  - [Examples](#examples-3)
+- [getAccount](#getaccount)
+  - [Parameters](#parameters-4)
+  - [Examples](#examples-4)
+- [getLocations](#getlocations)
+  - [Parameters](#parameters-5)
+  - [Examples](#examples-5)
 
 ### getJson
 
 Get a JSON response based on search parameters.
 
-*   Accepts an optional callback.
+- Accepts an optional callback.
 
 #### Parameters
 
-*   `engine` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** engine name
-*   `parameters` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** search query parameters for the engine
-*   `callback` **fn?** optional callback
+- `engine`
+  **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**
+  engine name
+- `parameters`
+  **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**
+  search query parameters for the engine
+- `callback` **fn?** optional callback
 
 #### Examples
 
@@ -112,14 +116,18 @@ getJson("google", { api_key: API_KEY, q: "coffee" }, console.log);
 
 Get a HTML response based on search parameters.
 
-*   Accepts an optional callback.
-*   Responds with a JSON string if the search request hasn't completed.
+- Accepts an optional callback.
+- Responds with a JSON string if the search request hasn't completed.
 
 #### Parameters
 
-*   `engine` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** engine name
-*   `parameters` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** search query parameters for the engine
-*   `callback` **fn?** optional callback
+- `engine`
+  **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**
+  engine name
+- `parameters`
+  **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**
+  search query parameters for the engine
+- `callback` **fn?** optional callback
 
 #### Examples
 
@@ -135,23 +143,36 @@ getHtml("google", { api_key: API_KEY, q: "coffee" }, console.log);
 
 Get a JSON response given a search ID.
 
-*   This search ID can be obtained from the `search_metadata.id` key in the response.
-*   Typically used together with the `async` parameter.
-*   Accepts an optional callback.
+- This search ID can be obtained from the `search_metadata.id` key in the
+  response.
+- Typically used together with the `async` parameter.
+- Accepts an optional callback.
 
 #### Parameters
 
-*   `searchId` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** search ID
-*   `parameters` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**  (optional, default `{}`)
+- `searchId`
+  **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**
+  search ID
+- `parameters`
+  **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**
+  (optional, default `{}`)
 
-    *   `parameters.api_key` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** API key
-    *   `parameters.timeout` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?** timeout in milliseconds
-*   `callback` **fn?** optional callback
+  - `parameters.api_key`
+    **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?**
+    API key
+  - `parameters.timeout`
+    **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?**
+    timeout in milliseconds
+- `callback` **fn?** optional callback
 
 #### Examples
 
 ```javascript
-const response = await getJson("google", { api_key: API_KEY, async: true, q: "coffee" });
+const response = await getJson("google", {
+  api_key: API_KEY,
+  async: true,
+  q: "coffee",
+});
 const { id } = response.search_metadata;
 await delay(1000); // wait for the request to be processed.
 
@@ -166,24 +187,37 @@ getJsonBySearchId(id, { api_key: API_KEY }, console.log);
 
 Get a HTML response given a search ID.
 
-*   This search ID can be obtained from the `search_metadata.id` key in the response.
-*   Typically used together with the `async` parameter.
-*   Accepts an optional callback.
-*   Responds with a JSON if the search request hasn't completed.
+- This search ID can be obtained from the `search_metadata.id` key in the
+  response.
+- Typically used together with the `async` parameter.
+- Accepts an optional callback.
+- Responds with a JSON if the search request hasn't completed.
 
 #### Parameters
 
-*   `searchId` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** search ID
-*   `parameters` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**  (optional, default `{}`)
+- `searchId`
+  **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**
+  search ID
+- `parameters`
+  **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**
+  (optional, default `{}`)
 
-    *   `parameters.api_key` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** API key
-    *   `parameters.timeout` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?** timeout in milliseconds
-*   `callback` **fn?** optional callback
+  - `parameters.api_key`
+    **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?**
+    API key
+  - `parameters.timeout`
+    **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?**
+    timeout in milliseconds
+- `callback` **fn?** optional callback
 
 #### Examples
 
 ```javascript
-const response = await getJson("google", { api_key: API_KEY, async: true, q: "coffee" });
+const response = await getJson("google", {
+  api_key: API_KEY,
+  async: true,
+  q: "coffee",
+});
 const { id } = response.search_metadata;
 await delay(1000); // wait for the request to be processed.
 
@@ -196,16 +230,21 @@ getHtmlBySearchId(id, { api_key: API_KEY }, console.log);
 
 ### getAccount
 
-Get account information of an API key.
-<https://serpapi.com/account-api>
+Get account information of an API key. <https://serpapi.com/account-api>
 
 #### Parameters
 
-*   `parameters` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**  (optional, default `{}`)
+- `parameters`
+  **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**
+  (optional, default `{}`)
 
-    *   `parameters.api_key` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** API key
-    *   `parameters.timeout` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?** timeout in milliseconds
-*   `callback` **fn?** optional callback
+  - `parameters.api_key`
+    **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?**
+    API key
+  - `parameters.timeout`
+    **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?**
+    timeout in milliseconds
+- `callback` **fn?** optional callback
 
 #### Examples
 
@@ -224,12 +263,20 @@ Get supported locations. Does not require an API key.
 
 #### Parameters
 
-*   `parameters` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**  (optional, default `{}`)
+- `parameters`
+  **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**
+  (optional, default `{}`)
 
-    *   `parameters.q` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** query for a location
-    *   `parameters.limit` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?** limit on number of locations returned
-    *   `parameters.timeout` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?** timeout in milliseconds
-*   `callback` **fn?** optional callback
+  - `parameters.q`
+    **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?**
+    query for a location
+  - `parameters.limit`
+    **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?**
+    limit on number of locations returned
+  - `parameters.timeout`
+    **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?**
+    timeout in milliseconds
+- `callback` **fn?** optional callback
 
 #### Examples
 
