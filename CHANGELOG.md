@@ -16,6 +16,12 @@ and this project adheres to
 
 ### Removed
 
+## [0.0.4] - 2022-12-08
+
+### Fixed
+
+Ensure Deno imports `mod.ts` from the root directory rather than `src/`.
+
 ## [0.0.3] - 2022-12-08
 
 ### Added
@@ -31,5 +37,6 @@ The API signatures of all functions are as follows:
 - `getAccount(parameters?, callback?)`
 - `getLocations(parameters?, callback?)`
 
-[unreleased]: https://github.com/serpapi/serpapi-javascript/compare/v0.0.3...HEAD
-[0.0.3]: https://github.com/serpapi/serpapi-javascript/releases/tag/v0.0.3
+[unreleased]: https://github.com/serpapi/serpapi-javascript/compare/0.0.4...HEAD
+[0.0.4]: https://github.com/serpapi/serpapi-javascript/compare/0.0.3...0.0.4
+[0.0.3]: https://github.com/serpapi/serpapi-javascript/releases/tag/0.0.3

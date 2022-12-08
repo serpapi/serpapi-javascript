@@ -10,7 +10,7 @@ if (!version) {
 }
 
 await build({
-  entryPoints: ["./src/mod.ts"],
+  entryPoints: ["./mod.ts"],
   outDir: "./npm",
   shims: {
     deno: true, // Required for `Deno.test`, `Deno.env`, etc.
