@@ -24,13 +24,15 @@ const SEARCH_ARCHIVE_PATH = `/searches`;
  * Get a JSON response based on search parameters.
  * - Accepts an optional callback.
  *
- * ```ts
+ * @param {string} engine - engine name
+ * @param {object} parameters - search query parameters for the engine
+ * @param {fn=} callback - optional callback
+ * @example
  * // async/await
  * const json = await getJson("google", { api_key: API_KEY, q: "coffee" });
  *
  * // callback
  * getJson("google", { api_key: API_KEY, q: "coffee" }, console.log);
- * ```
  */
 export async function getJson<
   E extends keyof EngineMap,
@@ -62,13 +64,15 @@ export async function getJson<
  * - Accepts an optional callback.
  * - Responds with a JSON string if the search request hasn't completed.
  *
- * ```ts
+ * @param {string} engine - engine name
+ * @param {object} parameters - search query parameters for the engine
+ * @param {fn=} callback - optional callback
+ * @example
  * // async/await
  * const html = await getHtml("google", { api_key: API_KEY, q: "coffee" });
  *
  * // callback
  * getHtml("google", { api_key: API_KEY, q: "coffee" }, console.log);
- * ```
  */
 export async function getHtml<E extends keyof EngineMap>(
   engine: E,
@@ -98,7 +102,12 @@ export async function getHtml<E extends keyof EngineMap>(
  * - Typically used together with the `async` parameter.
  * - Accepts an optional callback.
  *
- * ```ts
+ * @param {string} searchId - search ID
+ * @param {object} parameters
+ * @param {string=} [parameters.api_key] - API key
+ * @param {number=} [parameters.timeout] - timeout in milliseconds
+ * @param {fn=} callback - optional callback
+ * @example
  * const response = await getJson("google", { api_key: API_KEY, async: true, q: "coffee" });
  * const { id } = response.search_metadata;
  * await delay(1000); // wait for the request to be processed.
@@ -108,7 +117,6 @@ export async function getHtml<E extends keyof EngineMap>(
  *
  * // callback
  * getJsonBySearchId(id, { api_key: API_KEY }, console.log);
- * ```
  */
 export async function getJsonBySearchId<
   R extends BaseResponse,
@@ -139,7 +147,12 @@ export async function getJsonBySearchId<
  * - Accepts an optional callback.
  * - Responds with a JSON if the search request hasn't completed.
  *
- * ```ts
+ * @param {string} searchId - search ID
+ * @param {object} parameters
+ * @param {string=} [parameters.api_key] - API key
+ * @param {number=} [parameters.timeout] - timeout in milliseconds
+ * @param {fn=} callback - optional callback
+ * @example
  * const response = await getJson("google", { api_key: API_KEY, async: true, q: "coffee" });
  * const { id } = response.search_metadata;
  * await delay(1000); // wait for the request to be processed.
@@ -149,7 +162,6 @@ export async function getJsonBySearchId<
  *
  * // callback
  * getHtmlBySearchId(id, { api_key: API_KEY }, console.log);
- * ```
  */
 export async function getHtmlBySearchId(
   searchId: string,
@@ -175,13 +187,16 @@ export async function getHtmlBySearchId(
  * Get account information of an API key.
  * https://serpapi.com/account-api
  *
- * ```ts
+ * @param {object} parameters
+ * @param {string=} [parameters.api_key] - API key
+ * @param {number=} [parameters.timeout] - timeout in milliseconds
+ * @param {fn=} callback - optional callback
+ * @example
  * // async/await
  * const info = await getAccount({ api_key: API_KEY });
  *
  * // callback
  * getAccount({ api_key: API_KEY }, console.log);
- * ```
  */
 export async function getAccount(
   parameters: AccountApiParams = {},
@@ -201,13 +216,17 @@ export async function getAccount(
  * Get supported locations. Does not require an API key.
  * https://serpapi.com/locations-api
  *
- * ```ts
+ * @param {object} parameters
+ * @param {string=} [parameters.q] - query for a location
+ * @param {number=} [parameters.limit] - limit on number of locations returned
+ * @param {number=} [parameters.timeout] - timeout in milliseconds
+ * @param {fn=} callback - optional callback
+ * @example
  * // async/await
  * const locations = await getLocations({ limit: 3 });
  *
  * // callback
  * getLocations({ limit: 3 }, console.log);
- * ```
  */
 export async function getLocations(
   parameters: LocationsApiParams = {},

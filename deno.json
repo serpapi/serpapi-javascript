@@ -1,5 +1,6 @@
 {
   "tasks": {
+    "docs:gen": "npx documentation readme src/serpapi.ts --section=Functions --shallow",
     "test": "ENV_TYPE=local deno test tests/ --allow-env --allow-read --allow-net --fail-fast",
     "test:ci": "deno test tests/ --allow-env --allow-read --allow-net",
     "test:watch": "deno task test --watch",
