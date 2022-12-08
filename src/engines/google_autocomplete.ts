@@ -1,6 +1,4 @@
 export type GoogleAutocompleteParameters = {
-  engine: "google_autocomplete";
-
   /**
    * Search Query
    * Parameter defines the search query. A query that would be used to provide

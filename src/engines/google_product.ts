@@ -1,6 +1,4 @@
 export type GoogleProductParameters = {
-  engine: "google_product";
-
   /**
    * Product ID
    * Parameter defines the product to get results for. Normally found from shopping

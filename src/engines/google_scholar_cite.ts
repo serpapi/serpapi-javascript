@@ -1,6 +1,4 @@
 export type GoogleScholarCiteParameters = {
-  engine: "google_scholar_cite";
-
   /**
    * Search Result ID
    * Parameter defines the ID of an individual Google Scholar organic search result.

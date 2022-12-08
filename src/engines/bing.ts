@@ -1,6 +1,4 @@
 export type BingParameters = {
-  engine: "bing";
-
   /**
    * Search Query
    * Parameter defines the search query. You can use anything that you would use in a

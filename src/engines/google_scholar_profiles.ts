@@ -1,6 +1,4 @@
 export type GoogleScholarProfilesParameters = {
-  engine: "google_scholar_profiles";
-
   /**
    * Search Query
    * Parameter defines the author you want to search for. You can also use helpers in

@@ -53,8 +53,7 @@ describe("google", {
   });
 
   it("getJson for an unmetered query (async/await)", async () => {
-    const response = await getJson({
-      engine,
+    const response = await getJson(engine, {
       api_key: undefined, // undefined to support the "coffee" unmetered query
       q: "coffee",
     });
@@ -71,8 +70,7 @@ describe("google", {
   it("getJson for an unmetered query (callback)", async () => {
     const response = await new Promise<Awaited<ReturnType<typeof getJson>>>(
       (res) =>
-        getJson({
-          engine,
+        getJson(engine, {
           api_key: undefined,
           q: "coffee",
         }, res),
@@ -91,8 +89,7 @@ describe("google", {
     const executeSpy = spy(_internals, "execute");
     config.api_key = "test_initial_api_key";
     try {
-      await getJson({
-        engine,
+      await getJson(engine, {
         api_key: "test_override_api_key",
         q: "coffee",
       });
@@ -110,16 +107,14 @@ describe("google", {
 
   it("getJson with blank api_key param", () => {
     assertRejects(async () =>
-      await getJson({
-        engine,
+      await getJson(engine, {
         api_key: "",
         q: "coffee",
       }), MissingApiKeyError);
   });
 
   it("getHtml for an unmetered query (async/await)", async () => {
-    const response = await getHtml({
-      engine,
+    const response = await getHtml(engine, {
       api_key: undefined,
       q: "coffee",
     });
@@ -132,8 +127,7 @@ describe("google", {
   it("getHtml for an unmetered query (callback)", async () => {
     const response = await new Promise<Awaited<ReturnType<typeof getHtml>>>(
       (res) =>
-        getHtml({
-          engine,
+        getHtml(engine, {
           api_key: undefined,
           q: "coffee",
         }, res),
@@ -148,8 +142,7 @@ describe("google", {
     const executeSpy = spy(_internals, "execute");
     config.api_key = "test_initial_api_key";
     try {
-      await getHtml({
-        engine,
+      await getHtml(engine, {
         api_key: "test_override_api_key",
         q: "coffee",
       });
@@ -167,16 +160,14 @@ describe("google", {
 
   it("getHtml with blank api_key param", () => {
     assertRejects(async () =>
-      await getHtml({
-        engine,
+      await getHtml(engine, {
         api_key: "",
         q: "coffee",
       }), MissingApiKeyError);
   });
 
   it("getHtml with async parameter returns json", async () => {
-    const response = await getHtml({
-      engine,
+    const response = await getHtml(engine, {
       api_key: undefined,
       async: true,
       no_cache: true,
@@ -197,8 +188,7 @@ describe("google", {
     let id: string;
 
     await t.step("initiate async request", async () => {
-      const response = await getJson({
-        engine,
+      const response = await getJson(engine, {
         api_key: SERPAPI_TEST_KEY,
         async: true,
         no_cache: true, // Ensure a new request is sent so we don't get cached results

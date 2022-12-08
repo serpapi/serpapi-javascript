@@ -1,6 +1,4 @@
 export type HomeDepotProductParameters = {
-  engine: "home_depot_product";
-
   /**
    * Product ID
    * HomeDepot identifier of a product

@@ -1,6 +1,4 @@
 export type NaverParameters = {
-  engine: "naver";
-
   /**
    * Search Query
    * Parameter defines the search query. You can use anything that you would use in a

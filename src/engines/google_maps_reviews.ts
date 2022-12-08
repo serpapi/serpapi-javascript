@@ -1,6 +1,4 @@
 export type GoogleMapsReviewsParameters = {
-  engine: "google_maps_reviews";
-
   /**
    * Data ID
    * Parameter defines the Google Maps data ID. Find the data ID by using our [Google

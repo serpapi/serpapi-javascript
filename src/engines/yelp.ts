@@ -1,6 +1,4 @@
 export type YelpParameters = {
-  engine: "yelp";
-
   /**
    * Search Query
    * Parameter defines the query you want to search. You can use anything that you

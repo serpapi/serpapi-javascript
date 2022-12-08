@@ -1,6 +1,4 @@
 export type DuckduckgoParameters = {
-  engine: "duckduckgo";
-
   /**
    * Search Query
    * Parameter defines the query you want to search. You can use anything that you

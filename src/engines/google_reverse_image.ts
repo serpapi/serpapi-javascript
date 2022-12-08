@@ -1,6 +1,4 @@
 export type GoogleReverseImageParameters = {
-  engine: "google_reverse_image";
-
   /**
    * Search Query
    * Parameter defines the query you want to search. You can also include location in

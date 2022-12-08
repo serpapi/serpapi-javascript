@@ -1,6 +1,4 @@
 export type BaiduNewsParameters = {
-  engine: "baidu_news";
-
   /**
    * Search Query
    * Parameter defines the the search query, including all Baidu search operators.

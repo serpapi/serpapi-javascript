@@ -1,6 +1,4 @@
 export type GooglePlayProductParameters = {
-  engine: "google_play_product";
-
   /**
    * Product ID
    * Parameter defines the ID of a product you want to get the results for.

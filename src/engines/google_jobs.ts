@@ -1,6 +1,4 @@
 export type GoogleJobsParameters = {
-  engine: "google_jobs";
-
   /**
    * Search Query
    * Parameter defines the query you want to search.

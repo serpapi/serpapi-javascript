@@ -6,13 +6,11 @@ export type {
   AccountInformation,
   BaseParameters,
   BaseResponse,
-  Engine,
-  EngineParameters,
+  EngineMap,
   GetBySearchIdParameters,
   Location,
   Locations,
   LocationsApiParams,
-  SearchParameters,
 } from "./types.ts";
 export {
   getAccount,

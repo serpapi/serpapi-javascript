@@ -1,6 +1,4 @@
 export type HomeDepotParameters = {
-  engine: "home_depot";
-
   /**
    * Search Query
    * Parameter defines the search query. You can use anything that you would use in a

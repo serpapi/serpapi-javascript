@@ -50,123 +50,70 @@ import type { GoogleAboutThisResultParameters } from "./engines/google_about_thi
 import type { YelpParameters } from "./engines/yelp.ts";
 import type { YelpReviewsParameters } from "./engines/yelp_reviews.ts";
 
-export const engines = [
-  "google",
-  "google_jobs",
-  "google_jobs_listing",
-  "google_reverse_image",
-  "google_scholar_profiles",
-  "google_scholar",
-  "google_scholar_cite",
-  "google_scholar_author",
-  "google_product",
-  "google_maps",
-  "google_maps_photos",
-  "google_maps_reviews",
-  "google_events",
-  "google_autocomplete",
-  "google_related_questions",
-  "google_trends",
-  "google_trends_autocomplete",
-  "google_finance_markets",
-  "google_immersive_product",
-  "bing",
-  "bing_news",
-  "bing_images",
-  "baidu",
-  "baidu_news",
-  "yahoo",
-  "yahoo_images",
-  "yahoo_videos",
-  "yahoo_shopping",
-  "ebay",
-  "yandex",
-  "yandex_images",
-  "yandex_videos",
-  "youtube",
-  "walmart",
-  "walmart_product",
-  "walmart_product_reviews",
-  "home_depot",
-  "home_depot_product",
-  "linkedin",
-  "linkedin_profile",
-  "duckduckgo",
-  "google_play_product",
-  "google_play",
-  "apple_app_store",
-  "apple_reviews",
-  "apple_product",
-  "naver",
-  "google_local_services",
-  "google_about_this_result",
-  "yelp",
-  "yelp_reviews",
-] as const;
-export type Engine = typeof engines[number];
-
-export type EngineParameters =
-  | GoogleParameters
-  | GoogleJobsParameters
-  | GoogleJobsListingParameters
-  | GoogleReverseImageParameters
-  | GoogleScholarProfilesParameters
-  | GoogleScholarParameters
-  | GoogleScholarCiteParameters
-  | GoogleScholarAuthorParameters
-  | GoogleProductParameters
-  | GoogleMapsParameters
-  | GoogleMapsPhotosParameters
-  | GoogleMapsReviewsParameters
-  | GoogleEventsParameters
-  | GoogleAutocompleteParameters
-  | GoogleRelatedQuestionsParameters
-  | GoogleTrendsParameters
-  | GoogleTrendsAutocompleteParameters
-  | GoogleFinanceMarketsParameters
-  | GoogleImmersiveProductParameters
-  | BingParameters
-  | BingNewsParameters
-  | BingImagesParameters
-  | BaiduParameters
-  | BaiduNewsParameters
-  | YahooParameters
-  | YahooImagesParameters
-  | YahooVideosParameters
-  | YahooShoppingParameters
-  | EbayParameters
-  | YandexParameters
-  | YandexImagesParameters
-  | YandexVideosParameters
-  | YoutubeParameters
-  | WalmartParameters
-  | WalmartProductParameters
-  | WalmartProductReviewsParameters
-  | HomeDepotParameters
-  | HomeDepotProductParameters
-  | LinkedinParameters
-  | LinkedinProfileParameters
-  | DuckduckgoParameters
-  | GooglePlayProductParameters
-  | GooglePlayParameters
-  | AppleAppStoreParameters
-  | AppleReviewsParameters
-  | AppleProductParameters
-  | NaverParameters
-  | GoogleLocalServicesParameters
-  | GoogleAboutThisResultParameters
-  | YelpParameters
-  | YelpReviewsParameters;
+export type EngineMap = {
+  google: { parameters: GoogleParameters };
+  google_jobs: { parameters: GoogleJobsParameters };
+  google_jobs_listing: { parameters: GoogleJobsListingParameters };
+  google_reverse_image: { parameters: GoogleReverseImageParameters };
+  google_scholar_profiles: { parameters: GoogleScholarProfilesParameters };
+  google_scholar: { parameters: GoogleScholarParameters };
+  google_scholar_cite: { parameters: GoogleScholarCiteParameters };
+  google_scholar_author: { parameters: GoogleScholarAuthorParameters };
+  google_product: { parameters: GoogleProductParameters };
+  google_maps: { parameters: GoogleMapsParameters };
+  google_maps_photos: { parameters: GoogleMapsPhotosParameters };
+  google_maps_reviews: { parameters: GoogleMapsReviewsParameters };
+  google_events: { parameters: GoogleEventsParameters };
+  google_autocomplete: { parameters: GoogleAutocompleteParameters };
+  google_related_questions: { parameters: GoogleRelatedQuestionsParameters };
+  google_trends: { parameters: GoogleTrendsParameters };
+  google_trends_autocomplete: {
+    parameters: GoogleTrendsAutocompleteParameters;
+  };
+  google_finance_markets: { parameters: GoogleFinanceMarketsParameters };
+  google_immersive_product: { parameters: GoogleImmersiveProductParameters };
+  bing: { parameters: BingParameters };
+  bing_news: { parameters: BingNewsParameters };
+  bing_images: { parameters: BingImagesParameters };
+  baidu: { parameters: BaiduParameters };
+  baidu_news: { parameters: BaiduNewsParameters };
+  yahoo: { parameters: YahooParameters };
+  yahoo_images: { parameters: YahooImagesParameters };
+  yahoo_videos: { parameters: YahooVideosParameters };
+  yahoo_shopping: { parameters: YahooShoppingParameters };
+  ebay: { parameters: EbayParameters };
+  yandex: { parameters: YandexParameters };
+  yandex_images: { parameters: YandexImagesParameters };
+  yandex_videos: { parameters: YandexVideosParameters };
+  youtube: { parameters: YoutubeParameters };
+  walmart: { parameters: WalmartParameters };
+  walmart_product: { parameters: WalmartProductParameters };
+  walmart_product_reviews: { parameters: WalmartProductReviewsParameters };
+  home_depot: { parameters: HomeDepotParameters };
+  home_depot_product: { parameters: HomeDepotProductParameters };
+  linkedin: { parameters: LinkedinParameters };
+  linkedin_profile: { parameters: LinkedinProfileParameters };
+  duckduckgo: { parameters: DuckduckgoParameters };
+  google_play_product: { parameters: GooglePlayProductParameters };
+  google_play: { parameters: GooglePlayParameters };
+  apple_app_store: { parameters: AppleAppStoreParameters };
+  apple_reviews: { parameters: AppleReviewsParameters };
+  apple_product: { parameters: AppleProductParameters };
+  naver: { parameters: NaverParameters };
+  google_local_services: { parameters: GoogleLocalServicesParameters };
+  google_about_this_result: { parameters: GoogleAboutThisResultParameters };
+  yelp: { parameters: YelpParameters };
+  yelp_reviews: { parameters: YelpReviewsParameters };
+};
 
 export type BaseParameters = {
-  engine: string;
   device?: "desktop" | "tablet" | "mobile";
   no_cache?: boolean;
   async?: boolean;
   api_key?: string;
   timeout?: number;
 };
-export type BaseResponse<P extends BaseParameters = BaseParameters> = {
+export type BaseResponse<P = Record<string | number | symbol, never>> = {
   search_metadata: {
     id: string;
     status: "Queued" | "Processing" | "Success";
@@ -176,10 +123,12 @@ export type BaseResponse<P extends BaseParameters = BaseParameters> = {
     raw_html_file: string;
     total_time_taken: number;
   };
-  search_parameters: Omit<P, "api_key" | "no_cache" | "async" | "timeout">;
+  search_parameters:
+    & { engine: string }
+    & Omit<BaseParameters & P, "api_key" | "no_cache" | "async" | "timeout">;
+  // deno-lint-ignore no-explicit-any
+  [key: string]: any; // TODO(seb): use recursive type
 };
-
-export type SearchParameters = BaseParameters & EngineParameters;
 
 export type GetBySearchIdParameters = {
   api_key?: string;

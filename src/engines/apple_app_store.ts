@@ -1,6 +1,4 @@
 export type AppleAppStoreParameters = {
-  engine: "apple_app_store";
-
   /**
    * Search Term
    * Parameter defines the query you want to search. You can use any search term that

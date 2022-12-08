@@ -1,6 +1,4 @@
 export type LinkedinProfileParameters = {
-  engine: "linkedin_profile";
-
   /**
    * Profile ID
    * LinkedIn profile ID. Can be found in profile url, e.g. profile id for

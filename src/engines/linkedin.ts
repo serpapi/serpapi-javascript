@@ -1,6 +1,4 @@
 export type LinkedinParameters = {
-  engine: "linkedin";
-
   /**
    * First Name
    * LinkedIn profile first name. Used as a part of url eg:

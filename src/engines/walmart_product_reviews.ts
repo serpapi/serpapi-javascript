@@ -1,6 +1,4 @@
 export type WalmartProductReviewsParameters = {
-  engine: "walmart_product_reviews";
-
   /**
    * Product ID
    * Parameter defines the unique product identifier to get reviews of a specific

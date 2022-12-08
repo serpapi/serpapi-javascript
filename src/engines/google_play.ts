@@ -1,6 +1,4 @@
 export type GooglePlayParameters = {
-  engine: "google_play";
-
   /**
    * Search Query
    * Parameter defines the query you want to search. You can search for apps, games,

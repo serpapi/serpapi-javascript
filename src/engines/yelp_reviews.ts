@@ -1,6 +1,4 @@
 export type YelpReviewsParameters = {
-  engine: "yelp_reviews";
-
   /**
    * Place ID
    * Parameter defines the Yelp ID of a place. Each place has two unique IDs (e.g.

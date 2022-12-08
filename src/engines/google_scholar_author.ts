@@ -1,6 +1,4 @@
 export type GoogleScholarAuthorParameters = {
-  engine: "google_scholar_author";
-
   /**
    * Author ID
    * Parameter defines the ID of an author. You can find the ID either by using our

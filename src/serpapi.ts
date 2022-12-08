@@ -1,11 +1,12 @@
 import {
   AccountApiParams,
   AccountInformation,
+  BaseParameters,
   BaseResponse,
+  EngineMap,
   GetBySearchIdParameters,
   Locations,
   LocationsApiParams,
-  SearchParameters,
 } from "./types.ts";
 import {
   _internals,
@@ -25,25 +26,27 @@ const SEARCH_ARCHIVE_PATH = `/searches`;
  *
  * ```ts
  * // async/await
- * const json = await getJson({ engine: "google", api_key: API_KEY, q: "coffee" });
+ * const json = await getJson("google", { api_key: API_KEY, q: "coffee" });
  *
  * // callback
- * getJson({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
+ * getJson("google", { api_key: API_KEY, q: "coffee" }, console.log);
  * ```
  */
 export async function getJson<
-  P extends SearchParameters,
-  R extends BaseResponse<P> = BaseResponse<P>,
+  E extends keyof EngineMap,
+  R extends BaseResponse<EngineMap[E]["parameters"]>,
 >(
-  parameters: P,
+  engine: E,
+  parameters: BaseParameters & EngineMap[E]["parameters"],
   callback?: (json: R) => void,
 ) {
   const key = validateApiKey(parameters.api_key, true);
   const timeout = validateTimeout(parameters.timeout);
-  const response = await _internals.execute<P>(
+  const response = await _internals.execute(
     SEARCH_PATH,
     {
       ...parameters,
+      engine,
       api_key: key,
       output: "json",
     },
@@ -61,23 +64,29 @@ export async function getJson<
  *
  * ```ts
  * // async/await
- * const html = await getHtml({ engine: "google", api_key: API_KEY, q: "coffee" });
+ * const html = await getHtml("google", { api_key: API_KEY, q: "coffee" });
  *
  * // callback
- * getHtml({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
+ * getHtml("google", { api_key: API_KEY, q: "coffee" }, console.log);
  * ```
  */
-export async function getHtml<P extends SearchParameters>(
-  parameters: P,
+export async function getHtml<E extends keyof EngineMap>(
+  engine: E,
+  parameters: BaseParameters & EngineMap[E]["parameters"],
   callback?: (html: string) => void,
 ) {
   const key = validateApiKey(parameters.api_key, true);
   const timeout = validateTimeout(parameters.timeout);
-  const response = await _internals.execute<P>(SEARCH_PATH, {
-    ...parameters,
-    api_key: key,
-    output: "html",
-  }, timeout);
+  const response = await _internals.execute(
+    SEARCH_PATH,
+    {
+      ...parameters,
+      engine,
+      api_key: key,
+      output: "html",
+    },
+    timeout,
+  );
   const html = await response.text();
   callback?.(html);
   return html;
@@ -90,8 +99,8 @@ export async function getHtml<P extends SearchParameters>(
  * - Accepts an optional callback.
  *
  * ```ts
- * const response = await getJson({ engine: "google", api_key: API_KEY, async: true, q: "coffee" });
- * const id = response.search_metadata.id;
+ * const response = await getJson("google", { api_key: API_KEY, async: true, q: "coffee" });
+ * const { id } = response.search_metadata;
  * await delay(1000); // wait for the request to be processed.
  *
  * // async/await
@@ -102,7 +111,7 @@ export async function getHtml<P extends SearchParameters>(
  * ```
  */
 export async function getJsonBySearchId<
-  R extends BaseResponse = BaseResponse<SearchParameters>,
+  R extends BaseResponse,
 >(
   searchId: string,
   parameters: GetBySearchIdParameters = {},
@@ -131,8 +140,8 @@ export async function getJsonBySearchId<
  * - Responds with a JSON if the search request hasn't completed.
  *
  * ```ts
- * const response = await getJson({ engine: "google", api_key: API_KEY, async: true, q: "coffee" });
- * const id = response.search_metadata.id;
+ * const response = await getJson("google", { api_key: API_KEY, async: true, q: "coffee" });
+ * const { id } = response.search_metadata;
  * await delay(1000); // wait for the request to be processed.
  *
  * // async/await

@@ -1,6 +1,4 @@
 export type AppleReviewsParameters = {
-  engine: "apple_reviews";
-
   /**
    * Product Id
    * Parameter defines the ID of a product you want to get the reviews for.

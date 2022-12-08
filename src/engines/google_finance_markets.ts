@@ -1,6 +1,4 @@
 export type GoogleFinanceMarketsParameters = {
-  engine: "google_finance_markets";
-
   /**
    * Search Query
    * Parameter is used for retrieving different market trends. Available options:

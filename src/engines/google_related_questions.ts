@@ -1,6 +1,4 @@
 export type GoogleRelatedQuestionsParameters = {
-  engine: "google_related_questions";
-
   /**
    * Next Page Token
    * Parameter defines the token needed to show more Q&A pairs that Google generates

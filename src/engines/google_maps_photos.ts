@@ -1,6 +1,4 @@
 export type GoogleMapsPhotosParameters = {
-  engine: "google_maps_photos";
-
   /**
    * Data ID
    * Parameter defines the Google Maps data ID. Find the data ID of a place using our

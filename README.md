@@ -17,8 +17,7 @@ npm install serpapi
 
 ```js
 import { getJson } from "serpapi";
-const response = await getJson({
-  engine: "google",
+const response = await getJson("google", {
   api_key: API_KEY, // Get your API_KEY from https://serpapi.com/manage-api-key
   q: "coffee",
   location: "Austin, Texas",
@@ -45,7 +44,7 @@ import { getJson } from "https://deno.land/x/serpapi/mod.ts";
 
 ## Configuration
 
-You can declare a global api_key and timeout value by modifying the config
+You can declare a global `api_key` and `timeout` value by modifying the `config`
 object. `timeout` is defined in milliseconds and defaults to 60 seconds.
 
 ```js
@@ -54,7 +53,7 @@ import { config, getJson } from "serpapi";
 config.api_key = API_KEY;
 config.timeout = 60000;
 
-await getJson({ engine: "google", q: "coffee" }); // uses the API key defined in the config
+await getJson("google", { q: "coffee" }); // uses the API key defined in the config
 ```
 
 ## Functions
@@ -80,7 +79,7 @@ import {
   getJson,
   getJsonBySearchId,
   getLocations,
-} from "./mod.ts";
+} from "serpapi";
 
 const locations = await getLocations({ q: "Austin" });
 const location = locations[0].name;
@@ -91,7 +90,7 @@ config.api_key = API_KEY;
 const accountInfo = await getAccount();
 console.log(`searches left: ${accountInfo.plan_searches_left}`);
 
-const response = await getJson({ engine: "google", q: "coffee", async: true });
+const response = await getJson("google", { q: "coffee", async: true });
 const searchId = response.search_metadata.id;
 console.log(`processing ${searchId}`);
 
@@ -112,14 +111,13 @@ Get a JSON response based on search parameters.
 
 ```ts
 // async/await
-const response = await getJson({
-  engine: "google",
+const response = await getJson("google", {
   api_key: API_KEY,
   q: "coffee",
 });
 
 // callback
-getJson({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
+getJson("google", { api_key: API_KEY, q: "coffee" }, console.log);
 ```
 
 </details>
@@ -138,14 +136,13 @@ Get a HTML response based on search parameters.
 
 ```ts
 // async/await
-const response = await getHtml({
-  engine: "google",
+const response = await getHtml("google", {
   api_key: API_KEY,
   q: "coffee",
 });
 
 // callback
-getHtml({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
+getHtml("google", { api_key: API_KEY, q: "coffee" }, console.log);
 ```
 
 </details>
@@ -165,8 +162,7 @@ Get a JSON response given a search ID.
 - Accepts an optional callback.
 
 ```ts
-const response = await getJson({
-  engine: "google",
+const response = await getJson("google", {
   api_key: API_KEY,
   async: true,
   q: "coffee",
@@ -199,8 +195,7 @@ Get a HTML response given a search ID.
 - Responds with a JSON if the search request hasn't completed.
 
 ```ts
-const response = await getJson({
-  engine: "google",
+const response = await getJson("google", {
   api_key: API_KEY,
   async: true,
   q: "coffee",

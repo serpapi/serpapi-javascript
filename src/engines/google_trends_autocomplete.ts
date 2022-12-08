@@ -1,6 +1,4 @@
 export type GoogleTrendsAutocompleteParameters = {
-  engine: "google_trends_autocomplete";
-
   /**
    * Search Query
    * Parameter defines the query you want to search. You can use anything that you

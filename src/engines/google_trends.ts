@@ -1,6 +1,4 @@
 export type GoogleTrendsParameters = {
-  engine: "google_trends";
-
   /**
    * Search Query
    * Parameter defines the query or queries you want to search. You can use anything

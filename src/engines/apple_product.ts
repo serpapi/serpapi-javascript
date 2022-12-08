@@ -1,6 +1,4 @@
 export type AppleProductParameters = {
-  engine: "apple_product";
-
   /**
    * Product Id
    * Parameter defines the product id you want to search. You can use the specific id

@@ -1,6 +1,4 @@
 export type GoogleScholarParameters = {
-  engine: "google_scholar";
-
   /**
    * Search Query
    * Parameter defines the query you want to search. You can also use helpers in your

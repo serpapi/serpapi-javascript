@@ -17,7 +17,7 @@ migrate over to the `serpapi` npm package.
 
   // ✅ New way, import and use functions directly.
   import { getJson } from "serpapi";
-  getJson({ engine: "google", api_key: API_KEY, ... })
+  getJson("google", { api_key: API_KEY, ... })
   ```
 
 - The `search_archive` method is replaced by `getJsonBySearchId` and
@@ -61,7 +61,7 @@ migrate over to the `serpapi` npm package.
   engine.json({ q: "coffee", api_key: undefined });
 
   // ✅ Now, no error is thrown.
-  getJson({ engine: "google", q: "coffee", api_key: undefined });
+  getJson("google", { q: "coffee", api_key: undefined });
   ```
 
 ## Added
@@ -69,7 +69,7 @@ migrate over to the `serpapi` npm package.
 - TypeScript types for supported parameters.
 - First-class Promises support.
   ```js
-  const json = await getJson({ engine: "google", q: "coffee" });
+  const json = await getJson("google", { q: "coffee" });
   ```
 - `config` object to configure global `api_key` and `timeout` values.
   ```js
@@ -79,6 +79,6 @@ migrate over to the `serpapi` npm package.
   ```
 - Error classes (`MissingApiKeyError` and `InvalidTimeoutError`).
   ```js
-  getJson({ engine: "google", api_key: "" }); // Throws `MissingApiKeyError`
+  getJson("google", { api_key: "" }); // Throws `MissingApiKeyError`
   getAccount({ api_key: API_KEY, timeout: 0 }); // Throws `InvalidTimeoutError`
   ```

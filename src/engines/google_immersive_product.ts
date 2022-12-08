@@ -1,6 +1,4 @@
 export type GoogleImmersiveProductParameters = {
-  engine: "google_immersive_product";
-
   /**
    * Page Token
    * Parameter defines the token needed to show more product info in Google immersive

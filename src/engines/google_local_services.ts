@@ -1,6 +1,4 @@
 export type GoogleLocalServicesParameters = {
-  engine: "google_local_services";
-
   /**
    * Search Query
    * Parameter defines the service you want to search for.

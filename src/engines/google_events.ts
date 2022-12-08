@@ -1,6 +1,4 @@
 export type GoogleEventsParameters = {
-  engine: "google_events";
-
   /**
    * Search Query
    * Parameter defines the query you want to search. To search for events in a

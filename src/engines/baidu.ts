@@ -1,6 +1,4 @@
 export type BaiduParameters = {
-  engine: "baidu";
-
   /**
    * Search Query
    * Parameter defines the the search query, including all Baidu search operators.
@@ -36,9 +34,9 @@ export type BaiduParameters = {
   /**
    * Time Period for Results
    * Parameter defines the time period for results. (e.g.,
-   * `stf=1669802978,1670407778|stftype=1` only returns results from the past 7 days.
-   * First integer within the parameter,`1669802978` is Unix Timestamp for 7 days
-   * ago. Second integer,`1670407778` is Unix Timestamp for now.).
+   * `stf=1669876665,1670481465|stftype=1` only returns results from the past 7 days.
+   * First integer within the parameter,`1669876665` is Unix Timestamp for 7 days
+   * ago. Second integer,`1670481465` is Unix Timestamp for now.).
    */
   gpc?: string;
 

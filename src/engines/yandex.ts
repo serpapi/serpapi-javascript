@@ -1,6 +1,4 @@
 export type YandexParameters = {
-  engine: "yandex";
-
   /**
    * Search Query
    * Parameter defines the search query. You can use anything that you would use in a
