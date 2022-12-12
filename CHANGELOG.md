@@ -10,6 +10,8 @@ and this project adheres to
 
 ### Added
 
+- README badges
+
 ### Changed
 
 ### Fixed

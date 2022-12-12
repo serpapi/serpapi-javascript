@@ -1,5 +1,11 @@
 # SerpApi for JavaScript/TypeScript
 
+[![npm version](https://img.shields.io/npm/v/serpapi)](https://www.npmjs.com/package/serpapi)
+[![Deno version](https://deno.land/badge/serpapi/version)](https://deno.land/x/serpapi)
+[![Build status](https://github.com/serpapi/serpapi-javascript/workflows/Build/badge.svg?branch=master)](https://github.com/serpapi/serpapi-javascript/actions/workflows/build.yml)
+[![License](https://img.shields.io/github/license/serpapi/serpapi-javascript)](https://github.com/serpapi/serpapi-javascript/blob/master/LICENSE)
+[![SerpApi SDK](https://img.shields.io/badge/SerpApi-SDK-blue)](https://serpapi.com/integrations)
+
 Scrape and parse search engine results using [SerpApi](https://serpapi.com). Get
 search results from Google, Bing, Baidu, Yandex, Yahoo, Home Depot, eBay and
 more.
