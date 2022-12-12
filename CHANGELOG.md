@@ -10,16 +10,22 @@ and this project adheres to
 
 ### Added
 
-- README badges
-- [Google Jobs] Add `ltype` parameter
-
 ### Changed
 
 ### Fixed
 
-- Fix issue where setting `api_key` in config was not working
-
 ### Removed
+
+## [0.0.8] - 2022-12-12
+
+### Added
+
+- README badges
+- [Google Jobs] Add `ltype` parameter
+
+### Fixed
+
+- Fix issue where setting `api_key` in config was not working
 
 ## [0.0.7] - 2022-12-08
 
@@ -61,7 +67,8 @@ The API signatures of all functions are as follows:
 - `getAccount(parameters?, callback?)`
 - `getLocations(parameters?, callback?)`
 
-[unreleased]: https://github.com/serpapi/serpapi-javascript/compare/0.0.7...HEAD
+[unreleased]: https://github.com/serpapi/serpapi-javascript/compare/0.0.8...HEAD
+[0.0.8]: https://github.com/serpapi/serpapi-javascript/compare/0.0.7...0.0.8
 [0.0.7]: https://github.com/serpapi/serpapi-javascript/compare/0.0.6...0.0.7
 [0.0.6]: https://github.com/serpapi/serpapi-javascript/compare/0.0.5...0.0.6
 [0.0.5]: https://github.com/serpapi/serpapi-javascript/compare/0.0.4...0.0.5
