@@ -17,6 +17,8 @@ and this project adheres to
 
 ### Fixed
 
+- Fix issue where setting `api_key` in config was not working
+
 ### Removed
 
 ## [0.0.7] - 2022-12-08

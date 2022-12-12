@@ -54,14 +54,14 @@ migrate over to the `serpapi` npm package.
 
 ## Fixed
 
-- Setting the `api_key` parameter to `undefined` works for unmetered queries.
+- Setting the `api_key` parameter to `null` works for unmetered queries.
   ```js
-  // ❌ Previously, error is thrown.
+  // ❌ Previously, error is thrown when api_key is undefined or null.
   const engine = new GoogleSearch();
   engine.json({ q: "coffee", api_key: undefined });
 
-  // ✅ Now, no error is thrown.
-  getJson("google", { q: "coffee", api_key: undefined });
+  // ✅ Now, no error is thrown when api_key is null
+  getJson("google", { q: "coffee", api_key: null });
   ```
 
 ## Added

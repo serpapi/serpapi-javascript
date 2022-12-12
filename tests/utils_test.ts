@@ -38,26 +38,57 @@ describe("validateApiKey", () => {
     config.api_key = null;
   });
 
-  it("with no api_key", () => {
+  it("with no api_key in config", () => {
     assertThrows(() => validateApiKey(""), MissingApiKeyError);
     assertThrows(() => validateApiKey(undefined), MissingApiKeyError);
+    assertThrows(() => validateApiKey(null), MissingApiKeyError);
+    assertEquals(validateApiKey("  "), "  ");
+    assertEquals(validateApiKey("asd"), "asd");
   });
 
-  it("with api_key set in config", () => {
+  it("with api_key in config", () => {
     config.api_key = "api_key";
     assertThrows(() => validateApiKey(""), MissingApiKeyError);
     assertEquals(validateApiKey(undefined), "api_key");
+    assertEquals(validateApiKey(null), "api_key");
+    assertEquals(validateApiKey("  "), "  ");
+    assertEquals(validateApiKey("asd"), "asd");
   });
 
-  it("with empty api_key set in config", () => {
+  it("with empty api_key in config", () => {
     config.api_key = "";
     assertThrows(() => validateApiKey(""), MissingApiKeyError);
     assertThrows(() => validateApiKey(undefined), MissingApiKeyError);
-  });
-
-  it("with api_key", () => {
+    assertThrows(() => validateApiKey(null), MissingApiKeyError);
+    assertEquals(validateApiKey("api_key_2"), "api_key_2");
     assertEquals(validateApiKey("  "), "  ");
     assertEquals(validateApiKey("asd"), "asd");
+  });
+
+  it("with no api_key in config and allowNull is true", () => {
+    assertThrows(() => validateApiKey("", true), MissingApiKeyError);
+    assertThrows(() => validateApiKey(undefined, true), MissingApiKeyError);
+    assertEquals(validateApiKey(null, true), undefined);
+    assertEquals(validateApiKey("  ", true), "  ");
+    assertEquals(validateApiKey("asd", true), "asd");
+  });
+
+  it("with api_key in config and allowNull is true", () => {
+    config.api_key = "api_key";
+    assertThrows(() => validateApiKey("", true), MissingApiKeyError);
+    assertEquals(validateApiKey(undefined, true), "api_key");
+    assertEquals(validateApiKey(null, true), undefined);
+    assertEquals(validateApiKey("  ", true), "  ");
+    assertEquals(validateApiKey("asd", true), "asd");
+  });
+
+  it("with empty api_key in config and allowNull is true", () => {
+    config.api_key = "";
+    assertThrows(() => validateApiKey("", true), MissingApiKeyError);
+    assertThrows(() => validateApiKey(undefined, true), MissingApiKeyError);
+    assertEquals(validateApiKey(null, true), undefined);
+    assertEquals(validateApiKey("  ", true), "  ");
+    assertEquals(validateApiKey("asd", true), "asd");
   });
 });
 

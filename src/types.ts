@@ -110,7 +110,7 @@ export type BaseParameters = {
   device?: "desktop" | "tablet" | "mobile";
   no_cache?: boolean;
   async?: boolean;
-  api_key?: string;
+  api_key?: string | null;
   timeout?: number;
 };
 export type BaseResponse<P = Record<string | number | symbol, never>> = {
