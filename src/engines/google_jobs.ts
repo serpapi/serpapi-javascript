@@ -73,4 +73,10 @@ export type GoogleJobsParameters = {
    * Defines search radius in kilometers. Does not strictly limit the radius.
    */
   lrad?: string;
+
+  /**
+   * Work From Home
+   * Parameter will filter the results by work from home.
+   */
+  ltype?: string;
 };

@@ -11,6 +11,7 @@ and this project adheres to
 ### Added
 
 - README badges
+- [Google Jobs] Add `ltype` parameter
 
 ### Changed
 
