@@ -24,3 +24,12 @@ jobs:
         env:
           SERPAPI_TEST_KEY: ${{ secrets.SERPAPI_TEST_KEY }}
         run: deno task test:ci
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          registry-url: 'https://registry.npmjs.org'
+      
+      - name: Test building of npm files
+        run: deno task npm 0.0.0

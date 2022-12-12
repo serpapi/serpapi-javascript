@@ -10,6 +10,8 @@ and this project adheres to
 
 ### Added
 
+- Updated build GitHub Action workflow to test the building of npm files.
+
 ### Changed
 
 - Updated tests
