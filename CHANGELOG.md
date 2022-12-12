@@ -12,6 +12,11 @@ and this project adheres to
 
 ### Changed
 
+- Updated tests
+  - Run `getLocations` tests regardless of whether API key is defined
+  - Use metered query for some tests
+  - Add missing case for `getHtmlBySearchId`
+
 ### Fixed
 
 ### Removed

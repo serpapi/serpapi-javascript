@@ -155,9 +155,7 @@ describe("getLocations", {
     urlStub.restore();
   });
 
-  it("with invalid timeout", {
-    ignore: !HAS_API_KEY,
-  }, () => {
+  it("with invalid timeout", () => {
     assertRejects(
       async () => await getLocations({ timeout: 0 }),
       InvalidTimeoutError,
@@ -168,17 +166,13 @@ describe("getLocations", {
     );
   });
 
-  it("async/await", {
-    ignore: !HAS_API_KEY,
-  }, async () => {
+  it("async/await", async () => {
     const locations = await getLocations({ limit: 3 });
     assertInstanceOf(locations, Array);
     assertEquals(locations.length, 3);
   });
 
-  it("callback", {
-    ignore: !HAS_API_KEY,
-  }, async () => {
+  it("callback", async () => {
     const locations = await new Promise<
       Awaited<ReturnType<typeof getLocations>>
     >(
@@ -188,9 +182,7 @@ describe("getLocations", {
     assertEquals(locations.length, 3);
   });
 
-  it("without parameters", {
-    ignore: !HAS_API_KEY,
-  }, async () => {
+  it("without parameters", async () => {
     const locations = await getLocations();
     assertInstanceOf(locations, Array);
   });

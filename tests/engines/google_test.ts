@@ -132,7 +132,7 @@ describe("google", {
   }, async () => {
     config.api_key = SERPAPI_TEST_KEY;
     const response = await getJson(engine, {
-      q: "coffee",
+      q: "serpapi",
     });
     assertArrayIncludes(Object.keys(response).sort(), [
       "organic_results",
@@ -211,7 +211,7 @@ describe("google", {
   }, async () => {
     config.api_key = SERPAPI_TEST_KEY;
     const response = await getHtml(engine, {
-      q: "coffee",
+      q: "serpapi",
     });
     assertStringIncludes(response, "<html");
     assertStringIncludes(response, "<body");
@@ -348,6 +348,24 @@ describe("google", {
         html = await new Promise<
           Awaited<ReturnType<typeof getHtmlBySearchId>>
         >((res) => getHtmlBySearchId(id, { api_key: SERPAPI_TEST_KEY }, res));
+        try {
+          JSON.parse(html);
+        } catch { // If parsing fails, it means the request has completed
+          break;
+        }
+        await delay(500);
+      }
+      assertStringIncludes(html, "<html");
+      assertStringIncludes(html, "<body");
+      assertStringIncludes(html, "</body>");
+      assertStringIncludes(html, "</html>");
+    });
+
+    await t.step("getHtmlBySearchId with api_key from config", async () => {
+      let html;
+      config.api_key = SERPAPI_TEST_KEY;
+      while (true) {
+        html = await getHtmlBySearchId(id);
         try {
           JSON.parse(html);
         } catch { // If parsing fails, it means the request has completed
