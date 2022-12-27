@@ -68,6 +68,7 @@ export type { AppleAppStoreParameters } from "./src/engines/apple_app_store.ts";
 export type { AppleReviewsParameters } from "./src/engines/apple_reviews.ts";
 export type { AppleProductParameters } from "./src/engines/apple_product.ts";
 export type { NaverParameters } from "./src/engines/naver.ts";
+export type { GoogleLensParameters } from "./src/engines/google_lens.ts";
 export type { GoogleLocalServicesParameters } from "./src/engines/google_local_services.ts";
 export type { GoogleAboutThisResultParameters } from "./src/engines/google_about_this_result.ts";
 export type { YelpParameters } from "./src/engines/yelp.ts";

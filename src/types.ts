@@ -45,6 +45,7 @@ import type { AppleAppStoreParameters } from "./engines/apple_app_store.ts";
 import type { AppleReviewsParameters } from "./engines/apple_reviews.ts";
 import type { AppleProductParameters } from "./engines/apple_product.ts";
 import type { NaverParameters } from "./engines/naver.ts";
+import type { GoogleLensParameters } from "./engines/google_lens.ts";
 import type { GoogleLocalServicesParameters } from "./engines/google_local_services.ts";
 import type { GoogleAboutThisResultParameters } from "./engines/google_about_this_result.ts";
 import type { YelpParameters } from "./engines/yelp.ts";
@@ -100,6 +101,7 @@ export type EngineMap = {
   apple_reviews: { parameters: AppleReviewsParameters };
   apple_product: { parameters: AppleProductParameters };
   naver: { parameters: NaverParameters };
+  google_lens: { parameters: GoogleLensParameters };
   google_local_services: { parameters: GoogleLocalServicesParameters };
   google_about_this_result: { parameters: GoogleAboutThisResultParameters };
   yelp: { parameters: YelpParameters };

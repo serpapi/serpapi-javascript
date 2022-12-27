@@ -10,18 +10,25 @@ and this project adheres to
 
 ### Added
 
-- Updated build GitHub Action workflow to test the building of npm files.
-
 ### Changed
-
-- Updated tests
-  - Run `getLocations` tests regardless of whether API key is defined
-  - Use metered query for some tests
-  - Add missing case for `getHtmlBySearchId`
 
 ### Fixed
 
 ### Removed
+
+## [0.0.9] - 2022-12-27
+
+### Added
+
+- [Google Lens] Add types
+- Update build GitHub Action workflow to test the building of npm files.
+
+### Changed
+
+- Update tests
+  - Run `getLocations` tests regardless of whether API key is defined
+  - Use metered query for some tests
+  - Add missing case for `getHtmlBySearchId`
 
 ## [0.0.8] - 2022-12-12
 
@@ -74,7 +81,8 @@ The API signatures of all functions are as follows:
 - `getAccount(parameters?, callback?)`
 - `getLocations(parameters?, callback?)`
 
-[unreleased]: https://github.com/serpapi/serpapi-javascript/compare/0.0.8...HEAD
+[unreleased]: https://github.com/serpapi/serpapi-javascript/compare/0.0.9...HEAD
+[0.0.9]: https://github.com/serpapi/serpapi-javascript/compare/0.0.8...0.0.9
 [0.0.8]: https://github.com/serpapi/serpapi-javascript/compare/0.0.7...0.0.8
 [0.0.7]: https://github.com/serpapi/serpapi-javascript/compare/0.0.6...0.0.7
 [0.0.6]: https://github.com/serpapi/serpapi-javascript/compare/0.0.5...0.0.6
