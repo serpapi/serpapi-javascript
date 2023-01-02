@@ -11,6 +11,8 @@ and this project adheres to
 ### Added
 
 - [Google About This Result] Add `google_domain` parameter
+- Ensure `cov_profile` is cleared when generating test coverage
+- Add `CONTRIBUTING.md`
 
 ### Changed
 
