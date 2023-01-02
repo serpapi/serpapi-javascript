@@ -10,9 +10,10 @@ and this project adheres to
 
 ### Added
 
-- [Google About This Result] Add `google_domain` parameter
-- Ensure `cov_profile` is cleared when generating test coverage
-- Add `CONTRIBUTING.md`
+- [Google About This Result] Add `google_domain` parameter.
+- Ensure `cov_profile` is cleared when generating test coverage.
+- Add `CONTRIBUTING.md`.
+- Update VSCode workspace settings to format TypeScript and Markdown using deno.
 
 ### Changed
 
@@ -24,26 +25,26 @@ and this project adheres to
 
 ### Added
 
-- [Google Lens] Add types
+- [Google Lens] Add types.
 - Update build GitHub Action workflow to test the building of npm files.
 
 ### Changed
 
-- Update tests
-  - Run `getLocations` tests regardless of whether API key is defined
-  - Use metered query for some tests
-  - Add missing case for `getHtmlBySearchId`
+- Update tests.
+  - Run `getLocations` tests regardless of whether API key is defined.
+  - Use metered query for some tests.
+  - Add missing case for `getHtmlBySearchId`.
 
 ## [0.0.8] - 2022-12-12
 
 ### Added
 
-- README badges
-- [Google Jobs] Add `ltype` parameter
+- README badges.
+- [Google Jobs] Add `ltype` parameter.
 
 ### Fixed
 
-- Fix issue where setting `api_key` in config was not working
+- Fix issue where setting `api_key` in config was not working.
 
 ## [0.0.7] - 2022-12-08
 
