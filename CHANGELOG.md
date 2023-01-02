@@ -10,6 +10,8 @@ and this project adheres to
 
 ### Added
 
+- [Google About This Result] Add `google_domain` parameter
+
 ### Changed
 
 ### Fixed

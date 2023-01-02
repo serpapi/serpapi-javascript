@@ -8,6 +8,14 @@ export type GoogleAboutThisResultParameters = {
   q: string;
 
   /**
+   * Domain
+   * Parameter defines the Google domain to use. It defaults to `google.com`. Head to
+   * the [Google domains page](https://serpapi.com/google-domains) for a full list of
+   * supported Google domains.
+   */
+  google_domain?: string;
+
+  /**
    * Result ID
    * Parameter defines unique ID of a website which results you what to show.
    */
