@@ -137,7 +137,7 @@ export type GetBySearchIdParameters = {
   timeout?: number;
 };
 
-export type AccountApiParams = {
+export type AccountApiParameters = {
   api_key?: string;
   timeout?: number;
 };
@@ -157,7 +157,7 @@ export type AccountInformation = {
   total_searches_left: number;
 };
 
-export type LocationsApiParams = {
+export type LocationsApiParameters = {
   q?: string;
   limit?: number;
   timeout?: number;

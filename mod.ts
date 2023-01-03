@@ -2,7 +2,7 @@ export type { Config } from "./src/config.ts";
 export { config } from "./src/config.ts";
 
 export type {
-  AccountApiParams,
+  AccountApiParameters,
   AccountInformation,
   BaseParameters,
   BaseResponse,
@@ -10,7 +10,7 @@ export type {
   GetBySearchIdParameters,
   Location,
   Locations,
-  LocationsApiParams,
+  LocationsApiParameters,
 } from "./src/types.ts";
 export {
   getAccount,

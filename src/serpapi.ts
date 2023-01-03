@@ -1,12 +1,12 @@
 import {
-  AccountApiParams,
+  AccountApiParameters,
   AccountInformation,
   BaseParameters,
   BaseResponse,
   EngineMap,
   GetBySearchIdParameters,
   Locations,
-  LocationsApiParams,
+  LocationsApiParameters,
 } from "./types.ts";
 import {
   _internals,
@@ -199,7 +199,7 @@ export async function getHtmlBySearchId(
  * getAccount({ api_key: API_KEY }, console.log);
  */
 export async function getAccount(
-  parameters: AccountApiParams = {},
+  parameters: AccountApiParameters = {},
   callback?: (info: AccountInformation) => void,
 ) {
   const key = validateApiKey(parameters.api_key);
@@ -229,7 +229,7 @@ export async function getAccount(
  * getLocations({ limit: 3 }, console.log);
  */
 export async function getLocations(
-  parameters: LocationsApiParams = {},
+  parameters: LocationsApiParameters = {},
   callback?: (locations: Locations) => void,
 ) {
   const timeout = validateTimeout(parameters.timeout);
