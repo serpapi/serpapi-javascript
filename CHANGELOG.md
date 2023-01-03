@@ -10,18 +10,26 @@ and this project adheres to
 
 ### Added
 
-- [Google About This Result] Add `google_domain` parameter.
-- Ensure `cov_profile` is cleared when generating test coverage.
-- Add `CONTRIBUTING.md`.
-- Update VSCode workspace settings to format TypeScript and Markdown using deno.
-
 ### Changed
 
 ### Fixed
 
-- Ensure engine parameter types include SerpApi types (e.g. `api_key`, `device`)
-
 ### Removed
+
+## [0.0.10] - 2023-01-03
+
+### Added
+
+- [Google About This Result] Add `google_domain` parameter.
+- Ensure `cov_profile` is cleared when generating test coverage.
+- Add `CONTRIBUTING.md`.
+- Update VSCode workspace settings to format TypeScript and Markdown using deno.
+- Add descriptions for base parameters.
+
+### Fixed
+
+- Ensure engine parameter types include SerpApi types (e.g. `api_key`,
+  `device`).
 
 ## [0.0.9] - 2022-12-27
 
@@ -88,7 +96,8 @@ The API signatures of all functions are as follows:
 - `getAccount(parameters?, callback?)`
 - `getLocations(parameters?, callback?)`
 
-[unreleased]: https://github.com/serpapi/serpapi-javascript/compare/0.0.9...HEAD
+[unreleased]: https://github.com/serpapi/serpapi-javascript/compare/0.0.10...HEAD
+[0.0.10]: https://github.com/serpapi/serpapi-javascript/compare/0.0.9...0.0.10
 [0.0.9]: https://github.com/serpapi/serpapi-javascript/compare/0.0.8...0.0.9
 [0.0.8]: https://github.com/serpapi/serpapi-javascript/compare/0.0.7...0.0.8
 [0.0.7]: https://github.com/serpapi/serpapi-javascript/compare/0.0.6...0.0.7
