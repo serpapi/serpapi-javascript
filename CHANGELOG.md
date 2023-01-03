@@ -19,6 +19,8 @@ and this project adheres to
 
 ### Fixed
 
+- Ensure engine parameter types include SerpApi types (e.g. `api_key`, `device`)
+
 ### Removed
 
 ## [0.0.9] - 2022-12-27

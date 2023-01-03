@@ -81,11 +81,8 @@ TypeScript types are generated from the backend code. Follow these steps to
 update the types.
 
 1. Run `bundle exec rails sdk:generate_ts_types` in the backend repository.
-2. Copy all files in `tmp/ts/engines` to `src/engines`.
-3. Based on `tmp/ts/mod.ts`, update `mod.ts` with the updated `export type`
-   lines.
-4. Based on `tmp/ts/types.ts`, update `src/types.ts` with the updated
-   `import type` lines and the updated `EngineMap` record.
+2. Replace everything in `src/engines` with the generated files from
+   `tmp/ts/engines`.
 
 ## Get approval
 

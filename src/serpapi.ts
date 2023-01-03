@@ -1,13 +1,12 @@
 import {
   AccountApiParameters,
   AccountInformation,
-  BaseParameters,
   BaseResponse,
-  EngineMap,
   GetBySearchIdParameters,
   Locations,
   LocationsApiParameters,
-} from "./types.ts";
+} from "./types.d.ts";
+import { EngineMap } from "./engines/index.d.ts";
 import {
   _internals,
   execute,
@@ -39,7 +38,7 @@ export async function getJson<
   R extends BaseResponse<EngineMap[E]["parameters"]>,
 >(
   engine: E,
-  parameters: BaseParameters & EngineMap[E]["parameters"],
+  parameters: EngineMap[E]["parameters"],
   callback?: (json: R) => void,
 ) {
   const key = validateApiKey(parameters.api_key, true);
@@ -76,7 +75,7 @@ export async function getJson<
  */
 export async function getHtml<E extends keyof EngineMap>(
   engine: E,
-  parameters: BaseParameters & EngineMap[E]["parameters"],
+  parameters: EngineMap[E]["parameters"],
   callback?: (html: string) => void,
 ) {
   const key = validateApiKey(parameters.api_key, true);
