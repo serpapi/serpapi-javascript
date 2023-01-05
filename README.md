@@ -17,6 +17,8 @@ more.
 
 ### Node.js
 
+Ensure you're running at least Node.js v16.14.
+
 ```bash
 npm install serpapi
 ```

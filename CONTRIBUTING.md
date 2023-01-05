@@ -5,7 +5,7 @@
 `serpapi-javascript` is developed using Deno. Refer to
 https://deno.land/manual/getting_started/installation to install Deno.
 
-Verify that you're running at least Deno v1.28.3.
+Ensure you're running at least Deno v1.28.3.
 
 ```bash
 deno --version
