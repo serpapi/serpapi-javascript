@@ -10,15 +10,22 @@ and this project adheres to
 
 ### Added
 
+### Changed
+
+### Fixed
+
+### Removed
+
+## [0.0.11] - 2023-01-05
+
+### Added
+
 - Add module version to the `source` parameter.
 
 ### Changed
 
 - Update deploy flow to be triggered by a change in `version.ts`.
-
-### Fixed
-
-### Removed
+- Update development dependencies.
 
 ## [0.0.10] - 2023-01-03
 
@@ -100,7 +107,8 @@ The API signatures of all functions are as follows:
 - `getAccount(parameters?, callback?)`
 - `getLocations(parameters?, callback?)`
 
-[unreleased]: https://github.com/serpapi/serpapi-javascript/compare/0.0.10...HEAD
+[unreleased]: https://github.com/serpapi/serpapi-javascript/compare/0.0.11...HEAD
+[0.0.11]: https://github.com/serpapi/serpapi-javascript/compare/0.0.10...0.0.11
 [0.0.10]: https://github.com/serpapi/serpapi-javascript/compare/0.0.9...0.0.10
 [0.0.9]: https://github.com/serpapi/serpapi-javascript/compare/0.0.8...0.0.9
 [0.0.8]: https://github.com/serpapi/serpapi-javascript/compare/0.0.7...0.0.8
