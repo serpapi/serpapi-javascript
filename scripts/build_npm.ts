@@ -1,13 +1,7 @@
 import { build, emptyDir } from "https://deno.land/x/dnt@0.32.0/mod.ts";
+import { version } from "../version.ts";
 
 await emptyDir("./npm");
-
-const version = Deno.args[0];
-if (!version) {
-  throw new Error(
-    "Specify a version as the first argument, e.g. `deno task npm 0.0.1`",
-  );
-}
 
 await build({
   entryPoints: ["./mod.ts"],

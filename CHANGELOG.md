@@ -14,6 +14,8 @@ and this project adheres to
 
 ### Changed
 
+- Update deploy flow to be triggered by a change in `version.ts`.
+
 ### Fixed
 
 ### Removed

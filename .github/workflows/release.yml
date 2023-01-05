@@ -2,8 +2,10 @@ name: Release
 
 on:
   push:
-    tags:
-      - '*'
+    branches:
+      - master
+    paths:
+      - 'version.ts'
 
 jobs:
   release:
@@ -27,23 +29,24 @@ jobs:
         env:
           SERPAPI_TEST_KEY: ${{ secrets.SERPAPI_TEST_KEY }}
         run: deno task test:ci
-      
-      - name: Get tag version
-        if: startsWith(github.ref, 'refs/tags/')
-        id: get_tag_version
-        run: echo "TAG_VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
-      
+
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
-      
+
       - name: Build npm files
-        run: deno task npm ${{ steps.get_tag_version.outputs.TAG_VERSION }}
-      
+        run: deno task npm
+
+      - name: Push tag
+        run: |
+          VERSION=$(cat version.ts | sed -n 's/.*"\(.*\)".*/\1/p')
+          echo $VERSION
+          git tag $VERSION
+          git push origin $VERSION
+
       - name: npm publish
-        if: startsWith(github.ref, 'refs/tags/')
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: cd npm && npm publish

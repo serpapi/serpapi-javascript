@@ -96,11 +96,11 @@ SerpApi project members will then review the request.
 
 ## Release new versions
 
-1. Update changelog
+1. Update changelog.
 2. Merge the associated PR and ensure the "Build" workflow succeeds.
-3. Push a new tag based on [semantic versioning](https://semver.org/), e.g.
+3. Update `version.ts` based on [semantic versioning](https://semver.org/), e.g.
    `1.2.0`.
-4. Once the "Release" workflow succeeds, verify the new versions on npm and
-   deno.land/x.
+4. Push `version.ts`. This triggers the "Release" workflow.
+5. Verify that new versions have been released on npm and deno.land/x.
 
 [^1]: https://deno.land/manual/references/vscode_deno

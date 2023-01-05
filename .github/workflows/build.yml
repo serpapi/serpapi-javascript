@@ -30,6 +30,6 @@ jobs:
         with:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
-      
+
       - name: Test building of npm files
-        run: deno task npm 0.0.0
+        run: deno task npm
