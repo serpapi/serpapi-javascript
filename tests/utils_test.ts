@@ -182,10 +182,10 @@ describe("execute", {
 
     assertSpyCalls(fetchStub, 1);
     const url = fetchStub.calls[0].args[0] as string;
-    // e.g. deno@1.28.2
+    // e.g. deno@1.28.2,serpapi@1.0.0
     assertMatch(
       url,
-      /source=(nodejs|deno)%40\d+\.\d+\.\d+$/,
+      /source=(nodejs|deno)%40\d+\.\d+\.\d+%2Cserpapi%40\d+\.\d+\.\d+$/,
     );
   });
 

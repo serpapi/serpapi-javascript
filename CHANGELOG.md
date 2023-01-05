@@ -10,6 +10,8 @@ and this project adheres to
 
 ### Added
 
+- Add module version to the `source` parameter.
+
 ### Changed
 
 ### Fixed

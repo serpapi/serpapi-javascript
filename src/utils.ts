@@ -1,5 +1,6 @@
 import { config } from "./config.ts";
 import { InvalidTimeoutError, MissingApiKeyError } from "./errors.ts";
+import { version } from "../version.ts";
 
 type UrlParameters = Record<
   string,
@@ -59,22 +60,22 @@ function getBaseUrl() {
   return "https://serpapi.com";
 }
 
-// TODO(seb): get module version too
 function getSource() {
+  const moduleSource = `serpapi@${version}`;
   try {
     // Check if running in Node.js
     // deno-lint-ignore no-explicit-any
     if ((globalThis as any)?.process?.version) {
       // deno-lint-ignore no-explicit-any
       const nodeVersion = (globalThis as any).process.version.replace("v", "");
-      return `nodejs@${nodeVersion}`;
+      return `nodejs@${nodeVersion},${moduleSource}`;
     }
 
     // Assumes running in Deno instead
-    return `deno@${Deno.version.deno}`;
+    return `deno@${Deno.version.deno},${moduleSource}`;
   } catch {
     // If something unexpectedly occurs, revert to "nodejs".
-    return "nodejs";
+    return `nodejs,${moduleSource}`;
   }
 }
 
