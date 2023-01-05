@@ -7,12 +7,8 @@ import {
   LocationsApiParameters,
 } from "./types.d.ts";
 import { EngineMap } from "./engines/index.d.ts";
-import {
-  _internals,
-  execute,
-  validateApiKey,
-  validateTimeout,
-} from "./utils.ts";
+import { _internals, execute } from "./utils.ts";
+import { validateApiKey, validateTimeout } from "./validators.ts";
 
 const ACCOUNT_PATH = "/account";
 const LOCATIONS_PATH = "/locations.json";
