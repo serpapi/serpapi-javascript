@@ -1,4 +1,4 @@
-import { build, emptyDir } from "https://deno.land/x/dnt@0.32.0/mod.ts";
+import { build, emptyDir } from "https://deno.land/x/dnt@0.32.1/mod.ts";
 import { version } from "../version.ts";
 
 await emptyDir("./npm");
@@ -8,7 +8,7 @@ await build({
   outDir: "./npm",
   shims: {
     deno: true, // Required for `Deno.test`, `Deno.env`, etc.
-    domException: true, // deno.land/std@0.166.0/async/delay.ts relies on DOMException
+    domException: true, // https://deno.land/std/async/delay.ts relies on DOMException
     undici: true, // Required for `fetch`
   },
   package: {

@@ -1,23 +1,23 @@
-import { configSync } from "https://deno.land/std@0.166.0/dotenv/mod.ts";
+import { loadSync } from "https://deno.land/std@0.170.0/dotenv/mod.ts";
 import {
   afterAll,
   afterEach,
   beforeAll,
   describe,
   it,
-} from "https://deno.land/std@0.166.0/testing/bdd.ts";
+} from "https://deno.land/std@0.170.0/testing/bdd.ts";
 import {
   assertEquals,
   assertInstanceOf,
   assertRejects,
-} from "https://deno.land/std@0.166.0/testing/asserts.ts";
-import { Stub, stub } from "https://deno.land/std@0.166.0/testing/mock.ts";
+} from "https://deno.land/std@0.170.0/testing/asserts.ts";
+import { Stub, stub } from "https://deno.land/std@0.170.0/testing/mock.ts";
 import { InvalidTimeoutError, MissingApiKeyError } from "../src/errors.ts";
 import { getAccount, getLocations } from "../src/serpapi.ts";
 import { _internals } from "../src/utils.ts";
 import { config } from "../src/config.ts";
 
-configSync({ export: true });
+loadSync({ export: true });
 const SERPAPI_TEST_KEY = Deno.env.get("SERPAPI_TEST_KEY") ?? "";
 const HAS_API_KEY = SERPAPI_TEST_KEY.length > 0;
 const BASE_URL = Deno.env.get("ENV_TYPE") === "local"
