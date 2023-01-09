@@ -16,6 +16,16 @@ and this project adheres to
 
 ### Removed
 
+## [0.0.12] - 2023-01-09
+
+### Changed
+
+- Minor refactoring of validators.
+
+### Fixed
+
+- Ensure engine parameter type exports are not exported in the JS ESM module.
+
 ## [0.0.11] - 2023-01-05
 
 ### Added
@@ -107,7 +117,8 @@ The API signatures of all functions are as follows:
 - `getAccount(parameters?, callback?)`
 - `getLocations(parameters?, callback?)`
 
-[unreleased]: https://github.com/serpapi/serpapi-javascript/compare/0.0.11...HEAD
+[unreleased]: https://github.com/serpapi/serpapi-javascript/compare/0.0.12...HEAD
+[0.0.12]: https://github.com/serpapi/serpapi-javascript/compare/0.0.11...0.0.12
 [0.0.11]: https://github.com/serpapi/serpapi-javascript/compare/0.0.10...0.0.11
 [0.0.10]: https://github.com/serpapi/serpapi-javascript/compare/0.0.9...0.0.10
 [0.0.9]: https://github.com/serpapi/serpapi-javascript/compare/0.0.8...0.0.9
