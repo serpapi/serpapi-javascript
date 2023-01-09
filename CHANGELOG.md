@@ -12,6 +12,8 @@ and this project adheres to
 
 ### Changed
 
+- Refine type exports.
+
 ### Fixed
 
 ### Removed

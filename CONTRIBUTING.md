@@ -83,6 +83,7 @@ update the types.
 1. Run `bundle exec rails sdk:generate_ts_types` in the backend repository.
 2. Replace everything in `src/engines` with the generated files from
    `tmp/ts/engines`.
+3. Update `mod.ts` with the new engine exports from `tmp/ts/mod.ts`.
 
 ## Get approval
 

@@ -6,7 +6,7 @@ import {
   Locations,
   LocationsApiParameters,
 } from "./types.d.ts";
-import { EngineMap } from "./engines/index.d.ts";
+import { EngineMap } from "./engines/engine_map.d.ts";
 import { _internals, execute } from "./utils.ts";
 import { validateApiKey, validateTimeout } from "./validators.ts";
 
