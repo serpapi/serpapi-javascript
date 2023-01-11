@@ -1,4 +1,5 @@
 import { version } from "../version.ts";
+import { EngineMap } from "./engines/engine_map.d.ts";
 
 type UrlParameters = Record<
   string,
@@ -32,6 +33,24 @@ export const _internals = {
 /** Facilitates stubbing in tests, e.g. localhost as the base url */
 function getBaseUrl() {
   return "https://serpapi.com";
+}
+
+export function extractNextParameters<
+  E extends keyof EngineMap,
+  P = EngineMap[E]["parameters"],
+>(json: {
+  serpapi_pagination?: { next: string };
+  pagination?: { next: string };
+}) {
+  const nextUrlString = json["serpapi_pagination"]?.["next"] ||
+    json["pagination"]?.["next"];
+
+  if (nextUrlString) {
+    const nextUrl = new URL(nextUrlString);
+    const nextParameters = Object.fromEntries(nextUrl.searchParams.entries());
+    delete nextParameters["engine"];
+    return nextParameters as { [K in keyof P]: string };
+  }
 }
 
 function getSource() {
