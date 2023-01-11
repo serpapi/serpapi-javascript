@@ -99,6 +99,8 @@ await getJson("google", { api_key: API_KEY_2, q: "coffee" }); // API_KEY_2 will 
 Get a JSON response based on search parameters.
 
 - Accepts an optional callback.
+- Get the next page of results by calling the `.next()` method on the returned
+  response object.
 
 #### Parameters
 
@@ -113,11 +115,33 @@ Get a JSON response based on search parameters.
 #### Examples
 
 ```javascript
-// async/await
+// single call (async/await)
 const json = await getJson("google", { api_key: API_KEY, q: "coffee" });
 
-// callback
+// single call (callback)
 getJson("google", { api_key: API_KEY, q: "coffee" }, console.log);
+```
+
+```javascript
+// pagination (async/await)
+const organicResults = [];
+let page = await getJson("google", { api_key: API_KEY, q: "coffee" });
+while (page) {
+  organicResults.push(...page.organic_results);
+  if (organicResults.length >= 50) break;
+  page = await page.next?.();
+}
+```
+
+```javascript
+// pagination (callback)
+const organicResults = [];
+getJson("google", { api_key: API_KEY, q: "coffee" }, (page) => {
+  organicResults.push(...page.organic_results);
+  if (organicResults.length < 50 && page.next) {
+    page.next();
+  }
+});
 ```
 
 ### getHtml

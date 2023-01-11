@@ -7,7 +7,7 @@ import {
   LocationsApiParameters,
 } from "./types.d.ts";
 import { EngineMap } from "./engines/engine_map.d.ts";
-import { _internals, execute } from "./utils.ts";
+import { _internals, execute, extractNextParameters } from "./utils.ts";
 import { validateApiKey, validateTimeout } from "./validators.ts";
 
 const ACCOUNT_PATH = "/account";
@@ -18,16 +18,37 @@ const SEARCH_ARCHIVE_PATH = `/searches`;
 /**
  * Get a JSON response based on search parameters.
  * - Accepts an optional callback.
+ * - Get the next page of results by calling the `.next()` method on the returned response object.
  *
  * @param {string} engine - engine name
  * @param {object} parameters - search query parameters for the engine
  * @param {fn=} callback - optional callback
  * @example
- * // async/await
+ * // single call (async/await)
  * const json = await getJson("google", { api_key: API_KEY, q: "coffee" });
  *
- * // callback
+ * // single call (callback)
  * getJson("google", { api_key: API_KEY, q: "coffee" }, console.log);
+ *
+ * @example
+ * // pagination (async/await)
+ * const organicResults = [];
+ * let page = await getJson("google", { api_key: API_KEY, q: "coffee" });
+ * while (page) {
+ *   organicResults.push(...page.organic_results);
+ *   if (organicResults.length >= 50) break;
+ *   page = await page.next?.();
+ * }
+ *
+ * @example
+ * // pagination (callback)
+ * const organicResults = [];
+ * getJson("google", { api_key: API_KEY, q: "coffee" }, (page) => {
+ *   organicResults.push(...page.organic_results);
+ *   if (organicResults.length < 50 && page.next) {
+ *     page.next();
+ *   }
+ * });
  */
 export async function getJson<
   E extends keyof EngineMap,
@@ -50,6 +71,17 @@ export async function getJson<
     timeout,
   );
   const json = await response.json() as R;
+  const nextParameters = extractNextParameters<E>(json);
+  if (
+    // https://github.com/serpapi/public-roadmap/issues/562
+    // https://github.com/serpapi/public-roadmap/issues/563
+    engine !== "yahoo_shopping" &&
+    nextParameters &&
+    nextParameters !== parameters
+  ) {
+    json.next = () =>
+      getJson(engine, nextParameters as EngineMap[E]["parameters"], callback);
+  }
   callback?.(json);
   return json;
 }
