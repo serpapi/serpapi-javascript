@@ -52,6 +52,8 @@ export type BaseResponse<P = Record<string | number | symbol, never>> = {
   search_parameters:
     & { engine: string }
     & Omit<BaseParameters & P, "api_key" | "no_cache" | "async" | "timeout">;
+  serpapi_pagination?: { next: string };
+  pagination?: { next: string };
   // deno-lint-ignore no-explicit-any
   [key: string]: any; // TODO(seb): use recursive type
 };
