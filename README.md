@@ -44,8 +44,10 @@ import { getJson } from "https://deno.land/x/serpapi/mod.ts";
 ## Features
 
 - TypeScript types such as supported parameters and function argument types.
-- Works out-of-the-box with Node.js and Deno.
+- Works out-of-the-box with [Node.js](https://www.npmjs.com/package/serpapi) and
+  [Deno](https://deno.land/x/serpapi).
 - Promises and async/await support.
+- Callbacks support.
 - (Planned) Pagination support.
 - (Planned) More examples.
 - (Planned) More error classes.
@@ -55,9 +57,10 @@ import { getJson } from "https://deno.land/x/serpapi/mod.ts";
 You can declare a global `api_key` and `timeout` value by modifying the `config`
 object. `timeout` is defined in milliseconds and defaults to 60 seconds.
 
-All functions, other than `getLocations` that doesn't require an API key,
-accepts an optional `api_key` and `timeout` that will take precedence over the
-values defined in `config`.
+All functions, other than `getLocations`, accepts an optional `api_key` and
+`timeout` that will take precedence over the values defined in `config`.
+
+`getLocations` doesn't require an API key.
 
 ```js
 import { config, getJson } from "serpapi";
