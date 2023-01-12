@@ -21,6 +21,7 @@ import {
   buildUrl,
   execute,
   extractNextParameters,
+  haveParametersChanged,
 } from "../src/utils.ts";
 
 loadSync({ export: true });
@@ -64,6 +65,106 @@ describe("extractNextParameters", () => {
         hl: "en",
         mauthors: "Mike",
       },
+    );
+  });
+});
+
+describe("haveParametersChanged", () => {
+  it("with different number of properties", () => {
+    assertEquals(
+      haveParametersChanged({ q: "coffee" }, {
+        kl: "us-en",
+        q: "coffee",
+        start: "26",
+      }),
+      true,
+    );
+    assertEquals(
+      haveParametersChanged({ kl: "us-en", q: "coffee", start: "26" }, {
+        q: "coffee",
+      }),
+      true,
+    );
+  });
+
+  it("with same number of properties, but different properties", () => {
+    assertEquals(
+      haveParametersChanged({
+        kl: "us-en",
+        q: "coffee",
+        safe: "1",
+      }, {
+        kl: "us-en",
+        q: "coffee",
+        start: "26",
+      }),
+      true,
+    );
+  });
+
+  it("with same properties, but different values", () => {
+    assertEquals(
+      haveParametersChanged({
+        kl: "us-en",
+        q: "coffee",
+        start: "30",
+      }, {
+        kl: "us-en",
+        q: "coffee",
+        start: "26",
+      }),
+      true,
+    );
+    assertEquals(
+      haveParametersChanged({
+        kl: "us-en",
+        q: "coffee",
+        start: "26",
+      }, {
+        kl: "us-en",
+        q: "coffee",
+        start: "30",
+      }),
+      true,
+    );
+  });
+
+  it("with same properties and same values, regardless of type", () => {
+    assertEquals(
+      haveParametersChanged({
+        kl: "us-en",
+        q: "coffee",
+        start: "30",
+      }, {
+        kl: "us-en",
+        q: "coffee",
+        start: "30",
+      }),
+      false,
+    );
+    assertEquals(
+      haveParametersChanged({
+        kl: "us-en",
+        q: "coffee",
+        start: 30,
+      }, {
+        kl: "us-en",
+        q: "coffee",
+        start: "30",
+      }),
+      false,
+    );
+    assertEquals(
+      haveParametersChanged({
+        kl: "us-en",
+        q: "coffee",
+        start: "30",
+      }, {
+        kl: "us-en",
+        q: "coffee",
+        start: 30,
+      }),
+      false,
     );
   });
 });

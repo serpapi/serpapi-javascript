@@ -59,6 +59,20 @@ export function extractNextParameters<
   }
 }
 
+export function haveParametersChanged(
+  parameters: Record<string, unknown>,
+  nextParameters: Record<string, unknown>,
+) {
+  const keys = [
+    ...Object.keys(parameters),
+    ...Object.keys(nextParameters),
+  ];
+  const uniqueKeys = new Set(keys);
+  return [...uniqueKeys].some((key) =>
+    `${parameters[key]}` !== `${nextParameters[key]}` // string comparison
+  );
+}
+
 function getSource() {
   const moduleSource = `serpapi@${version}`;
   try {
