@@ -5,8 +5,8 @@ import {
   GetBySearchIdParameters,
   Locations,
   LocationsApiParameters,
-} from "./types.d.ts";
-import { EngineMap } from "./engines/engine_map.d.ts";
+} from "./types.ts";
+import { EngineMap } from "./engines/engine_map.ts";
 import { _internals, execute } from "./utils.ts";
 import { validateApiKey, validateTimeout } from "./validators.ts";
 
