@@ -12,11 +12,15 @@ and this project adheres to
 
 ### Changed
 
-- Refine type exports.
-
 ### Fixed
 
 ### Removed
+
+## [0.0.13] - 2023-01-13
+
+### Fixed
+
+- Ensure engine parameter type exports actually appear in the npm module.
 
 ## [0.0.12] - 2023-01-09
 
@@ -119,7 +123,8 @@ The API signatures of all functions are as follows:
 - `getAccount(parameters?, callback?)`
 - `getLocations(parameters?, callback?)`
 
-[unreleased]: https://github.com/serpapi/serpapi-javascript/compare/0.0.12...HEAD
+[unreleased]: https://github.com/serpapi/serpapi-javascript/compare/0.0.13...HEAD
+[0.0.13]: https://github.com/serpapi/serpapi-javascript/compare/0.0.12...0.0.13
 [0.0.12]: https://github.com/serpapi/serpapi-javascript/compare/0.0.11...0.0.12
 [0.0.11]: https://github.com/serpapi/serpapi-javascript/compare/0.0.10...0.0.11
 [0.0.10]: https://github.com/serpapi/serpapi-javascript/compare/0.0.9...0.0.10
