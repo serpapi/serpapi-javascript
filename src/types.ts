@@ -54,6 +54,9 @@ export type BaseResponse<P = Record<string | number | symbol, never>> = {
     & Omit<BaseParameters & P, "api_key" | "no_cache" | "async" | "timeout">;
   serpapi_pagination?: { next: string };
   pagination?: { next: string };
+  next?: (
+    callback?: (json: BaseResponse<P>) => void,
+  ) => Promise<BaseResponse<P>>;
   // deno-lint-ignore no-explicit-any
   [key: string]: any; // TODO(seb): use recursive type
 };
