@@ -10,6 +10,8 @@ and this project adheres to
 
 ### Added
 
+- Export error classes.
+
 ### Changed
 
 ### Fixed

@@ -12,10 +12,14 @@ import {
   assertRejects,
 } from "https://deno.land/std@0.170.0/testing/asserts.ts";
 import { Stub, stub } from "https://deno.land/std@0.170.0/testing/mock.ts";
-import { InvalidTimeoutError, MissingApiKeyError } from "../src/errors.ts";
-import { getAccount, getLocations } from "../src/serpapi.ts";
 import { _internals } from "../src/utils.ts";
-import { config } from "../src/config.ts";
+import {
+  config,
+  getAccount,
+  getLocations,
+  InvalidTimeoutError,
+  MissingApiKeyError,
+} from "../mod.ts";
 
 loadSync({ export: true });
 const SERPAPI_TEST_KEY = Deno.env.get("SERPAPI_TEST_KEY") ?? "";

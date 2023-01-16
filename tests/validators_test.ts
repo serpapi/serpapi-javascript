@@ -8,8 +8,7 @@ import {
   assertThrows,
 } from "https://deno.land/std@0.170.0/testing/asserts.ts";
 import { validateApiKey, validateTimeout } from "../src/validators.ts";
-import { config } from "../src/config.ts";
-import { InvalidTimeoutError, MissingApiKeyError } from "../src/errors.ts";
+import { config, InvalidTimeoutError, MissingApiKeyError } from "../mod.ts";
 
 describe("validateApiKey", () => {
   afterEach(() => {

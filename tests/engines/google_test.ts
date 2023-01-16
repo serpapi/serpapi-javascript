@@ -22,14 +22,14 @@ import {
   assertStringIncludes,
 } from "https://deno.land/std@0.170.0/testing/asserts.ts";
 import { _internals } from "../../src/utils.ts";
-import { MissingApiKeyError } from "../../src/errors.ts";
 import {
+  config,
   getHtml,
   getHtmlBySearchId,
   getJson,
   getJsonBySearchId,
-} from "../../src/serpapi.ts";
-import { config } from "../../src/config.ts";
+  MissingApiKeyError,
+} from "../../mod.ts";
 
 loadSync({ export: true });
 const SERPAPI_TEST_KEY = Deno.env.get("SERPAPI_TEST_KEY") ?? "";
