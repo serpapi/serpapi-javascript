@@ -1,5 +1,11 @@
 {
-  "deno.enable": true,
+  "deno.enablePaths": [
+    "mod.ts",
+    "version.ts",
+    "src",
+    "tests",
+    "scripts"
+  ],
   "deno.inlayHints.enumMemberValues.enabled": false,
   "deno.inlayHints.functionLikeReturnTypes.enabled": false,
   "deno.inlayHints.parameterNames.enabled": "none",
