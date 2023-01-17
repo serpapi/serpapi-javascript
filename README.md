@@ -48,8 +48,8 @@ import { getJson } from "https://deno.land/x/serpapi/mod.ts";
   [Deno](https://deno.land/x/serpapi).
 - Promises and async/await support.
 - Callbacks support.
+- [Examples in JavaScript/TypeScript on Node.js/Deno using ESM/CommonJS, and more](https://github.com/serpapi/serpapi-javascript/tree/master/examples).
 - (Planned) Pagination support.
-- (Planned) More examples.
 - (Planned) More error classes.
 
 ## Configuration
