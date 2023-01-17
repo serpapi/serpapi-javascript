@@ -9,12 +9,12 @@
   },
   "fmt": {
     "files": {
-      "exclude": ["npm/"]
+      "exclude": ["npm/", "examples/node"]
     }
   },
   "lint": {
     "files": {
-      "exclude": ["npm/"]
+      "exclude": ["npm/", "examples/node"]
     }
   }
 }

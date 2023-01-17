@@ -1,0 +1,14 @@
+{
+  "type": "module",
+  "dependencies": {
+    "dotenv": "*",
+    "serpapi": "../../../npm"
+  },
+  "devDependencies": {
+    "@types/node": "*",
+    "typescript": "*"
+  },
+  "scripts": {
+    "start": "npx ts-node example.ts"
+  }
+}

@@ -1,3 +1,4 @@
 .env
 cov_profile/
 npm/
+node_modules/

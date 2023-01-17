@@ -5,6 +5,7 @@ await emptyDir("./npm");
 
 await build({
   entryPoints: ["./mod.ts"],
+  rootTestDir: "./tests",
   outDir: "./npm",
   shims: {
     deno: true, // Required for `Deno.test`, `Deno.env`, etc.
