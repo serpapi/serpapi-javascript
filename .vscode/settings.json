@@ -4,7 +4,8 @@
     "version.ts",
     "src",
     "tests",
-    "scripts"
+    "scripts",
+    "examples/deno"
   ],
   "deno.inlayHints.enumMemberValues.enabled": false,
   "deno.inlayHints.functionLikeReturnTypes.enabled": false,
