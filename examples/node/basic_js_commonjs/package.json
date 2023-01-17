@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "dotenv": "*",
+    "serpapi": "../../../npm"
+  },
+  "scripts": {
+    "start": "node example.js"
+  }
+}
