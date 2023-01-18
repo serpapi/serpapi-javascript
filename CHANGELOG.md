@@ -11,8 +11,17 @@ and this project adheres to
 ### Added
 
 - Export error classes.
+- Add examples.
+- [Apple Reviews] Add more sort options.
+- [Google Finance] Add new API.
+- [Google Maps Photo Meta] Add new API.
+- [Google Maps] Add `place_id` parameter.
+- [Google] Add `kgmid` and `si` parameters.
 
 ### Changed
+
+- [Google Trends] Refine `tz` parameter documentation.
+- [Google] Refine `start` parameter documentation.
 
 ### Fixed
 
