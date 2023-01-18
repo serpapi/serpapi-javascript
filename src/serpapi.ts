@@ -7,7 +7,12 @@ import {
   LocationsApiParameters,
 } from "./types.ts";
 import { EngineMap } from "./engines/engine_map.ts";
-import { _internals, execute } from "./utils.ts";
+import {
+  _internals,
+  execute,
+  extractNextParameters,
+  haveParametersChanged,
+} from "./utils.ts";
 import { validateApiKey, validateTimeout } from "./validators.ts";
 
 const ACCOUNT_PATH = "/account";
@@ -18,24 +23,57 @@ const SEARCH_ARCHIVE_PATH = `/searches`;
 /**
  * Get a JSON response based on search parameters.
  * - Accepts an optional callback.
+ * - Get the next page of results by calling the `.next()` method on the returned response object.
  *
  * @param {string} engine - engine name
  * @param {object} parameters - search query parameters for the engine
  * @param {fn=} callback - optional callback
  * @example
- * // async/await
+ * // single call (async/await)
  * const json = await getJson("google", { api_key: API_KEY, q: "coffee" });
  *
- * // callback
+ * // single call (callback)
  * getJson("google", { api_key: API_KEY, q: "coffee" }, console.log);
+ *
+ * @example
+ * // pagination (async/await)
+ * const page1 = await getJson("google", { q: "coffee", start: 15 });
+ * const page2 = await page1.next?.();
+ *
+ * @example
+ * // pagination (callback)
+ * getJson("google", { q: "coffee", start: 15 }, (page1) => {
+ *   page1.next?.((page2) => {
+ *     console.log(page2);
+ *   });
+ * });
+ *
+ * @example
+ * // pagination loop (async/await)
+ * const organicResults = [];
+ * let page = await getJson("google", { api_key: API_KEY, q: "coffee" });
+ * while (page) {
+ *   organicResults.push(...page.organic_results);
+ *   if (organicResults.length >= 30) break;
+ *   page = await page.next?.();
+ * }
+ *
+ * @example
+ * // pagination loop (callback)
+ * const organicResults = [];
+ * getJson("google", { api_key: API_KEY, q: "coffee" }, (page) => {
+ *   organicResults.push(...page.organic_results);
+ *   if (organicResults.length < 30 && page.next) {
+ *     page.next();
+ *   }
+ * });
  */
 export async function getJson<
   E extends keyof EngineMap,
-  R extends BaseResponse<EngineMap[E]["parameters"]>,
 >(
   engine: E,
   parameters: EngineMap[E]["parameters"],
-  callback?: (json: R) => void,
+  callback?: (json: BaseResponse<EngineMap[E]["parameters"]>) => void,
 ) {
   const key = validateApiKey(parameters.api_key, true);
   const timeout = validateTimeout(parameters.timeout);
@@ -49,7 +87,26 @@ export async function getJson<
     },
     timeout,
   );
-  const json = await response.json() as R;
+  const json = await response.json() as BaseResponse<
+    EngineMap[E]["parameters"]
+  >;
+  const nextParametersFromResponse = extractNextParameters<E>(json);
+  if (
+    // https://github.com/serpapi/public-roadmap/issues/562
+    // https://github.com/serpapi/public-roadmap/issues/563
+    engine !== "yahoo_shopping" &&
+    nextParametersFromResponse
+  ) {
+    const nextParameters = { ...parameters, ...nextParametersFromResponse };
+    if (haveParametersChanged(parameters, nextParameters)) {
+      json.next = (innerCallback = callback) =>
+        getJson(
+          engine,
+          nextParameters,
+          innerCallback,
+        );
+    }
+  }
   callback?.(json);
   return json;
 }

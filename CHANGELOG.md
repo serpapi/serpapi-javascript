@@ -10,6 +10,7 @@ and this project adheres to
 
 ### Added
 
+- Add pagination support for `getJson`.
 - Export error classes.
 - Add examples.
 - [Apple Reviews] Add more sort options.

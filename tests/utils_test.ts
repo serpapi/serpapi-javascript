@@ -16,12 +16,158 @@ import {
   assertMatch,
   assertRejects,
 } from "https://deno.land/std@0.170.0/testing/asserts.ts";
-import { _internals, buildUrl, execute } from "../src/utils.ts";
+import {
+  _internals,
+  buildUrl,
+  execute,
+  extractNextParameters,
+  haveParametersChanged,
+} from "../src/utils.ts";
 
 loadSync({ export: true });
 const BASE_URL = Deno.env.get("ENV_TYPE") === "local"
   ? "http://localhost:3000"
   : "https://serpapi.com";
+
+describe("extractNextParameters", () => {
+  it("with serpapi_pagination property", () => {
+    assertEquals(
+      extractNextParameters<"google">({
+        serpapi_pagination: {
+          next:
+            "https://serpapi.com/search.json?device=desktop&engine=google&gl=us&google_domain=google.com&hl=en&location=Austin%2C+Texas%2C+United+States&q=coffee&start=10",
+        },
+      }),
+      {
+        device: "desktop",
+        gl: "us",
+        google_domain: "google.com",
+        hl: "en",
+        location: "Austin, Texas, United States",
+        q: "coffee",
+        start: "10",
+      },
+    );
+  });
+
+  it("with pagination property", () => {
+    assertEquals(
+      extractNextParameters<"google_scholar_profiles">(
+        {
+          pagination: {
+            next:
+              "https://serpapi.com/search.json?after_author=rZlDAYoq__8J&engine=google_scholar_profiles&hl=en&mauthors=Mike",
+          },
+        },
+      ),
+      {
+        after_author: "rZlDAYoq__8J",
+        hl: "en",
+        mauthors: "Mike",
+      },
+    );
+  });
+});
+
+describe("haveParametersChanged", () => {
+  it("with different number of properties", () => {
+    assertEquals(
+      haveParametersChanged({ q: "coffee" }, {
+        kl: "us-en",
+        q: "coffee",
+        start: "26",
+      }),
+      true,
+    );
+    assertEquals(
+      haveParametersChanged({ kl: "us-en", q: "coffee", start: "26" }, {
+        q: "coffee",
+      }),
+      true,
+    );
+  });
+
+  it("with same number of properties, but different properties", () => {
+    assertEquals(
+      haveParametersChanged({
+        kl: "us-en",
+        q: "coffee",
+        safe: "1",
+      }, {
+        kl: "us-en",
+        q: "coffee",
+        start: "26",
+      }),
+      true,
+    );
+  });
+
+  it("with same properties, but different values", () => {
+    assertEquals(
+      haveParametersChanged({
+        kl: "us-en",
+        q: "coffee",
+        start: "30",
+      }, {
+        kl: "us-en",
+        q: "coffee",
+        start: "26",
+      }),
+      true,
+    );
+    assertEquals(
+      haveParametersChanged({
+        kl: "us-en",
+        q: "coffee",
+        start: "26",
+      }, {
+        kl: "us-en",
+        q: "coffee",
+        start: "30",
+      }),
+      true,
+    );
+  });
+
+  it("with same properties and same values, regardless of type", () => {
+    assertEquals(
+      haveParametersChanged({
+        kl: "us-en",
+        q: "coffee",
+        start: "30",
+      }, {
+        kl: "us-en",
+        q: "coffee",
+        start: "30",
+      }),
+      false,
+    );
+    assertEquals(
+      haveParametersChanged({
+        kl: "us-en",
+        q: "coffee",
+        start: 30,
+      }, {
+        kl: "us-en",
+        q: "coffee",
+        start: "30",
+      }),
+      false,
+    );
+    assertEquals(
+      haveParametersChanged({
+        kl: "us-en",
+        q: "coffee",
+        start: "30",
+      }, {
+        kl: "us-en",
+        q: "coffee",
+        start: 30,
+      }),
+      false,
+    );
+  });
+});
 
 describe("buildUrl", () => {
   let urlStub: Stub;
