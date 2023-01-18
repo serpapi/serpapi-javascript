@@ -1,0 +1,2 @@
+# Examples do not need locked package versions
+package-lock.json
