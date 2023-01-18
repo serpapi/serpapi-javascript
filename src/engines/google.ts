@@ -48,6 +48,26 @@ export type GoogleParameters = BaseParameters & {
   lsig?: string;
 
   /**
+   * Google Knowledge Graph ID
+   * Parameter defines the id (`KGMID`) of the Google Knowledge Graph listing you
+   * want to scrape. Also known as Google Knowledge Graph ID. Searches with kgmid
+   * parameter will return results for the originally encrypted search parameters.
+   * For some searches, kgmid may override all other parameters except start, and num
+   * parameters.
+   */
+  kgmid?: string;
+
+  /**
+   * Google Cached Search Parameters ID
+   * Parameter defines the cached search parameters of the Google Search you want to
+   * scrape. Searches with si parameter will return results for the originally
+   * encrypted search parameters. For some searches, si may override all other
+   * parameters except start, and num parameters. si can be used to scrape Google
+   * Knowledge Graph Tabs.
+   */
+  si?: string;
+
+  /**
    * Domain
    * Parameter defines the Google domain to use. It defaults to `google.com`. Head to
    * the [Google domains page](https://serpapi.com/google-domains) for a full list of
@@ -230,6 +250,8 @@ export type GoogleParameters = BaseParameters & {
    * Parameter defines the result offset. It skips the given number of results. It's
    * used for pagination. (e.g., `0` (default) is the first page of results, `10` is
    * the 2nd page of results, `20` is the 3rd page of results, etc.).
+   * Google Local Results only accepts multiples of `20`(e.g. `20` for the second
+   * page results, `40` for the third page results, etc.) as the start value.
    */
   start?: number;
 

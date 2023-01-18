@@ -33,12 +33,14 @@ export type { GoogleScholarAuthorParameters } from "./src/engines/google_scholar
 export type { GoogleProductParameters } from "./src/engines/google_product.ts";
 export type { GoogleMapsParameters } from "./src/engines/google_maps.ts";
 export type { GoogleMapsPhotosParameters } from "./src/engines/google_maps_photos.ts";
+export type { GoogleMapsPhotoMetaParameters } from "./src/engines/google_maps_photo_meta.ts";
 export type { GoogleMapsReviewsParameters } from "./src/engines/google_maps_reviews.ts";
 export type { GoogleEventsParameters } from "./src/engines/google_events.ts";
 export type { GoogleAutocompleteParameters } from "./src/engines/google_autocomplete.ts";
 export type { GoogleRelatedQuestionsParameters } from "./src/engines/google_related_questions.ts";
 export type { GoogleTrendsParameters } from "./src/engines/google_trends.ts";
 export type { GoogleTrendsAutocompleteParameters } from "./src/engines/google_trends_autocomplete.ts";
+export type { GoogleFinanceParameters } from "./src/engines/google_finance.ts";
 export type { GoogleFinanceMarketsParameters } from "./src/engines/google_finance_markets.ts";
 export type { GoogleImmersiveProductParameters } from "./src/engines/google_immersive_product.ts";
 export type { BingParameters } from "./src/engines/bing.ts";

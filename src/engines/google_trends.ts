@@ -65,8 +65,15 @@ export type GoogleTrendsParameters = BaseParameters & {
   /**
    * Time Zone
    * Parameter is used to define a time zone. The default value is set to `420`
-   * (Pacific time zone: -07:00). Value is shown in minutes and can span from `-1439`
-   * to `1439`. tz parameter affects timestamps in response.
+   * (Pacific Day Time(PDT): -07:00). Value is shown in minutes and can span from
+   * `-1439` to `1439`.
+   * tz can be calculated using the time difference between UTC +0 and desired
+   * timezone.
+   * Example: `60 x ((Time in UTC+0 Now) - (Time in PDT Now)) = 420` will give
+   * results for PDT now. Because the reference point is UTC+0, the positive time
+   * zones will result in negative tz whereas negative time zones will result in
+   * positive tz.
+   * tz parameter also affects timestamps in response.
    */
   tz?: string;
 

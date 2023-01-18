@@ -9,12 +9,14 @@ import type { GoogleScholarAuthorParameters } from "./google_scholar_author.ts";
 import type { GoogleProductParameters } from "./google_product.ts";
 import type { GoogleMapsParameters } from "./google_maps.ts";
 import type { GoogleMapsPhotosParameters } from "./google_maps_photos.ts";
+import type { GoogleMapsPhotoMetaParameters } from "./google_maps_photo_meta.ts";
 import type { GoogleMapsReviewsParameters } from "./google_maps_reviews.ts";
 import type { GoogleEventsParameters } from "./google_events.ts";
 import type { GoogleAutocompleteParameters } from "./google_autocomplete.ts";
 import type { GoogleRelatedQuestionsParameters } from "./google_related_questions.ts";
 import type { GoogleTrendsParameters } from "./google_trends.ts";
 import type { GoogleTrendsAutocompleteParameters } from "./google_trends_autocomplete.ts";
+import type { GoogleFinanceParameters } from "./google_finance.ts";
 import type { GoogleFinanceMarketsParameters } from "./google_finance_markets.ts";
 import type { GoogleImmersiveProductParameters } from "./google_immersive_product.ts";
 import type { BingParameters } from "./bing.ts";
@@ -63,6 +65,7 @@ export type EngineMap = {
   google_product: { parameters: GoogleProductParameters };
   google_maps: { parameters: GoogleMapsParameters };
   google_maps_photos: { parameters: GoogleMapsPhotosParameters };
+  google_maps_photo_meta: { parameters: GoogleMapsPhotoMetaParameters };
   google_maps_reviews: { parameters: GoogleMapsReviewsParameters };
   google_events: { parameters: GoogleEventsParameters };
   google_autocomplete: { parameters: GoogleAutocompleteParameters };
@@ -71,6 +74,7 @@ export type EngineMap = {
   google_trends_autocomplete: {
     parameters: GoogleTrendsAutocompleteParameters;
   };
+  google_finance: { parameters: GoogleFinanceParameters };
   google_finance_markets: { parameters: GoogleFinanceMarketsParameters };
   google_immersive_product: { parameters: GoogleImmersiveProductParameters };
   bing: { parameters: BingParameters };

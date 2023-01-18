@@ -55,10 +55,23 @@ export type GoogleMapsParameters = BaseParameters & {
   data?: string;
 
   /**
+   * Place ID
+   * Parameter defines the unique reference to a place on a Google Map. Place IDs are
+   * available for most locations, including businesses, landmarks, parks, and
+   * intersections. You can find the place_id using our [Google Maps
+   * API](https://serpapi.com/maps-local-results).
+   * You can read more about Place IDs
+   * [here](https://developers.google.com/maps/documentation/places/web-service/place-id).
+   * place_id can be used without any other optional parameter.
+   */
+  place_id?: string;
+
+  /**
    * Type of search
    * Parameter defines the type of search you want to make. It can be set to:
    * `search` - returns a list of results for the set q parameter,
    * `place` - returns results for a specific place when data parameter is set
+   * Parameter is not required when using place_id.
    */
   type: string;
 

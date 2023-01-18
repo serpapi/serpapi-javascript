@@ -35,7 +35,9 @@ export type AppleReviewsParameters = BaseParameters & {
    * Parameter is used for sorting reviews.
    * It can be set to:
    * `mostrecent`: Most recent (default),
-   * `mosthelpful`: Most helpful
+   * `mosthelpful`: Most helpful,
+   * `mostfavorable`: Most favorable,
+   * `mostcritical`: Most critical
    */
   sort?: string;
 };
