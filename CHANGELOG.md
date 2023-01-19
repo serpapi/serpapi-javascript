@@ -10,6 +10,16 @@ and this project adheres to
 
 ### Added
 
+### Changed
+
+### Fixed
+
+### Removed
+
+## [1.0.0] - 2023-01-19
+
+### Added
+
 - Add pagination support for `getJson`.
 - Export error classes.
 - Add examples.
@@ -23,10 +33,6 @@ and this project adheres to
 
 - [Google Trends] Refine `tz` parameter documentation.
 - [Google] Refine `start` parameter documentation.
-
-### Fixed
-
-### Removed
 
 ## [0.0.13] - 2023-01-13
 
@@ -135,7 +141,8 @@ The API signatures of all functions are as follows:
 - `getAccount(parameters?, callback?)`
 - `getLocations(parameters?, callback?)`
 
-[unreleased]: https://github.com/serpapi/serpapi-javascript/compare/0.0.13...HEAD
+[unreleased]: https://github.com/serpapi/serpapi-javascript/compare/1.0.0...HEAD
+[1.0.0]: https://github.com/serpapi/serpapi-javascript/compare/0.0.13...1.0.0
 [0.0.13]: https://github.com/serpapi/serpapi-javascript/compare/0.0.12...0.0.13
 [0.0.12]: https://github.com/serpapi/serpapi-javascript/compare/0.0.11...0.0.12
 [0.0.11]: https://github.com/serpapi/serpapi-javascript/compare/0.0.10...0.0.11
