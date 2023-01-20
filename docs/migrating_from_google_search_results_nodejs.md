@@ -48,8 +48,8 @@ migrate over to the `serpapi` npm package.
 
 ## Removed
 
-- The `buildUrl`, `execute` and `search` methods are removed. Use `json` and
-  `html` functions instead.
+- The `buildUrl`, `execute` and `search` methods are removed. Use `getJson` and
+  `getHtml` functions instead.
 - The `SerpApiSearch` class is removed as a public class.
 - Dropped support for Node.js 16.13 and below. This module supports Node.js
   16.14 and above.
