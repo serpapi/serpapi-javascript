@@ -23,6 +23,7 @@ export {
 } from "./src/serpapi.ts";
 
 export type { GoogleParameters } from "./src/engines/google.ts";
+export type { GoogleShoppingParameters } from "./src/engines/google_shopping.ts";
 export type { GoogleJobsParameters } from "./src/engines/google_jobs.ts";
 export type { GoogleJobsListingParameters } from "./src/engines/google_jobs_listing.ts";
 export type { GoogleReverseImageParameters } from "./src/engines/google_reverse_image.ts";

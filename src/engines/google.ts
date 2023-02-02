@@ -241,7 +241,8 @@ export type GoogleParameters = BaseParameters & {
    * `lcl` - [Google Local API](https://serpapi.com/local-results)
    * `vid`: [Google Videos API](https://serpapi.com/videos-results),
    * `nws`: [Google News API](https://serpapi.com/news-results),
-   * `shop`: [Google Shopping API](https://serpapi.com/shopping-results)
+   * `shop`: [Google Shopping API](https://serpapi.com/shopping-results),
+   * or any other Google service.
    */
   tbm?: string;
 

@@ -10,6 +10,8 @@ and this project adheres to
 
 ### Added
 
+- [Google Shopping] Add new API.
+
 ### Changed
 
 ### Fixed

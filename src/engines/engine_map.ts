@@ -1,4 +1,5 @@
 import type { GoogleParameters } from "./google.ts";
+import type { GoogleShoppingParameters } from "./google_shopping.ts";
 import type { GoogleJobsParameters } from "./google_jobs.ts";
 import type { GoogleJobsListingParameters } from "./google_jobs_listing.ts";
 import type { GoogleReverseImageParameters } from "./google_reverse_image.ts";
@@ -55,6 +56,7 @@ import type { YelpReviewsParameters } from "./yelp_reviews.ts";
 
 export type EngineMap = {
   google: { parameters: GoogleParameters };
+  google_shopping: { parameters: GoogleShoppingParameters };
   google_jobs: { parameters: GoogleJobsParameters };
   google_jobs_listing: { parameters: GoogleJobsListingParameters };
   google_reverse_image: { parameters: GoogleReverseImageParameters };
