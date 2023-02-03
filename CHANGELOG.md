@@ -10,6 +10,8 @@ and this project adheres to
 
 ### Added
 
+- Restrict node engines for better support feedback
+
 ### Changed
 
 ### Fixed
