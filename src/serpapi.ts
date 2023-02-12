@@ -1,6 +1,7 @@
 import {
   AccountApiParameters,
   AccountInformation,
+  BaseParameters,
   BaseResponse,
   GetBySearchIdParameters,
   Locations,
@@ -24,16 +25,23 @@ const SEARCH_ARCHIVE_PATH = `/searches`;
  * Get a JSON response based on search parameters.
  * - Accepts an optional callback.
  * - Get the next page of results by calling the `.next()` method on the returned response object.
+ * - You can pass search parameters as the first argument instead of the
+ *   engine name. However, you won't get auto-completions for the supported
+ *   search parameters for that engine.
  *
  * @param {string} engine - engine name
  * @param {object} parameters - search query parameters for the engine
  * @param {fn=} callback - optional callback
+ * @returns {Promise} - response object
  * @example
  * // single call (async/await)
  * const json = await getJson("google", { api_key: API_KEY, q: "coffee" });
  *
  * // single call (callback)
  * getJson("google", { api_key: API_KEY, q: "coffee" }, console.log);
+ *
+ * // search params as the first argument (no auto-complete for supported parameters)
+ * const json = await getJson({ engine: "google", api_key: API_KEY, q: "coffee" });
  *
  * @example
  * // pagination (async/await)
@@ -68,7 +76,45 @@ const SEARCH_ARCHIVE_PATH = `/searches`;
  *   }
  * });
  */
-export async function getJson<
+export function getJson<E extends keyof EngineMap>(
+  engine: E,
+  parameters: EngineMap[E]["parameters"],
+  callback?: (json: BaseResponse<EngineMap[E]["parameters"]>) => void,
+): Promise<BaseResponse<EngineMap[E]["parameters"]>>;
+export function getJson<E extends keyof EngineMap>(
+  parameters: BaseParameters & { engine: string; [k: string]: unknown },
+  callback?: (json: BaseResponse) => void,
+): Promise<BaseResponse>;
+export function getJson<E extends keyof EngineMap>(
+  ...args: unknown[]
+) {
+  if (typeof args[0] === "string") {
+    // Engine passed in as first argument
+    return getJsonInner(
+      args[0] as E,
+      args[1] as EngineMap[E]["parameters"],
+      args[2] as
+        | ((json: BaseResponse<EngineMap[E]["parameters"]>) => void)
+        | undefined,
+    );
+  }
+  if (typeof args[0] === "object") {
+    // Search parameters passed in as first argument
+    const { engine, ...parameters } = args[0] as {
+      engine: string;
+      [k: string]: unknown;
+    };
+    return getJsonInner(
+      engine as E,
+      parameters as EngineMap[E]["parameters"],
+      args[1] as
+        | ((json: BaseResponse<EngineMap[E]["parameters"]>) => void)
+        | undefined,
+    );
+  }
+}
+
+async function getJsonInner<
   E extends keyof EngineMap,
 >(
   engine: E,
@@ -100,7 +146,7 @@ export async function getJson<
     const nextParameters = { ...parameters, ...nextParametersFromResponse };
     if (haveParametersChanged(parameters, nextParameters)) {
       json.next = (innerCallback = callback) =>
-        getJson(
+        getJsonInner(
           engine,
           nextParameters,
           innerCallback,

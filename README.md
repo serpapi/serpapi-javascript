@@ -131,6 +131,9 @@ Get a JSON response based on search parameters.
 - Accepts an optional callback.
 - Get the next page of results by calling the `.next()` method on the returned
   response object.
+- You can pass search parameters as the first argument instead of the engine
+  name. However, you won't get auto-completions for the supported search
+  parameters for that engine.
 
 #### Parameters
 
@@ -150,6 +153,9 @@ const json = await getJson("google", { api_key: API_KEY, q: "coffee" });
 
 // single call (callback)
 getJson("google", { api_key: API_KEY, q: "coffee" }, console.log);
+
+// search params as the first argument (no auto-complete for supported parameters)
+const json = await getJson({ engine: "google", api_key: API_KEY, q: "coffee" });
 ```
 
 ```javascript
@@ -188,6 +194,10 @@ getJson("google", { api_key: API_KEY, q: "coffee" }, (page) => {
   }
 });
 ```
+
+Returns
+**[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)**
+response object
 
 ### getHtml
 

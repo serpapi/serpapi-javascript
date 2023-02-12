@@ -39,7 +39,7 @@ export type BaseParameters = {
    */
   timeout?: number;
 };
-export type BaseResponse<P = Record<string | number | symbol, never>> = {
+export type BaseResponse<P = Record<string, unknown>> = {
   search_metadata: {
     id: string;
     status: "Queued" | "Processing" | "Success";

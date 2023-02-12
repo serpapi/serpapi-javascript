@@ -72,10 +72,45 @@ describe("google", {
     ]);
   });
 
+  it("getJson for an unmetered query (async/await without engine arg)", async () => {
+    const response = await getJson({
+      engine,
+      api_key: null, // null to support the "coffee" unmetered query
+      q: "coffee",
+    });
+    assertArrayIncludes(Object.keys(response).sort(), [
+      "organic_results",
+      "pagination",
+      "search_information",
+      "search_metadata",
+      "search_parameters",
+      "serpapi_pagination",
+    ]);
+  });
+
   it("getJson for an unmetered query (callback)", async () => {
     const response = await new Promise<Awaited<ReturnType<typeof getJson>>>(
       (res) =>
         getJson(engine, {
+          api_key: null,
+          q: "coffee",
+        }, res),
+    );
+    assertArrayIncludes(Object.keys(response).sort(), [
+      "organic_results",
+      "pagination",
+      "search_information",
+      "search_metadata",
+      "search_parameters",
+      "serpapi_pagination",
+    ]);
+  });
+
+  it("getJson for an unmetered query (callback without engine arg)", async () => {
+    const response = await new Promise<Awaited<ReturnType<typeof getJson>>>(
+      (res) =>
+        getJson({
+          engine,
           api_key: null,
           q: "coffee",
         }, res),
