@@ -161,6 +161,9 @@ async function getJsonInner<
  * Get a HTML response based on search parameters.
  * - Accepts an optional callback.
  * - Responds with a JSON string if the search request hasn't completed.
+ * - You can pass search parameters as the first argument instead of the
+ *   engine name. However, you won't get auto-completions for the supported
+ *   search parameters for that engine.
  *
  * @param {string} engine - engine name
  * @param {object} parameters - search query parameters for the engine
@@ -171,8 +174,45 @@ async function getJsonInner<
  *
  * // callback
  * getHtml("google", { api_key: API_KEY, q: "coffee" }, console.log);
+ *
+ * // search params as the first argument (no auto-complete for supported parameters)
+ * const html = await getHtml({ engine: "google", api_key: API_KEY, q: "coffee" });
  */
-export async function getHtml<E extends keyof EngineMap>(
+export function getHtml<E extends keyof EngineMap>(
+  engine: E,
+  parameters: EngineMap[E]["parameters"],
+  callback?: (html: string) => void,
+): Promise<string>;
+export function getHtml<E extends keyof EngineMap>(
+  parameters: BaseParameters & { engine: string; [k: string]: unknown },
+  callback?: (html: string) => void,
+): Promise<string>;
+export function getHtml<E extends keyof EngineMap>(
+  ...args: unknown[]
+) {
+  if (typeof args[0] === "string") {
+    // Engine passed in as first argument
+    return getHtmlInner(
+      args[0] as E,
+      args[1] as EngineMap[E]["parameters"],
+      args[2] as ((html: string) => void) | undefined,
+    );
+  }
+  if (typeof args[0] === "object") {
+    // Search parameters passed in as first argument
+    const { engine, ...parameters } = args[0] as {
+      engine: string;
+      [k: string]: unknown;
+    };
+    return getHtmlInner(
+      engine as E,
+      parameters as EngineMap[E]["parameters"],
+      args[1] as ((html: string) => void) | undefined,
+    );
+  }
+}
+
+async function getHtmlInner<E extends keyof EngineMap>(
   engine: E,
   parameters: EngineMap[E]["parameters"],
   callback?: (html: string) => void,

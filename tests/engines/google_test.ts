@@ -190,10 +190,37 @@ describe("google", {
     assertStringIncludes(response, "</html>");
   });
 
+  it("getHtml for an unmetered query (async/await without engine arg)", async () => {
+    const response = await getHtml({
+      engine,
+      api_key: null,
+      q: "coffee",
+    });
+    assertStringIncludes(response, "<html");
+    assertStringIncludes(response, "<body");
+    assertStringIncludes(response, "</body>");
+    assertStringIncludes(response, "</html>");
+  });
+
   it("getHtml for an unmetered query (callback)", async () => {
     const response = await new Promise<Awaited<ReturnType<typeof getHtml>>>(
       (res) =>
         getHtml(engine, {
+          api_key: null,
+          q: "coffee",
+        }, res),
+    );
+    assertStringIncludes(response, "<html");
+    assertStringIncludes(response, "<body");
+    assertStringIncludes(response, "</body>");
+    assertStringIncludes(response, "</html>");
+  });
+
+  it("getHtml for an unmetered query (callback without engine arg)", async () => {
+    const response = await new Promise<Awaited<ReturnType<typeof getHtml>>>(
+      (res) =>
+        getHtml({
+          engine,
           api_key: null,
           q: "coffee",
         }, res),

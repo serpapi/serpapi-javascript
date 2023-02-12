@@ -205,6 +205,9 @@ Get a HTML response based on search parameters.
 
 - Accepts an optional callback.
 - Responds with a JSON string if the search request hasn't completed.
+- You can pass search parameters as the first argument instead of the engine
+  name. However, you won't get auto-completions for the supported search
+  parameters for that engine.
 
 #### Parameters
 
@@ -224,7 +227,13 @@ const html = await getHtml("google", { api_key: API_KEY, q: "coffee" });
 
 // callback
 getHtml("google", { api_key: API_KEY, q: "coffee" }, console.log);
+
+// search params as the first argument (no auto-complete for supported parameters)
+const html = await getHtml({ engine: "google", api_key: API_KEY, q: "coffee" });
 ```
+
+Returns
+**[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)>**&#x20;
 
 ### getJsonBySearchId
 
