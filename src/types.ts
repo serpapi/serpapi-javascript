@@ -1,3 +1,5 @@
+import { EngineMap } from "./engines/engine_map.ts";
+
 export type BaseParameters = {
   /**
    * Parameter defines the device to use to get the results. It can be set to
@@ -39,7 +41,19 @@ export type BaseParameters = {
    */
   timeout?: number;
 };
-export type BaseResponse<P = Record<string | number | symbol, never>> = {
+
+// https://github.com/microsoft/TypeScript/issues/29729
+// deno-lint-ignore ban-types
+type AnyEngineName = string & {};
+export type EngineName = (keyof EngineMap) | AnyEngineName;
+export type EngineParameters<
+  E extends EngineName = EngineName,
+> = {
+  [K in E]: K extends keyof EngineMap ? EngineMap[K]["parameters"]
+    : BaseParameters & Record<string, unknown>;
+}[E];
+
+export type BaseResponse<P = Record<string, unknown>> = {
   search_metadata: {
     id: string;
     status: "Queued" | "Processing" | "Success";

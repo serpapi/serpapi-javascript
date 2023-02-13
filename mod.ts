@@ -8,6 +8,8 @@ export type {
   AccountInformation,
   BaseParameters,
   BaseResponse,
+  EngineName,
+  EngineParameters,
   GetBySearchIdParameters,
   Location,
   Locations,

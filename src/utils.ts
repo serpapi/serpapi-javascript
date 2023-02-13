@@ -1,4 +1,4 @@
-import type { EngineMap } from "./engines/engine_map.ts";
+import type { EngineName, EngineParameters } from "./types.ts";
 import { version } from "../version.ts";
 
 type UrlParameters = Record<
@@ -35,16 +35,15 @@ function getBaseUrl() {
   return "https://serpapi.com";
 }
 
-type NextParametersKeys<E extends keyof EngineMap> = Omit<
-  EngineMap[E]["parameters"],
-  "api_key" | "no_cache" | "async" | "timeout"
->;
-type NextParameters<E extends keyof EngineMap> = {
-  [K in keyof NextParametersKeys<E>]: string;
+type NextParameters<E extends EngineName = EngineName> = {
+  [
+    K in keyof Omit<
+      EngineParameters<E>,
+      "api_key" | "no_cache" | "async" | "timeout"
+    >
+  ]: string;
 };
-export function extractNextParameters<
-  E extends keyof EngineMap,
->(json: {
+export function extractNextParameters<E extends EngineName = EngineName>(json: {
   serpapi_pagination?: { next: string };
   pagination?: { next: string };
 }) {
