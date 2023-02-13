@@ -75,7 +75,7 @@ export async function getJson<
 >(
   engine: E,
   parameters: P,
-  callback?: (json: BaseResponse<P>) => void,
+  callback?: (json: BaseResponse<E>) => void,
 ) {
   const key = validateApiKey(parameters.api_key, true);
   const timeout = validateTimeout(parameters.timeout);
@@ -89,7 +89,7 @@ export async function getJson<
     },
     timeout,
   );
-  const json = await response.json() as BaseResponse<P>;
+  const json = await response.json() as BaseResponse<E>;
   const nextParametersFromResponse = extractNextParameters<E>(json);
   if (
     // https://github.com/serpapi/public-roadmap/issues/562

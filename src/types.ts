@@ -53,7 +53,7 @@ export type EngineParameters<
     : BaseParameters & Record<string, unknown>;
 }[E];
 
-export type BaseResponse<P = Record<string, unknown>> = {
+export type BaseResponse<E extends EngineName = EngineName> = {
   search_metadata: {
     id: string;
     status: "Queued" | "Processing" | "Success";
@@ -63,14 +63,15 @@ export type BaseResponse<P = Record<string, unknown>> = {
     raw_html_file: string;
     total_time_taken: number;
   };
-  search_parameters:
-    & { engine: string }
-    & Omit<BaseParameters & P, "api_key" | "no_cache" | "async" | "timeout">;
+  search_parameters: Omit<
+    EngineParameters<E>,
+    "api_key" | "no_cache" | "async" | "timeout"
+  >;
   serpapi_pagination?: { next: string };
   pagination?: { next: string };
   next?: (
-    callback?: (json: BaseResponse<P>) => void,
-  ) => Promise<BaseResponse<P>>;
+    callback?: (json: BaseResponse<E>) => void,
+  ) => Promise<BaseResponse<E>>;
   // deno-lint-ignore no-explicit-any
   [key: string]: any; // TODO(seb): use recursive type
 };
