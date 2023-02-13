@@ -74,7 +74,6 @@ export async function getJson<
   E extends EngineName = EngineName,
   P extends AllowArbitraryParams<EngineParameters<E>> = EngineParameters<E>,
 >(
-  engine: E,
   parameters: P,
   callback?: (json: BaseResponse<E>) => void,
 ) {
@@ -84,7 +83,6 @@ export async function getJson<
     SEARCH_PATH,
     {
       ...parameters,
-      engine,
       api_key: key,
       output: "json",
     },
@@ -95,14 +93,13 @@ export async function getJson<
   if (
     // https://github.com/serpapi/public-roadmap/issues/562
     // https://github.com/serpapi/public-roadmap/issues/563
-    engine !== "yahoo_shopping" &&
+    parameters.engine !== "yahoo_shopping" &&
     nextParametersFromResponse
   ) {
     const nextParameters = { ...parameters, ...nextParametersFromResponse };
     if (haveParametersChanged(parameters, nextParameters)) {
       json.next = (innerCallback = callback) =>
         getJson(
-          engine,
           nextParameters,
           innerCallback,
         );
@@ -131,7 +128,6 @@ export async function getHtml<
   E extends EngineName = EngineName,
   P extends AllowArbitraryParams<EngineParameters<E>> = EngineParameters<E>,
 >(
-  engine: E,
   parameters: P,
   callback?: (html: string) => void,
 ) {
@@ -141,7 +137,6 @@ export async function getHtml<
     SEARCH_PATH,
     {
       ...parameters,
-      engine,
       api_key: key,
       output: "html",
     },

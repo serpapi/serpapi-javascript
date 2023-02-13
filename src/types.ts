@@ -54,8 +54,10 @@ export type EngineName = (keyof EngineMap) | AnyEngineName;
 export type EngineParameters<
   E extends EngineName = EngineName,
 > = {
-  [K in E]: K extends keyof EngineMap ? EngineMap[K]["parameters"]
-    : BaseParameters & Record<string, unknown>;
+  [K in E]:
+    & { engine: K }
+    & (K extends keyof EngineMap ? EngineMap[K]["parameters"]
+      : BaseParameters & Record<string, unknown>);
 }[E];
 
 export type BaseResponse<E extends EngineName = EngineName> = {
