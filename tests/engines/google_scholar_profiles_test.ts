@@ -60,7 +60,7 @@ describe("google_scholar_profiles", {
     await t.step("async/await", async () => {
       const authorIds: string[] = [];
       let page;
-      page = await getJson(engine, { mauthors });
+      page = await getJson({ engine, mauthors });
       while (page) {
         authorIds.push(...page.profiles.map((r: any) => r.author_id));
         if (authorIds.length >= 20) break;
@@ -72,7 +72,7 @@ describe("google_scholar_profiles", {
     await t.step("callback", async () => {
       const authorIds: string[] = [];
       await new Promise<void>((done) => {
-        getJson(engine, { mauthors }, (page) => {
+        getJson({ engine, mauthors }, (page) => {
           authorIds.push(...page.profiles.map((r: any) => r.author_id));
           if (authorIds.length < 20 && page.next) {
             page.next();
@@ -92,7 +92,8 @@ describe("google_scholar_profiles", {
     config.api_key = null;
 
     await t.step("async/await", async () => {
-      const page1 = await getJson(engine, {
+      const page1 = await getJson({
+        engine,
         api_key: SERPAPI_TEST_KEY,
         no_cache: false,
         mauthors,
@@ -109,7 +110,8 @@ describe("google_scholar_profiles", {
     await t.step("callback", async () => {
       const page1 = await new Promise<Awaited<ReturnType<typeof getJson>>>(
         (res) =>
-          getJson(engine, {
+          getJson({
+            engine,
             api_key: SERPAPI_TEST_KEY,
             no_cache: false,
             mauthors,
@@ -130,7 +132,7 @@ describe("google_scholar_profiles", {
   it("getJson pagination with token", {
     ignore: !HAS_API_KEY,
   }, async (t) => {
-    const firstPage = await getJson(engine, { mauthors });
+    const firstPage = await getJson({ engine, mauthors });
     const authorIdsOnFirstPage = firstPage.profiles.map((r: any) =>
       r.author_id
     );
@@ -138,7 +140,7 @@ describe("google_scholar_profiles", {
     await t.step("async/await", async () => {
       const authorIds: string[] = [];
       let page;
-      page = await getJson(engine, { mauthors, after_author: "rZlDAYoq__8J" });
+      page = await getJson({ engine, mauthors, after_author: "rZlDAYoq__8J" });
       while (page) {
         authorIds.push(...page.profiles.map((r: any) => r.author_id));
         if (authorIds.length >= 20) break;
@@ -154,7 +156,7 @@ describe("google_scholar_profiles", {
     await t.step("callback", async () => {
       const authorIds: string[] = [];
       await new Promise<void>((done) => {
-        getJson(engine, { mauthors, after_author: "rZlDAYoq__8J" }, (page) => {
+        getJson({ engine, mauthors, after_author: "rZlDAYoq__8J" }, (page) => {
           authorIds.push(...page.profiles.map((r: any) => r.author_id));
           if (authorIds.length < 20 && page.next) {
             page.next();
@@ -177,7 +179,7 @@ describe("google_scholar_profiles", {
     await t.step("async/await", async () => {
       let page;
       let pageNum = 0;
-      page = await getJson(engine, { mauthors, after_author: "UXxiAf3___8J" });
+      page = await getJson({ engine, mauthors, after_author: "UXxiAf3___8J" });
       while (page && pageNum < 5) {
         pageNum++;
         page = await page.next?.();
@@ -188,7 +190,7 @@ describe("google_scholar_profiles", {
     await t.step("callback", async () => {
       let pageNum = 0;
       await new Promise<void>((done) => {
-        getJson(engine, { mauthors, after_author: "UXxiAf3___8J" }, (page) => {
+        getJson({ engine, mauthors, after_author: "UXxiAf3___8J" }, (page) => {
           pageNum++;
           if (pageNum < 5 && page.next) {
             page.next();
