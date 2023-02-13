@@ -134,9 +134,6 @@ Get a JSON response based on search parameters.
 
 #### Parameters
 
-- `engine`
-  **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**
-  engine name
 - `parameters`
   **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**
   search query parameters for the engine
@@ -146,21 +143,21 @@ Get a JSON response based on search parameters.
 
 ```javascript
 // single call (async/await)
-const json = await getJson("google", { api_key: API_KEY, q: "coffee" });
+const json = await getJson({ engine: "google", api_key: API_KEY, q: "coffee" });
 
 // single call (callback)
-getJson("google", { api_key: API_KEY, q: "coffee" }, console.log);
+getJson({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
 ```
 
 ```javascript
 // pagination (async/await)
-const page1 = await getJson("google", { q: "coffee", start: 15 });
+const page1 = await getJson({ engine: "google", q: "coffee", start: 15 });
 const page2 = await page1.next?.();
 ```
 
 ```javascript
 // pagination (callback)
-getJson("google", { q: "coffee", start: 15 }, (page1) => {
+getJson({ engine: "google", q: "coffee", start: 15 }, (page1) => {
   page1.next?.((page2) => {
     console.log(page2);
   });
@@ -170,7 +167,7 @@ getJson("google", { q: "coffee", start: 15 }, (page1) => {
 ```javascript
 // pagination loop (async/await)
 const organicResults = [];
-let page = await getJson("google", { api_key: API_KEY, q: "coffee" });
+let page = await getJson({ engine: "google", api_key: API_KEY, q: "coffee" });
 while (page) {
   organicResults.push(...page.organic_results);
   if (organicResults.length >= 30) break;
@@ -181,7 +178,7 @@ while (page) {
 ```javascript
 // pagination loop (callback)
 const organicResults = [];
-getJson("google", { api_key: API_KEY, q: "coffee" }, (page) => {
+getJson({ engine: "google", api_key: API_KEY, q: "coffee" }, (page) => {
   organicResults.push(...page.organic_results);
   if (organicResults.length < 30 && page.next) {
     page.next();
@@ -198,9 +195,6 @@ Get a HTML response based on search parameters.
 
 #### Parameters
 
-- `engine`
-  **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**
-  engine name
 - `parameters`
   **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**
   search query parameters for the engine
@@ -210,10 +204,10 @@ Get a HTML response based on search parameters.
 
 ```javascript
 // async/await
-const html = await getHtml("google", { api_key: API_KEY, q: "coffee" });
+const html = await getHtml({ engine: "google", api_key: API_KEY, q: "coffee" });
 
 // callback
-getHtml("google", { api_key: API_KEY, q: "coffee" }, console.log);
+getHtml({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
 ```
 
 ### getJsonBySearchId
@@ -245,7 +239,8 @@ Get a JSON response given a search ID.
 #### Examples
 
 ```javascript
-const response = await getJson("google", {
+const response = await getJson({
+  engine: "google",
   api_key: API_KEY,
   async: true,
   q: "coffee",
@@ -290,7 +285,8 @@ Get a HTML response given a search ID.
 #### Examples
 
 ```javascript
-const response = await getJson("google", {
+const response = await getJson({
+  engine: "google",
   api_key: API_KEY,
   async: true,
   q: "coffee",

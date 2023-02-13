@@ -27,24 +27,23 @@ const SEARCH_ARCHIVE_PATH = `/searches`;
  * - Accepts an optional callback.
  * - Get the next page of results by calling the `.next()` method on the returned response object.
  *
- * @param {string} engine - engine name
  * @param {object} parameters - search query parameters for the engine
  * @param {fn=} callback - optional callback
  * @example
  * // single call (async/await)
- * const json = await getJson("google", { api_key: API_KEY, q: "coffee" });
+ * const json = await getJson({ engine: "google", api_key: API_KEY, q: "coffee" });
  *
  * // single call (callback)
- * getJson("google", { api_key: API_KEY, q: "coffee" }, console.log);
+ * getJson({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
  *
  * @example
  * // pagination (async/await)
- * const page1 = await getJson("google", { q: "coffee", start: 15 });
+ * const page1 = await getJson({ engine: "google", q: "coffee", start: 15 });
  * const page2 = await page1.next?.();
  *
  * @example
  * // pagination (callback)
- * getJson("google", { q: "coffee", start: 15 }, (page1) => {
+ * getJson({ engine: "google", q: "coffee", start: 15 }, (page1) => {
  *   page1.next?.((page2) => {
  *     console.log(page2);
  *   });
@@ -53,7 +52,7 @@ const SEARCH_ARCHIVE_PATH = `/searches`;
  * @example
  * // pagination loop (async/await)
  * const organicResults = [];
- * let page = await getJson("google", { api_key: API_KEY, q: "coffee" });
+ * let page = await getJson({ engine: "google", api_key: API_KEY, q: "coffee" });
  * while (page) {
  *   organicResults.push(...page.organic_results);
  *   if (organicResults.length >= 30) break;
@@ -63,7 +62,7 @@ const SEARCH_ARCHIVE_PATH = `/searches`;
  * @example
  * // pagination loop (callback)
  * const organicResults = [];
- * getJson("google", { api_key: API_KEY, q: "coffee" }, (page) => {
+ * getJson({ engine: "google", api_key: API_KEY, q: "coffee" }, (page) => {
  *   organicResults.push(...page.organic_results);
  *   if (organicResults.length < 30 && page.next) {
  *     page.next();
@@ -114,15 +113,14 @@ export async function getJson<
  * - Accepts an optional callback.
  * - Responds with a JSON string if the search request hasn't completed.
  *
- * @param {string} engine - engine name
  * @param {object} parameters - search query parameters for the engine
  * @param {fn=} callback - optional callback
  * @example
  * // async/await
- * const html = await getHtml("google", { api_key: API_KEY, q: "coffee" });
+ * const html = await getHtml({ engine: "google", api_key: API_KEY, q: "coffee" });
  *
  * // callback
- * getHtml("google", { api_key: API_KEY, q: "coffee" }, console.log);
+ * getHtml({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
  */
 export async function getHtml<
   E extends EngineName = EngineName,
@@ -159,7 +157,7 @@ export async function getHtml<
  * @param {number=} [parameters.timeout] - timeout in milliseconds
  * @param {fn=} callback - optional callback
  * @example
- * const response = await getJson("google", { api_key: API_KEY, async: true, q: "coffee" });
+ * const response = await getJson({ engine: "google", api_key: API_KEY, async: true, q: "coffee" });
  * const { id } = response.search_metadata;
  * await delay(1000); // wait for the request to be processed.
  *
@@ -204,7 +202,7 @@ export async function getJsonBySearchId<
  * @param {number=} [parameters.timeout] - timeout in milliseconds
  * @param {fn=} callback - optional callback
  * @example
- * const response = await getJson("google", { api_key: API_KEY, async: true, q: "coffee" });
+ * const response = await getJson({ engine: "google", api_key: API_KEY, async: true, q: "coffee" });
  * const { id } = response.search_metadata;
  * await delay(1000); // wait for the request to be processed.
  *
