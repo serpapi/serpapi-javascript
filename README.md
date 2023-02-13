@@ -25,7 +25,8 @@ npm install serpapi
 
 ```js
 import { getJson } from "serpapi";
-const response = await getJson("google", {
+const response = await getJson({
+  engine: "google",
   api_key: API_KEY, // Get your API_KEY from https://serpapi.com/manage-api-key
   q: "coffee",
   location: "Austin, Texas",
@@ -68,8 +69,8 @@ import { config, getJson } from "serpapi";
 config.api_key = API_KEY;
 config.timeout = 60000;
 
-await getJson("google", { q: "coffee" }); // uses the API key defined in the config
-await getJson("google", { api_key: API_KEY_2, q: "coffee" }); // API_KEY_2 will be used
+await getJson({ engine: "google", q: "coffee" }); // uses the API key defined in the config
+await getJson({ engine: "google", api_key: API_KEY_2, q: "coffee" }); // API_KEY_2 will be used
 ```
 
 ## Pagination
@@ -86,7 +87,7 @@ pagination is not supported for the search engine or there are no more pages to
 be retrieved.
 
 ```js
-const page1 = await getJson("google", { q: "coffee", start: 15 });
+const page1 = await getJson({ engine: "google", q: "coffee", start: 15 });
 const page2 = await page1.next?.();
 ```
 
