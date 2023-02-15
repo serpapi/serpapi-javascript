@@ -24,9 +24,6 @@ await build({
     bugs: {
       url: "https://github.com/serpapi/serpapi-javascript/issues",
     },
-    engines: {
-      node: "^16.14.0 || >=17.3.0", // Because of AbortSignal.timeout https://nodejs.org/api/globals.html#static-method-abortsignaltimeoutdelay
-    },
     keywords: [
       "serpapi",
       "serp api",
@@ -65,4 +62,3 @@ await build({
 
 Deno.copyFileSync("LICENSE", "npm/LICENSE");
 Deno.copyFileSync("README.md", "npm/README.md");
-Deno.copyFileSync(".npmrc", "npm/.npmrc");
