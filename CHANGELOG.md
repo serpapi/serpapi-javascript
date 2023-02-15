@@ -12,12 +12,18 @@ and this project adheres to
 
 ### Changed
 
-- Exclude Deno and DOMException from distribution shim.
-- Refine retrieval of Node/Deno version.
-
 ### Fixed
 
 ### Removed
+
+## [1.1.1] - 2023-02-15
+
+### Added
+
+### Changed
+
+- Exclude Deno and DOMException from distribution shim.
+- Refine retrieval of Node/Deno version.
 
 ## [1.1.0] - 2023-02-02
 
@@ -150,7 +156,8 @@ The API signatures of all functions are as follows:
 - `getAccount(parameters?, callback?)`
 - `getLocations(parameters?, callback?)`
 
-[unreleased]: https://github.com/serpapi/serpapi-javascript/compare/1.1.0...HEAD
+[unreleased]: https://github.com/serpapi/serpapi-javascript/compare/1.1.1...HEAD
+[1.1.1]: https://github.com/serpapi/serpapi-javascript/compare/1.1.0...1.1.1
 [1.1.0]: https://github.com/serpapi/serpapi-javascript/compare/1.0.0...1.1.0
 [1.0.0]: https://github.com/serpapi/serpapi-javascript/compare/0.0.13...1.0.0
 [0.0.13]: https://github.com/serpapi/serpapi-javascript/compare/0.0.12...0.0.13
