@@ -77,15 +77,23 @@ function getSource() {
   const moduleSource = `serpapi@${version}`;
   try {
     // Check if running in Node.js
+    // dnt-shim-ignore
     // deno-lint-ignore no-explicit-any
-    if ((globalThis as any)?.process?.version) {
-      // deno-lint-ignore no-explicit-any
-      const nodeVersion = (globalThis as any).process.version.replace("v", "");
+    const nodeVersion = (globalThis as any).process?.versions?.node;
+    if (nodeVersion) {
       return `nodejs@${nodeVersion},${moduleSource}`;
     }
 
-    // Assumes running in Deno instead
-    return `deno@${Deno.version.deno},${moduleSource}`;
+    // Assumes running in Deno instead. https://deno.land/api?s=Deno.version
+    // Deno.version is not shimmed since it's not used when ran in a Node env.
+    // dnt-shim-ignore
+    // deno-lint-ignore no-explicit-any
+    const denoVersion = (globalThis as any).Deno?.version?.deno;
+    if (denoVersion) {
+      return `deno@${denoVersion},${moduleSource}`;
+    }
+
+    return `nodejs,${moduleSource}`;
   } catch {
     // If something unexpectedly occurs, revert to "nodejs".
     return `nodejs,${moduleSource}`;

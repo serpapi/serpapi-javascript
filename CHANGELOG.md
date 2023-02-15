@@ -12,6 +12,9 @@ and this project adheres to
 
 ### Changed
 
+- Exclude Deno and DOMException from distribution shim.
+- Refine retrieval of Node/Deno version.
+
 ### Fixed
 
 ### Removed

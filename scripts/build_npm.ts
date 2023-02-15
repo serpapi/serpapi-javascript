@@ -8,8 +8,15 @@ await build({
   rootTestDir: "./tests",
   outDir: "./npm",
   shims: {
-    deno: true, // Required for `Deno.test`, `Deno.env`, etc.
-    domException: true, // https://deno.land/std/async/delay.ts relies on DOMException
+    // Tests require `Deno.test` and `Deno.env`.
+    // Although `Deno.version` is used, it doesn't need to be shimmed since
+    // it won't be used when the user runs the module in Node.
+    deno: "dev",
+
+    // https://deno.land/std/async/delay.ts relies on DOMException.
+    // This is only used in tests.
+    domException: "dev", //  Only used in tests.
+
     undici: true, // Required for `fetch`
   },
   package: {
