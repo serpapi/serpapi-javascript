@@ -5,6 +5,7 @@ await emptyDir("./npm");
 
 await build({
   test: false, // Turned off to avoid publishing tests
+  typeCheck: false,
   entryPoints: ["./mod.ts"],
   rootTestDir: "./tests",
   outDir: "./npm",
@@ -20,8 +21,8 @@ await build({
   },
   compilerOptions: {
     // https://github.com/microsoft/TypeScript/wiki/Node-Target-Mapping
-    lib: ["es2018"],
-    target: "ES2018",
+    lib: ["es2017"],
+    target: "ES2017",
   },
   package: {
     name: "serpapi",

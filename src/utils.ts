@@ -1,6 +1,8 @@
 import type { EngineMap } from "./engines/engine_map.ts";
 import { version } from "../version.ts";
 import fetch from "npm:cross-fetch@3.1.4";
+import core from "npm:core-js-pure@3.28.0";
+const { globalThis, URL, URLSearchParams } = core;
 
 type UrlParameters = Record<
   string,

@@ -16,13 +16,13 @@ const run = async () => {
   let page1 = await getJson("google", params);
   console.log(
     "First page links",
-    extractLinks(page1.organic_results),
+    extractLinks(page1.organic_results)
   );
   if (page1.next) {
     let page2 = await page1.next();
     console.log(
       "Second page links",
-      extractLinks(page2.organic_results),
+      extractLinks(page2.organic_results)
     );
   }
 
@@ -30,13 +30,13 @@ const run = async () => {
   getJson("google", params, (page1) => {
     console.log(
       "First page links",
-      extractLinks(page1.organic_results),
+      extractLinks(page1.organic_results)
     );
     if (page1.next) {
       page1.next((page2) => {
         console.log(
           "Second page links",
-          extractLinks(page2.organic_results),
+          extractLinks(page2.organic_results)
         );
       });
     }
@@ -49,7 +49,7 @@ const run = async () => {
     page2 = await page1.next();
     console.log(
       "Second page links",
-      extractLinks(page2.organic_results),
+      extractLinks(page2.organic_results)
     );
   }
 
