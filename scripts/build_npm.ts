@@ -20,8 +20,8 @@ await build({
   },
   compilerOptions: {
     // https://github.com/microsoft/TypeScript/wiki/Node-Target-Mapping
-    lib: ["es2019"],
-    target: "ES2019",
+    lib: ["es2018"],
+    target: "ES2018",
   },
   package: {
     name: "serpapi",

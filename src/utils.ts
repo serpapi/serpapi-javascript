@@ -53,8 +53,11 @@ export function extractNextParameters<E extends EngineName = EngineName>(json: {
 
   if (nextUrlString) {
     const nextUrl = new URL(nextUrlString);
-    const nextParameters = Object.fromEntries(nextUrl.searchParams.entries());
-    delete nextParameters["engine"];
+    const nextParameters: Record<string, string> = {};
+    for (const [k, v] of nextUrl.searchParams.entries()) {
+      if (k === "engine") continue;
+      nextParameters[k] = v;
+    }
     return nextParameters as NextParameters<E>;
   }
 }
