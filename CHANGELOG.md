@@ -12,6 +12,8 @@ and this project adheres to
 
 ### Changed
 
+- Remove `settings.json`, update CONTRIBUTING.md.
+
 ### Fixed
 
 ### Removed

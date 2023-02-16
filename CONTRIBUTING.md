@@ -18,8 +18,40 @@ https://deno.land/manual/getting_started/setup_your_environment. The extension
 helps ensure that the information you get about your code aligns to how that
 code will work when you try to run it under the Deno CLI."[^1]
 
-If you use VSCode, the necessary configurations have been defined in
-`.vscode/settings.json`. Simply install the
+If you use VSCode, use the following settings (`.vscode/settings.json`):
+
+```json
+{
+  "deno.enablePaths": [
+    "mod.ts",
+    "version.ts",
+    "src",
+    "tests",
+    "scripts",
+    "examples/deno"
+  ],
+  "deno.inlayHints.enumMemberValues.enabled": false,
+  "deno.inlayHints.functionLikeReturnTypes.enabled": false,
+  "deno.inlayHints.parameterNames.enabled": "none",
+  "deno.inlayHints.parameterTypes.enabled": false,
+  "deno.inlayHints.propertyDeclarationTypes.enabled": false,
+  "deno.inlayHints.variableTypes.enabled": false,
+  "[json]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "[markdown]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "[typescript]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  }
+}
+```
+
+Subsequently, install the
 [vscode_deno extension](https://marketplace.visualstudio.com/items?itemName=denoland.vscode-deno)
 and you're good to go.
 
