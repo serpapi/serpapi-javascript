@@ -1,3 +1,11 @@
+/**
+ * Example works for Node.js 14 and newer.
+ * - Uses ESM imports which is supported from Node.js 13.2.0.
+ *   https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#browser_compatibility
+ * - Uses top-level await which is supported from Node.js 14.8.0.
+ *   https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await#browser_compatibility
+ */
+
 import * as Dotenv from "dotenv";
 import { AllowArbitraryParams, config, getJson, GoogleParameters } from "serpapi";
 

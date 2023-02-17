@@ -1,4 +1,4 @@
-# Node.js pagination JavaScript (CommonJS) example
+# Basic JavaScript example for Node.js 14 and newer
 
 ## Usage
 
@@ -17,7 +17,7 @@ deno task npm
 3. Install dependencies and run example
 
 ```bash
-cd examples/node/pagination_js_commonjs
+cd examples/node/basic_js_node_14_up
 npm i
 npm start
 ```
@@ -28,6 +28,7 @@ npm start
   `package.json` to depend on the published `serpapi` npm module instead:
   ```json
   {
+    "type": "module",
     "dependencies": {
       "dotenv": "*",
       "serpapi": "*" // Relies on the npm module
