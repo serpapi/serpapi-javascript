@@ -1,4 +1,4 @@
-# Node.js basic JavaScript (CommonJS) example
+# Basic JavaScript example for Node.js 7 and newer
 
 ## Usage
 
@@ -17,7 +17,7 @@ deno task npm
 3. Install dependencies and run example
 
 ```bash
-cd examples/node/basic_js_commonjs
+cd examples/node/basic_js_node_7_up
 npm i
 npm start
 ```

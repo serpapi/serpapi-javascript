@@ -1,15 +1,26 @@
+/**
+ * Example works for Node.js 14 and newer.
+ * - Uses ESM imports which is supported from Node.js 13.2.0.
+ *   https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#browser_compatibility
+ * - Uses top-level await which is supported from Node.js 14.8.0.
+ *   https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await#browser_compatibility
+ * - Uses optional chaining which is supported from Node.js 14.0.0.
+ *   https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining#browser_compatibility
+ */
+
 import * as Dotenv from "dotenv";
-import { config, getJson } from "serpapi";
+import { config, getJson, GoogleParameters } from "serpapi";
 
 Dotenv.config();
 const apiKey = process.env.API_KEY;
 
-const extractLinks = (results) => results.map((r) => r.link);
+const extractLinks = (results: { link: string }[]) =>
+  results.map((r) => r.link);
 
 const params = {
   q: "Coffee",
   api_key: apiKey,
-};
+} satisfies GoogleParameters;
 
 // Pagination (async/await)
 let page1 = await getJson("google", params);
@@ -47,8 +58,9 @@ console.log(
 );
 
 // Pagination loop (async/await)
-let links = [];
-let page = await getJson("google", { q: "Coffee" });
+let links: string[] = [];
+let page;
+page = await getJson("google", { q: "Coffee" });
 while (page) {
   links.push(...extractLinks(page.organic_results));
   if (links.length >= 30) break;

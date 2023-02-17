@@ -1,3 +1,7 @@
+/**
+ * Example works for Node.js 7 and newer.
+ */
+
 const Dotenv = require("dotenv");
 const { config, getJson } = require("serpapi");
 

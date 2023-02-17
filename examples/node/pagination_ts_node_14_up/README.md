@@ -1,4 +1,4 @@
-# Node.js basic JavaScript (ESM) example
+# Pagination TypeScript example for Node.js 14 and newer
 
 ## Usage
 
@@ -17,7 +17,7 @@ deno task npm
 3. Install dependencies and run example
 
 ```bash
-cd examples/node/basic_js_esm
+cd examples/node/pagination_ts_node_14_up
 npm i
 npm start
 ```
@@ -33,8 +33,12 @@ npm start
       "dotenv": "*",
       "serpapi": "*" // Relies on the npm module
     },
+    "devDependencies": {
+      "@types/node": "*",
+      "typescript": "*"
+    },
     "scripts": {
-      "start": "node example.js"
+      "start": "npx ts-node example.ts"
     }
   }
   ```

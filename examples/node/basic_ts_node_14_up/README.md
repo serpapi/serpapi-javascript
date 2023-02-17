@@ -1,4 +1,4 @@
-# Node.js basic TypeScript (ESM) example
+# Basic TypeScript example for Node.js 14 and newer
 
 ## Usage
 
@@ -17,7 +17,7 @@ deno task npm
 3. Install dependencies and run example
 
 ```bash
-cd examples/node/basic_ts_esm
+cd examples/node/basic_ts_node_14_up
 npm i
 npm start
 ```

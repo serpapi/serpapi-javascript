@@ -1,4 +1,4 @@
-# Node.js pagination TypeScript (ESM) example
+# Pagination JavaScript example for Node.js 7 and newer
 
 ## Usage
 
@@ -17,7 +17,7 @@ deno task npm
 3. Install dependencies and run example
 
 ```bash
-cd examples/node/pagination_ts_esm
+cd examples/node/pagination_js_node_7_up
 npm i
 npm start
 ```
@@ -28,17 +28,12 @@ npm start
   `package.json` to depend on the published `serpapi` npm module instead:
   ```json
   {
-    "type": "module",
     "dependencies": {
       "dotenv": "*",
       "serpapi": "*" // Relies on the npm module
     },
-    "devDependencies": {
-      "@types/node": "*",
-      "typescript": "*"
-    },
     "scripts": {
-      "start": "npx ts-node example.ts"
+      "start": "node example.js"
     }
   }
   ```

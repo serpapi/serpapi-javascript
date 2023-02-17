@@ -1,4 +1,4 @@
-# Node.js pagination JavaScript (ESM) example
+# Pagination JavaScript example for Node.js 14 and newer
 
 ## Usage
 
@@ -17,7 +17,7 @@ deno task npm
 3. Install dependencies and run example
 
 ```bash
-cd examples/node/pagination_js_esm
+cd examples/node/pagination_js_node_14_up
 npm i
 npm start
 ```
