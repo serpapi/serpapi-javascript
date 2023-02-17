@@ -4,6 +4,7 @@ import { version } from "../version.ts";
 await emptyDir("./npm");
 
 await build({
+  test: false, // Turned off to avoid publishing tests
   entryPoints: ["./mod.ts"],
   rootTestDir: "./tests",
   outDir: "./npm",
@@ -16,8 +17,11 @@ await build({
     // https://deno.land/std/async/delay.ts relies on DOMException.
     // This is only used in tests.
     domException: "dev", //  Only used in tests.
-
-    undici: true, // Required for `fetch`
+  },
+  compilerOptions: {
+    // https://github.com/microsoft/TypeScript/wiki/Node-Target-Mapping
+    lib: ["es2019"],
+    target: "ES2019",
   },
   package: {
     name: "serpapi",

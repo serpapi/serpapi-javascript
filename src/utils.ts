@@ -1,5 +1,6 @@
 import type { EngineMap } from "./engines/engine_map.ts";
 import { version } from "../version.ts";
+import fetch from "npm:cross-fetch@3.1.4";
 
 type UrlParameters = Record<
   string,
@@ -111,7 +112,7 @@ export function buildUrl<P extends UrlParameters>(
   return `${_internals.getBaseUrl()}${path}?${searchParams}`;
 }
 
-export async function execute<P extends UrlParameters>(
+export function execute<P extends UrlParameters>(
   path: string,
   parameters: P,
   timeout: number,
@@ -120,7 +121,17 @@ export async function execute<P extends UrlParameters>(
     ...parameters,
     source: getSource(),
   });
-  return await _internals.fetch(url, {
-    signal: AbortSignal.timeout(timeout),
+  // https://github.com/github/fetch/issues/175#issuecomment-216791333
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error("Timeout")), timeout);
+    _internals.fetch(url)
+      .then((res) => {
+        clearTimeout(timer);
+        resolve(res);
+      })
+      .catch((err) => {
+        clearTimeout(timer);
+        reject(err);
+      });
   });
 }

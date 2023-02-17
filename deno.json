@@ -16,5 +16,11 @@
     "files": {
       "exclude": ["npm/", "examples/node"]
     }
+  },
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "deno.ns"
+    ]
   }
 }
