@@ -18,11 +18,13 @@ const run = async () => {
     "First page links",
     extractLinks(page1.organic_results),
   );
-  let page2 = await page1.next?.();
-  console.log(
-    "Second page links",
-    extractLinks(page2?.organic_results),
-  );
+  if (page1.next) {
+    let page2 = await page1.next();
+    console.log(
+      "Second page links",
+      extractLinks(page2.organic_results),
+    );
+  }
 
   // Pagination (callback)
   getJson("google", params, (page1) => {
@@ -30,22 +32,26 @@ const run = async () => {
       "First page links",
       extractLinks(page1.organic_results),
     );
-    page1.next?.((page2) => {
-      console.log(
-        "Second page links",
-        extractLinks(page2.organic_results),
-      );
-    });
+    if (page1.next) {
+      page1.next((page2) => {
+        console.log(
+          "Second page links",
+          extractLinks(page2.organic_results),
+        );
+      });
+    }
   });
 
   // Use global config
   config.api_key = apiKey;
   page1 = await getJson("google", { q: "Coffee" });
-  page2 = await page1.next?.();
-  console.log(
-    "Second page links",
-    extractLinks(page2?.organic_results),
-  );
+  if (page1.next) {
+    page2 = await page1.next();
+    console.log(
+      "Second page links",
+      extractLinks(page2.organic_results),
+    );
+  }
 
   // Pagination loop (async/await)
   let links = [];
@@ -53,7 +59,7 @@ const run = async () => {
   while (page) {
     links.push(...extractLinks(page.organic_results));
     if (links.length >= 30) break;
-    page = await page.next?.();
+    page = page.next ? await page.next(): undefined;
   }
   console.log(links);
 

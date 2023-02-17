@@ -23,6 +23,7 @@ import {
   extractNextParameters,
   haveParametersChanged,
 } from "../src/utils.ts";
+import { Response } from "npm:cross-fetch@3.1.4";
 
 loadSync({ export: true });
 const BASE_URL = Deno.env.get("ENV_TYPE") === "local"
