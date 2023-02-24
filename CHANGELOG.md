@@ -10,6 +10,8 @@ and this project adheres to
 
 ### Added
 
+- Add support for Node.js 7.10.1 and newer.
+
 ### Changed
 
 - Remove `settings.json`, update CONTRIBUTING.md.

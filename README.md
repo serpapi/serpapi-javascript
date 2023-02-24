@@ -17,10 +17,37 @@ more.
 
 ### Node.js
 
-Ensure you're running at least Node.js v16.14.
+- Supports Node.js 7.10.1 and newer.
+- Refer to [this example](examples/node/basic_js_node_7_up) for help.
 
 ```bash
 npm install serpapi
+```
+
+```js
+const { getJson } = require("serpapi");
+getJson("google", {
+  api_key: API_KEY, // Get your API_KEY from https://serpapi.com/manage-api-key
+  q: "coffee",
+  location: "Austin, Texas",
+}, (json) => {
+  console.log(json["organic_results"]);
+});
+```
+
+### Node.js with ES Modules (ESM) and top-level await
+
+- If you prefer using the `import` syntax and top-level `await`, you need to use
+  at least Node.js 14.8.0.
+- Refer to [this example](examples/node/basic_js_node_14_up) for help.
+
+You will need to add `"type": "module"` to your `package.json`:
+
+```js
+{
+  "type": "module",
+  // rest of package.json
+}
 ```
 
 ```js
@@ -35,7 +62,9 @@ console.log(response);
 
 ### Deno
 
-Import directly from deno.land. Usage is otherwise the same as above.
+- Import directly from deno.land.
+- Usage is otherwise the same as above.
+- Refer to [this example](examples/deno/basic_ts) for help.
 
 ```ts
 import { getJson } from "https://deno.land/x/serpapi/mod.ts";
