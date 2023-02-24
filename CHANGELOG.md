@@ -11,6 +11,7 @@ and this project adheres to
 ### Added
 
 - Expose `EngineName`, `EngineParameters` and `AllowArbitraryParams` types.
+- Add support for Node.js 7.10.1 and newer.
 
 ### Changed
 
