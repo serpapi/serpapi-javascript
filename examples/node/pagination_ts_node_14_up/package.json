@@ -2,7 +2,7 @@
   "type": "module",
   "dependencies": {
     "dotenv": "*",
-    "serpapi": "../../../npm"
+    "serpapi": "*"
   },
   "devDependencies": {
     "@types/node": "*",
