@@ -96,6 +96,25 @@ deno task test:cov     # Get test coverage by running tests that hit "localhost"
 deno task test:ci      # Run tests that hit "https://serpapi.com"
 ```
 
+## Run examples on local source files
+
+To run [examples](./examples/) on your local source files, follow these steps.
+
+1. Run `deno task npm` to build the files.
+2. Update the respective example's `package.json` to depend on the local
+   `serpapi` module instead,
+   ```json
+   {
+     "dependencies": {
+       "dotenv": "*",
+       "serpapi": "../../../npm"
+     },
+     "scripts": {
+       "start": "node example.js"
+     }
+   }
+   ```
+
 ## Update documentation
 
 - Every exposed function must have associated JSDoc comments.
@@ -112,7 +131,8 @@ deno task docs:gen
 TypeScript types are generated from the backend code. Follow these steps to
 update the types.
 
-1. Run `bundle exec rails sdk:generate_ts_types` in the backend repository.
+1. Run `bundle exec rails libraries:generate_ts_types` in the backend
+   repository.
 2. Replace everything in `src/engines` with the generated files from
    `tmp/ts/engines`.
 3. Update `mod.ts` with the new engine exports from `tmp/ts/mod.ts`.
