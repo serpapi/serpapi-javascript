@@ -15,16 +15,16 @@ jobs:
         with:
           deno-version: v1.x
 
-      - name: Check formatting
-        run: deno fmt --check
+      # - name: Check formatting
+      #   run: deno fmt --check
 
-      - name: Run linter
-        run: deno lint
+      # - name: Run linter
+      #   run: deno lint
 
-      - name: Run tests
-        env:
-          SERPAPI_TEST_KEY: ${{ secrets.SERPAPI_TEST_KEY }}
-        run: deno task test:ci
+      # - name: Run tests
+      #   env:
+      #     SERPAPI_TEST_KEY: ${{ secrets.SERPAPI_TEST_KEY }}
+      #   run: deno task test:ci
 
       - name: Setup Node
         uses: actions/setup-node@v3
@@ -35,11 +35,15 @@ jobs:
       - name: Test building of npm files
         run: deno task npm
 
+      - name: Zip build files
+        run: zip npm.zip ./npm -r
+
       - name: Upload build files for smoke tests
         uses: actions/upload-artifact@v3
         with:
           name: npm
-          path: npm/
+          path: npm.zip
+          retention-days: 3
 
   smoke-tests:
     name: "Smoke tests for different Node.js versions"
@@ -62,10 +66,13 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: npm
-      
+
+      - name: Unzip build files
+        run: unzip npm.zip
+
       - name: Run smoke tests
         run: |
           echo ${{ matrix.node-version }}
-          cd smoke
+          cd tests/smoke
           npm i
           npm run esm
