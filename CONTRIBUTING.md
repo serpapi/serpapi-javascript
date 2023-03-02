@@ -26,7 +26,8 @@ If you use VSCode, use the following settings (`.vscode/settings.json`):
     "mod.ts",
     "version.ts",
     "src",
-    "tests",
+    "tests/*.ts",
+    "tests/engines/",
     "scripts",
     "examples/deno"
   ],
@@ -114,6 +115,20 @@ To run [examples](./examples/) on your local source files, follow these steps.
      }
    }
    ```
+
+## Run smoke tests
+
+These test key functionality on different Node.js versions. They are ran on
+GitHub Actions, see the [build workflow](.github/workflows/build.yml) for more
+details.
+
+To run these locally, follow these steps.
+
+1. Run `deno task npm` to build the files.
+2. Change directory to either the `commonjs` or `esm` folder.
+3. Setup the intended Node.js version. For example, if you're using `nvm`, you
+   can run `nvm use 14` to run Node.js 14 for the current shell.
+4. Run `npm i`, then `npm test`.
 
 ## Update documentation
 
