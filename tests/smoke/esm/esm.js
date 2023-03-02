@@ -17,8 +17,8 @@ const params = {
 
 let searchId;
 
-// getJson async await
 {
+  console.log("getJson async await")
   const page1 = await getJson("google", params);
   searchId = page1["search_metadata"]["id"];
   if (!page1["organic_results"]) throw new Error("No organic results");
@@ -26,8 +26,8 @@ let searchId;
   if (!page2["organic_results"]) throw new Error("No organic results");
 }
 
-// getJson callback
 {
+  console.log("getJson callback")
   getJson("google", params, (page1) => {
     if (!page1["organic_results"]) throw new Error("No organic results");
     page1.next?.((page2) => {
@@ -36,8 +36,8 @@ let searchId;
   });
 }
 
-// getJson using global config
 {
+  console.log("getJson using global config")
   config.api_key = apiKey;
   const page1 = await getJson("google", { q: "Coffee" });
   if (!page1["organic_results"]) throw new Error("No organic results");
@@ -45,8 +45,8 @@ let searchId;
   if (!page2["organic_results"]) throw new Error("No organic results");
 }
 
-// getJson pagination loop (async/await)
 {
+  console.log("getJson pagination loop (async/await)")
   const links = [];
   let page = await getJson("google", params);
   while (page) {
@@ -57,8 +57,8 @@ let searchId;
   if (links.length < 30) throw new Error("Incorrect number of links");
 }
 
-// getJson pagination loop (callback)
 {
+  console.log("getJson pagination loop (callback)")
   const links = [];
   getJson("google", params, (page) => {
     links.push(...page.organic_results.map(r => r.link));
@@ -70,8 +70,8 @@ let searchId;
   });
 }
 
-// getHtml
 {
+  console.log("getHtml")
   const html = await getHtml("google", params);
   if (html.length < 1000) throw new Error("Incorrect HTML");
   
@@ -80,8 +80,8 @@ let searchId;
   });
 }
 
-// getJsonBySearchId
 {
+  console.log("getJsonBySearchId")
   config.api_key = apiKey;
   const json = await getJsonBySearchId(searchId);
   if (!json["organic_results"]) throw new Error("No organic results");
@@ -91,8 +91,8 @@ let searchId;
   });
 }
 
-// getHtmlBySearchId
 {
+  console.log("getHtmlBySearchId")
   config.api_key = apiKey;
   const html = await getHtmlBySearchId(searchId);
   if (html.length < 1000) throw new Error("Incorrect HTML");
@@ -102,8 +102,8 @@ let searchId;
   });
 }
 
-// getAccount
 {
+  console.log("getAccount")
   config.api_key = apiKey;
   const info = await getAccount();
   if (!info["account_email"]) throw new Error("Incorrect account info");
@@ -113,8 +113,8 @@ let searchId;
   });
 }
 
-// getLocations
 {
+  console.log("getLocations")
   const locations = await getLocations({ limit: 3 });
   if (locations.length !== 3) throw new Error("Incorrect locations length");
   
