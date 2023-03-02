@@ -4,6 +4,7 @@ on: push
 
 jobs:
   build:
+    name: "Deno tests and build npm files"
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout repo
@@ -28,8 +29,84 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: '18.x'
+          node-version: '18.x'  # Build files using a fixed node version
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Test building of npm files
+      - name: Build npm files
         run: deno task npm
+
+      - name: Zip build files
+        run: zip npm.zip ./npm -r
+
+      - name: Upload build files for smoke tests
+        uses: actions/upload-artifact@v3
+        with:
+          name: npm
+          path: npm.zip
+          retention-days: 1
+
+  smoke-tests-commonjs:
+    name: "Smoke tests (CommonJS)"
+    needs: build
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        node-version: [7.x, 8.x, 9.x, 10.x, 11.x, 12.x, 13.x, 14.x, 15.x, 16.x, 17.x, 18.x, 19.x]
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Download build files
+        uses: actions/download-artifact@v3
+        with:
+          name: npm
+
+      - name: Unzip build files
+        run: unzip npm.zip
+
+      - name: Run smoke tests
+        env:
+          SERPAPI_TEST_KEY: ${{ secrets.SERPAPI_TEST_KEY }}
+        run: |
+          cd tests/smoke/commonjs
+          npm i
+          npm test
+
+  smoke-tests-esm:
+    name: "Smoke tests (ESM)"
+    needs: build
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        node-version: [14.x, 15.x, 16.x, 17.x, 18.x, 19.x]
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Download build files
+        uses: actions/download-artifact@v3
+        with:
+          name: npm
+
+      - name: Unzip build files
+        run: unzip npm.zip
+
+      - name: Run smoke tests
+        env:
+          SERPAPI_TEST_KEY: ${{ secrets.SERPAPI_TEST_KEY }}
+        run: |
+          cd tests/smoke/esm
+          npm i
+          npm test
