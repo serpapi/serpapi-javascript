@@ -6,7 +6,7 @@ const Dotenv = require("dotenv");
 const { config, getJson, getHtml, getJsonBySearchId, getHtmlBySearchId, getAccount, getLocations } = require("serpapi");
 
 Dotenv.config();
-const apiKey = process.env.API_KEY;
+const apiKey = process.env.SERPAPI_TEST_KEY;
 
 const run = async () => {
   console.log("running", process.versions.node);

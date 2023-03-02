@@ -71,6 +71,8 @@ jobs:
         run: unzip npm.zip
 
       - name: Run smoke tests
+        env:
+          SERPAPI_TEST_KEY: ${{ secrets.SERPAPI_TEST_KEY }}
         run: |
           cd tests/smoke/commonjs
           npm i
@@ -102,6 +104,8 @@ jobs:
         run: unzip npm.zip
 
       - name: Run smoke tests
+        env:
+          SERPAPI_TEST_KEY: ${{ secrets.SERPAPI_TEST_KEY }}
         run: |
           cd tests/smoke/esm
           npm i
