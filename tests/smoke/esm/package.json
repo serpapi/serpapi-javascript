@@ -1,0 +1,10 @@
+{
+  "type": "module",
+  "dependencies": {
+    "dotenv": "*",
+    "serpapi": "../../../npm"
+  },
+  "scripts": {
+    "start": "node esm.js"
+  }
+}

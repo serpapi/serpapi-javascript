@@ -43,7 +43,7 @@ jobs:
         with:
           name: npm
           path: npm.zip
-          retention-days: 3
+          retention-days: 1
 
   smoke-tests:
     name: "Smoke tests for different Node.js versions"
@@ -70,9 +70,9 @@ jobs:
       - name: Unzip build files
         run: unzip npm.zip
 
-      - name: Run smoke tests
+      - name: Run smoke tests (esm)
         run: |
-          echo ${{ matrix.node-version }}
-          cd tests/smoke
+          echo ${{ matrix.node-version >= 14 }}
+          cd tests/smoke/esm
           npm i
           npm run esm
