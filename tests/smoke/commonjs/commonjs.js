@@ -133,4 +133,7 @@ const run = async () => {
   console.log("success", process.versions.node);
 };
 
-run();
+run().catch((e) => {
+  console.error(e);
+  process.exitCode = 1;
+});

@@ -45,6 +45,37 @@ jobs:
           path: npm.zip
           retention-days: 1
 
+  smoke-tests-commonjs:
+    name: "Smoke tests (CommonJS)"
+    needs: build
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        node-version: [7.x]
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Download build files
+        uses: actions/download-artifact@v3
+        with:
+          name: npm
+
+      - name: Unzip build files
+        run: unzip npm.zip
+
+      - name: Run smoke tests
+        run: |
+          cd tests/smoke/commonjs
+          npm i
+          npm start
+
   smoke-tests-esm:
     name: "Smoke tests (ESM)"
     needs: build
@@ -73,36 +104,5 @@ jobs:
       - name: Run smoke tests
         run: |
           cd tests/smoke/esm
-          npm i
-          npm start
-
-  smoke-tests-commonjs:
-    name: "Smoke tests (commonjs)"
-    needs: build
-    runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        node-version: [7.x]
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          registry-url: 'https://registry.npmjs.org'
-
-      - name: Download build files
-        uses: actions/download-artifact@v3
-        with:
-          name: npm
-
-      - name: Unzip build files
-        run: unzip npm.zip
-
-      - name: Run smoke tests
-        run: |
-          cd tests/smoke/commonjs
           npm i
           npm start
