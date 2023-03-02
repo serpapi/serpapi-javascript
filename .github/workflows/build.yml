@@ -15,16 +15,16 @@ jobs:
         with:
           deno-version: v1.x
 
-      # - name: Check formatting
-      #   run: deno fmt --check
+      - name: Check formatting
+        run: deno fmt --check
 
-      # - name: Run linter
-      #   run: deno lint
+      - name: Run linter
+        run: deno lint
 
-      # - name: Run tests
-      #   env:
-      #     SERPAPI_TEST_KEY: ${{ secrets.SERPAPI_TEST_KEY }}
-      #   run: deno task test:ci
+      - name: Run tests
+        env:
+          SERPAPI_TEST_KEY: ${{ secrets.SERPAPI_TEST_KEY }}
+        run: deno task test:ci
 
       - name: Setup Node
         uses: actions/setup-node@v3
@@ -51,7 +51,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        node-version: [7.x]
+        node-version: [7.x, 8.x, 9.x, 10.x, 11.x, 12.x, 13.x, 14.x, 15.x, 16.x, 17.x, 18.x, 19.x]
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -84,7 +84,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [14.x, 15.x, 16.x, 17.x, 18.x, 19.x]
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
