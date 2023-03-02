@@ -26,7 +26,8 @@ If you use VSCode, use the following settings (`.vscode/settings.json`):
     "mod.ts",
     "version.ts",
     "src",
-    "tests",
+    "tests/*.ts",
+    "tests/engines/",
     "scripts",
     "examples/deno"
   ],

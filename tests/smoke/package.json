@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "dotenv": "*",
+    "serpapi": "../../npm"
+  },
+  "scripts": {
+    "cjs": "node cjs.js",
+    "esm": "node esm.js"
+  }
+}
