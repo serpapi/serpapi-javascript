@@ -3,21 +3,29 @@
  */
 
 const Dotenv = require("dotenv");
-const { config, getJson, getHtml, getJsonBySearchId, getHtmlBySearchId, getAccount, getLocations } = require("serpapi");
+const {
+  config,
+  getJson,
+  getHtml,
+  getJsonBySearchId,
+  getHtmlBySearchId,
+  getAccount,
+  getLocations,
+} = require("serpapi");
 
 Dotenv.config();
 const apiKey = process.env.SERPAPI_TEST_KEY;
 
 const run = async () => {
   console.log("running", process.versions.node);
-  
+
   const params = {
     q: "Coffee",
     api_key: apiKey,
   };
 
   let searchId;
-  
+
   {
     console.log("getJson async await");
     const page1 = await getJson("google", params);
@@ -57,18 +65,18 @@ const run = async () => {
     const links = [];
     let page = await getJson("google", params);
     while (page) {
-      links.push(...page.organic_results.map(r => r.link));
+      links.push(...page.organic_results.map((r) => r.link));
       if (links.length >= 30) break;
-      page = page.next ? await page.next(): undefined;
+      page = page.next ? await page.next() : undefined;
     }
     if (links.length < 30) throw new Error("Incorrect number of links");
   }
-  
+
   {
     console.log("getJson pagination loop (callback)");
     const links = [];
     getJson("google", params, (page) => {
-      links.push(...page.organic_results.map(r => r.link));
+      links.push(...page.organic_results.map((r) => r.link));
       if (links.length < 30 && page.next) {
         page.next();
       } else {
@@ -81,8 +89,8 @@ const run = async () => {
     console.log("getHtml");
     const html = await getHtml("google", params);
     if (html.length < 1000) throw new Error("Incorrect HTML");
-    
-    getHtml("google", params, html => {
+
+    getHtml("google", params, (html) => {
       if (html.length < 1000) throw new Error("Incorrect HTML");
     });
   }
@@ -124,7 +132,7 @@ const run = async () => {
     console.log("getLocations");
     const locations = await getLocations({ limit: 3 });
     if (locations.length !== 3) throw new Error("Incorrect locations length");
-    
+
     getLocations({ limit: 3 }, (locations) => {
       if (locations.length !== 3) throw new Error("Incorrect locations length");
     });

@@ -7,7 +7,15 @@
  */
 
 import Dotenv from "dotenv";
-import { config, getJson, getHtml, getJsonBySearchId, getHtmlBySearchId, getAccount, getLocations } from "serpapi";
+import {
+  config,
+  getAccount,
+  getHtml,
+  getHtmlBySearchId,
+  getJson,
+  getJsonBySearchId,
+  getLocations,
+} from "serpapi";
 
 Dotenv.config();
 const apiKey = process.env.SERPAPI_TEST_KEY;
@@ -22,7 +30,7 @@ const params = {
 let searchId;
 
 {
-  console.log("getJson async await")
+  console.log("getJson async await");
   const page1 = await getJson("google", params);
   searchId = page1["search_metadata"]["id"];
   if (!page1["organic_results"]) throw new Error("No organic results");
@@ -31,7 +39,7 @@ let searchId;
 }
 
 {
-  console.log("getJson callback")
+  console.log("getJson callback");
   getJson("google", params, (page1) => {
     if (!page1["organic_results"]) throw new Error("No organic results");
     page1.next?.((page2) => {
@@ -41,7 +49,7 @@ let searchId;
 }
 
 {
-  console.log("getJson using global config")
+  console.log("getJson using global config");
   config.api_key = apiKey;
   const page1 = await getJson("google", { q: "Coffee" });
   if (!page1["organic_results"]) throw new Error("No organic results");
@@ -50,11 +58,11 @@ let searchId;
 }
 
 {
-  console.log("getJson pagination loop (async/await)")
+  console.log("getJson pagination loop (async/await)");
   const links = [];
   let page = await getJson("google", params);
   while (page) {
-    links.push(...page.organic_results.map(r => r.link));
+    links.push(...page.organic_results.map((r) => r.link));
     if (links.length >= 30) break;
     page = await page.next?.();
   }
@@ -62,10 +70,10 @@ let searchId;
 }
 
 {
-  console.log("getJson pagination loop (callback)")
+  console.log("getJson pagination loop (callback)");
   const links = [];
   getJson("google", params, (page) => {
-    links.push(...page.organic_results.map(r => r.link));
+    links.push(...page.organic_results.map((r) => r.link));
     if (links.length < 30 && page.next) {
       page.next();
     } else {
@@ -75,17 +83,17 @@ let searchId;
 }
 
 {
-  console.log("getHtml")
+  console.log("getHtml");
   const html = await getHtml("google", params);
   if (html.length < 1000) throw new Error("Incorrect HTML");
-  
-  getHtml("google", params, html => {
+
+  getHtml("google", params, (html) => {
     if (html.length < 1000) throw new Error("Incorrect HTML");
   });
 }
 
 {
-  console.log("getJsonBySearchId")
+  console.log("getJsonBySearchId");
   config.api_key = apiKey;
   const json = await getJsonBySearchId(searchId);
   if (!json["organic_results"]) throw new Error("No organic results");
@@ -96,7 +104,7 @@ let searchId;
 }
 
 {
-  console.log("getHtmlBySearchId")
+  console.log("getHtmlBySearchId");
   config.api_key = apiKey;
   const html = await getHtmlBySearchId(searchId);
   if (html.length < 1000) throw new Error("Incorrect HTML");
@@ -107,7 +115,7 @@ let searchId;
 }
 
 {
-  console.log("getAccount")
+  console.log("getAccount");
   config.api_key = apiKey;
   const info = await getAccount();
   if (!info["account_email"]) throw new Error("Incorrect account info");
@@ -118,10 +126,10 @@ let searchId;
 }
 
 {
-  console.log("getLocations")
+  console.log("getLocations");
   const locations = await getLocations({ limit: 3 });
   if (locations.length !== 3) throw new Error("Incorrect locations length");
-  
+
   getLocations({ limit: 3 }, (locations) => {
     if (locations.length !== 3) throw new Error("Incorrect locations length");
   });

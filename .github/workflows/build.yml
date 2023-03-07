@@ -74,7 +74,7 @@ jobs:
         env:
           SERPAPI_TEST_KEY: ${{ secrets.SERPAPI_TEST_KEY }}
         run: |
-          cd tests/smoke/commonjs
+          cd smoke_tests/commonjs
           npm i
           npm test
 
@@ -107,6 +107,6 @@ jobs:
         env:
           SERPAPI_TEST_KEY: ${{ secrets.SERPAPI_TEST_KEY }}
         run: |
-          cd tests/smoke/esm
+          cd smoke_tests/esm
           npm i
           npm test
