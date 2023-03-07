@@ -26,6 +26,7 @@
   "compilerOptions": {
     "lib": [
       "dom",
+      "dom.iterable",
       "deno.ns"
     ]
   }

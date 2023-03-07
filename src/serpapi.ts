@@ -90,7 +90,7 @@ export async function getJson<
   const json = await response.json() as BaseResponse<
     EngineMap[E]["parameters"]
   >;
-  const nextParametersFromResponse = extractNextParameters<E>(json);
+  const nextParametersFromResponse = await extractNextParameters<E>(json);
   if (
     // https://github.com/serpapi/public-roadmap/issues/562
     // https://github.com/serpapi/public-roadmap/issues/563
