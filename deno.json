@@ -9,18 +9,17 @@
   },
   "fmt": {
     "files": {
-      "exclude": ["npm/", "examples/node", "tests/smoke/"]
+      "exclude": ["npm/", "examples/node", "smoke_tests/"]
     }
   },
   "lint": {
     "files": {
-      "exclude": ["npm/", "examples/node", "tests/smoke/"]
+      "exclude": ["npm/", "examples/node", "smoke_tests/"]
     }
   },
   "test": {
     "files": {
-      "include": ["tests/"],
-      "exclude": ["tests/smoke/"]
+      "include": ["tests/"]
     }
   },
   "compilerOptions": {
