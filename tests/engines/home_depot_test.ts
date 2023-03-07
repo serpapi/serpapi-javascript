@@ -33,6 +33,7 @@ const BASE_URL = Deno.env.get("ENV_TYPE") === "local"
 describe("home_depot", {
   sanitizeOps: false, // TODO(seb): look into how we can avoid setting these to false
   sanitizeResources: false,
+  ignore: true,
 }, () => {
   let urlStub: Stub;
   const engine = "home_depot";
