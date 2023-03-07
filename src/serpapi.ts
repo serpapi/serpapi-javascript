@@ -91,7 +91,7 @@ export async function getJson<
     timeout,
   );
   const json = await response.json() as BaseResponse<E>;
-  const nextParametersFromResponse = extractNextParameters<E>(json);
+  const nextParametersFromResponse = await extractNextParameters<E>(json);
   if (
     // https://github.com/serpapi/public-roadmap/issues/562
     // https://github.com/serpapi/public-roadmap/issues/563

@@ -1,8 +1,5 @@
 import type { EngineName, EngineParameters } from "./types.ts";
 import { version } from "../version.ts";
-import fetch from "npm:cross-fetch@3.1.4";
-import core from "npm:core-js-pure@3.28.0";
-const { globalThis, URL, URLSearchParams } = core;
 
 type UrlParameters = Record<
   string,
@@ -11,26 +8,48 @@ type UrlParameters = Record<
 
 /**
  * This `_internals` object is needed to support stubbing/spying of
- * fetch, execute and getBaseUrl.
+ * certain functions in this file.
  * https://deno.land/manual@v1.28.3/basics/testing/mocking
  *
- * If fetch is stubbed via `globalThis`, the test phase of the npm build fails.
- * ```ts
- * const fetchStub = stub(globalThis, "fetch", resolvesNext([new Response("data")]));
- * ```
- *
- * [`dnt`](https://github.com/denoland/dnt) shims `fetch` by relying on the
- * `undici` package. It replaces all references to `fetch` with `dntShim.fetch`.
- * As a side effect, stubbing `globalThis.fetch` becomes incorrect; we want to
- * stub `dntShim.fetch` instead.
- *
- * As a workaround, the `_internals` object serves as an indirection and we
- * stub the `fetch` key of this object instead.
+ * It's also useful to encapsulate functions that are polyfilled.
  */
 export const _internals = {
-  fetch: fetch,
+  get fetch() {
+    return (async () => {
+      // Use runtime's `fetch` if it exists, otherwise fallback to `cross-fetch`.
+      return typeof fetch === "function"
+        ? Promise.resolve(fetch)
+        : (await import("npm:cross-fetch@3.1.4")).default;
+    })();
+  },
   execute: execute,
   getBaseUrl: getBaseUrl,
+  get globalThis() {
+    return (async () => {
+      // Use runtime's `globalThis` if it exists, otherwise fallback to `core-js`'s implementation.
+      // dnt-shim-ignore
+      const gt = typeof globalThis !== "undefined" ? globalThis : undefined;
+      return gt !== undefined
+        ? Promise.resolve(gt)
+        : (await import("npm:core-js-pure@3.28.0")).default.globalThis;
+    })();
+  },
+  get URL(): Promise<typeof URL> {
+    return (async () => {
+      // Use runtime's `URL` if it exists, otherwise fallback to `core-js`'s implementation.
+      return typeof URL !== "undefined"
+        ? Promise.resolve(URL)
+        : (await import("npm:core-js-pure@3.28.0")).default.URL;
+    })();
+  },
+  get URLSearchParams(): Promise<typeof URLSearchParams> {
+    return (async () => {
+      // Use runtime's `URLSearchParams` if it exists, otherwise fallback to `core-js`'s implementation.
+      return typeof URLSearchParams !== "undefined"
+        ? Promise.resolve(URLSearchParams)
+        : (await import("npm:core-js-pure@3.28.0")).default.URLSearchParams;
+    })();
+  },
 };
 
 /** Facilitates stubbing in tests, e.g. localhost as the base url */
@@ -46,14 +65,17 @@ type NextParameters<E extends EngineName = EngineName> = {
     >
   ]: string;
 };
-export function extractNextParameters<E extends EngineName = EngineName>(json: {
-  serpapi_pagination?: { next: string };
-  pagination?: { next: string };
-}) {
+export async function extractNextParameters<E extends EngineName = EngineName>(
+  json: {
+    serpapi_pagination?: { next: string };
+    pagination?: { next: string };
+  },
+) {
   const nextUrlString = json["serpapi_pagination"]?.["next"] ||
     json["pagination"]?.["next"];
 
   if (nextUrlString) {
+    const URL = await _internals.URL;
     const nextUrl = new URL(nextUrlString);
     const nextParameters: Record<string, string> = {};
     for (const [k, v] of nextUrl.searchParams.entries()) {
@@ -78,22 +100,20 @@ export function haveParametersChanged(
   );
 }
 
-function getSource() {
+export async function getSource() {
   const moduleSource = `serpapi@${version}`;
   try {
+    const gt = await _internals.globalThis;
+
     // Check if running in Node.js
-    // dnt-shim-ignore
-    // deno-lint-ignore no-explicit-any
-    const nodeVersion = (globalThis as any).process?.versions?.node;
+    const nodeVersion = gt.process?.versions?.node;
     if (nodeVersion) {
       return `nodejs@${nodeVersion},${moduleSource}`;
     }
 
     // Assumes running in Deno instead. https://deno.land/api?s=Deno.version
     // Deno.version is not shimmed since it's not used when ran in a Node env.
-    // dnt-shim-ignore
-    // deno-lint-ignore no-explicit-any
-    const denoVersion = (globalThis as any).Deno?.version?.deno;
+    const denoVersion = gt.Deno?.version?.deno;
     if (denoVersion) {
       return `deno@${denoVersion},${moduleSource}`;
     }
@@ -105,37 +125,40 @@ function getSource() {
   }
 }
 
-export function buildUrl<P extends UrlParameters>(
+export async function buildUrl<P extends UrlParameters>(
   path: string,
   parameters: P,
-): string {
+): Promise<string> {
   const nonUndefinedParams: [string, string][] = Object.entries(parameters)
     .filter(([_, value]) => value !== undefined)
     .map(([key, value]) => [key, `${value}`]);
+  const URLSearchParams = await _internals.URLSearchParams;
   const searchParams = new URLSearchParams(nonUndefinedParams);
   return `${_internals.getBaseUrl()}${path}?${searchParams}`;
 }
 
-export function execute<P extends UrlParameters>(
+export async function execute<P extends UrlParameters>(
   path: string,
   parameters: P,
   timeout: number,
 ): Promise<Response> {
-  const url = buildUrl(path, {
+  const url = await buildUrl(path, {
     ...parameters,
-    source: getSource(),
+    source: await getSource(),
   });
   // https://github.com/github/fetch/issues/175#issuecomment-216791333
   return new Promise((resolve, reject) => {
     const timer = setTimeout(() => reject(new Error("Timeout")), timeout);
-    _internals.fetch(url)
-      .then((res) => {
-        clearTimeout(timer);
-        resolve(res);
-      })
-      .catch((err) => {
-        clearTimeout(timer);
-        reject(err);
-      });
+    _internals.fetch.then((fetch) =>
+      fetch(url)
+        .then((res) => {
+          clearTimeout(timer);
+          resolve(res);
+        })
+        .catch((err) => {
+          clearTimeout(timer);
+          reject(err);
+        })
+    );
   });
 }
