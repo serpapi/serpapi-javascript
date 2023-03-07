@@ -23,6 +23,9 @@
     }
   },
   "compilerOptions": {
+    "types": [
+      "./src/global.d.ts"
+    ],
     "lib": [
       "dom",
       "dom.iterable",

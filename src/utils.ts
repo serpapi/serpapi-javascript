@@ -17,6 +17,7 @@ export const _internals = {
   get fetch() {
     return (async () => {
       // Use runtime's `fetch` if it exists, otherwise fallback to `cross-fetch`.
+      // Ensures that it works for Vercel Edge functions and CloudFlare Workers.
       return typeof fetch === "function"
         ? Promise.resolve(fetch)
         : (await import("npm:cross-fetch@3.1.4")).default;
@@ -27,9 +28,13 @@ export const _internals = {
   get globalThis() {
     return (async () => {
       // Use runtime's `globalThis` if it exists, otherwise fallback to `core-js`'s implementation.
+      // Note that `typeof EdgeRuntime === "string"` cannot be extracted to a
+      // shared constant as Next.js will somehow resolve that shared constant
+      // to be falsy. This causes the build to detect a disallowed
+      // "Dynamic Code Evaluation" which fails.
       // dnt-shim-ignore
       const gt = typeof globalThis !== "undefined" ? globalThis : undefined;
-      return gt !== undefined
+      return ((gt !== undefined) || typeof EdgeRuntime === "string")
         ? Promise.resolve(gt)
         : (await import("npm:core-js-pure@3.28.0")).default.globalThis;
     })();
@@ -37,7 +42,7 @@ export const _internals = {
   get URL(): Promise<typeof URL> {
     return (async () => {
       // Use runtime's `URL` if it exists, otherwise fallback to `core-js`'s implementation.
-      return typeof URL !== "undefined"
+      return ((typeof EdgeRuntime === "string") || typeof URL !== "undefined")
         ? Promise.resolve(URL)
         : (await import("npm:core-js-pure@3.28.0")).default.URL;
     })();
@@ -45,7 +50,8 @@ export const _internals = {
   get URLSearchParams(): Promise<typeof URLSearchParams> {
     return (async () => {
       // Use runtime's `URLSearchParams` if it exists, otherwise fallback to `core-js`'s implementation.
-      return typeof URLSearchParams !== "undefined"
+      return ((typeof EdgeRuntime === "string") ||
+          typeof URLSearchParams !== "undefined")
         ? Promise.resolve(URLSearchParams)
         : (await import("npm:core-js-pure@3.28.0")).default.URLSearchParams;
     })();
@@ -115,6 +121,14 @@ export async function getSource() {
     const denoVersion = gt.Deno?.version?.deno;
     if (denoVersion) {
       return `deno@${denoVersion},${moduleSource}`;
+    }
+
+    if (typeof EdgeRuntime === "string") {
+      return `vercel-edge,${moduleSource}`;
+    }
+
+    if (navigator?.userAgent === "Cloudflare-Workers") {
+      return `cloudflare-worker,${moduleSource}`;
     }
 
     return `nodejs,${moduleSource}`;
