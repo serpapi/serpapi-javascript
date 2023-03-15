@@ -72,9 +72,7 @@ const SEARCH_ARCHIVE_PATH = `/searches`;
  */
 export async function getJson<
   E extends EngineName = EngineName,
-  P extends AllowArbitraryParams<EngineParameters<E>> = EngineParameters<
-    E
-  >,
+  P extends AllowArbitraryParams<EngineParameters<E>> = EngineParameters<E>,
 >(
   engine: E,
   parameters: P,
@@ -131,7 +129,7 @@ export async function getJson<
  */
 export async function getHtml<
   E extends EngineName = EngineName,
-  P extends EngineParameters<E> = EngineParameters<E>,
+  P extends AllowArbitraryParams<EngineParameters<E>> = EngineParameters<E>,
 >(
   engine: E,
   parameters: P,
