@@ -1,5 +1,10 @@
 import { EngineMap } from "./engines/engine_map.ts";
 
+/**
+ * Allow arbitrary parameters in addition to parameters in T.
+ */
+export type AllowArbitraryParams<T> = T & Record<string, unknown>;
+
 export type BaseParameters = {
   /**
    * Parameter defines the device to use to get the results. It can be set to

@@ -1,11 +1,16 @@
 import { loadSync } from "https://deno.land/std@0.173.0/dotenv/mod.ts";
-import { config, getJson, GoogleParameters } from "../../../mod.ts";
+import {
+  AllowArbitraryParams,
+  config,
+  getJson,
+  GoogleParameters,
+} from "../../../mod.ts";
 
 const { API_KEY: apiKey } = loadSync();
 const params = {
   q: "Coffee",
   api_key: apiKey,
-} satisfies GoogleParameters;
+} satisfies AllowArbitraryParams<GoogleParameters>;
 
 // Show result as JSON (async/await)
 const response1 = await getJson("google", params);

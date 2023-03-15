@@ -1,6 +1,7 @@
 import {
   AccountApiParameters,
   AccountInformation,
+  AllowArbitraryParams,
   BaseResponse,
   EngineName,
   EngineParameters,
@@ -71,7 +72,7 @@ const SEARCH_ARCHIVE_PATH = `/searches`;
  */
 export async function getJson<
   E extends EngineName = EngineName,
-  P extends (EngineParameters<E> & Record<string, unknown>) = EngineParameters<
+  P extends AllowArbitraryParams<EngineParameters<E>> = EngineParameters<
     E
   >,
 >(

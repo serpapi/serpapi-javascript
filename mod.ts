@@ -6,6 +6,7 @@ export { InvalidTimeoutError, MissingApiKeyError } from "./src/errors.ts";
 export type {
   AccountApiParameters,
   AccountInformation,
+  AllowArbitraryParams,
   BaseParameters,
   BaseResponse,
   EngineName,
