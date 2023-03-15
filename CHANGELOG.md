@@ -10,7 +10,7 @@ and this project adheres to
 
 ### Added
 
-- Expose `EngineName` and `EngineParameters` types.
+- Expose `EngineName`, `EngineParameters` and `AllowArbitraryParams` types.
 
 ### Changed
 
