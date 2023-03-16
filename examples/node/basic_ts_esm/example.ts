@@ -1,5 +1,5 @@
 import * as Dotenv from "dotenv";
-import { config, getJson, GoogleParameters } from "serpapi";
+import { AllowArbitraryParams, config, getJson, GoogleParameters } from "serpapi";
 
 Dotenv.config();
 const apiKey = process.env.API_KEY;
@@ -7,7 +7,7 @@ const apiKey = process.env.API_KEY;
 const params = {
   q: "Coffee",
   api_key: apiKey,
-} satisfies GoogleParameters;
+} satisfies AllowArbitraryParams<GoogleParameters>;
 
 // Show result as JSON (async/await)
 const response1 = await getJson("google", params);

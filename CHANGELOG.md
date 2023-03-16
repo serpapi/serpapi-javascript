@@ -10,9 +10,13 @@ and this project adheres to
 
 ### Added
 
+- Expose `EngineName`, `EngineParameters` and `AllowArbitraryParams` types.
+
 ### Changed
 
 - Remove `settings.json`, update CONTRIBUTING.md.
+- Make types more lenient so newly supported engines/parameters whose types have
+  not yet been updated do not throw warnings.
 
 ### Fixed
 

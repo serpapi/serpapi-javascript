@@ -1,12 +1,14 @@
 import {
   AccountApiParameters,
   AccountInformation,
+  AllowArbitraryParams,
   BaseResponse,
+  EngineName,
+  EngineParameters,
   GetBySearchIdParameters,
   Locations,
   LocationsApiParameters,
 } from "./types.ts";
-import { EngineMap } from "./engines/engine_map.ts";
 import {
   _internals,
   execute,
@@ -69,11 +71,12 @@ const SEARCH_ARCHIVE_PATH = `/searches`;
  * });
  */
 export async function getJson<
-  E extends keyof EngineMap,
+  E extends EngineName = EngineName,
+  P extends AllowArbitraryParams<EngineParameters<E>> = EngineParameters<E>,
 >(
   engine: E,
-  parameters: EngineMap[E]["parameters"],
-  callback?: (json: BaseResponse<EngineMap[E]["parameters"]>) => void,
+  parameters: P,
+  callback?: (json: BaseResponse<E>) => void,
 ) {
   const key = validateApiKey(parameters.api_key, true);
   const timeout = validateTimeout(parameters.timeout);
@@ -87,9 +90,7 @@ export async function getJson<
     },
     timeout,
   );
-  const json = await response.json() as BaseResponse<
-    EngineMap[E]["parameters"]
-  >;
+  const json = await response.json() as BaseResponse<E>;
   const nextParametersFromResponse = extractNextParameters<E>(json);
   if (
     // https://github.com/serpapi/public-roadmap/issues/562
@@ -126,9 +127,12 @@ export async function getJson<
  * // callback
  * getHtml("google", { api_key: API_KEY, q: "coffee" }, console.log);
  */
-export async function getHtml<E extends keyof EngineMap>(
+export async function getHtml<
+  E extends EngineName = EngineName,
+  P extends AllowArbitraryParams<EngineParameters<E>> = EngineParameters<E>,
+>(
   engine: E,
-  parameters: EngineMap[E]["parameters"],
+  parameters: P,
   callback?: (html: string) => void,
 ) {
   const key = validateApiKey(parameters.api_key, true);

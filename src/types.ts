@@ -1,3 +1,10 @@
+import { EngineMap } from "./engines/engine_map.ts";
+
+/**
+ * Allow arbitrary parameters in addition to parameters in T.
+ */
+export type AllowArbitraryParams<T> = T & Record<string, unknown>;
+
 export type BaseParameters = {
   /**
    * Parameter defines the device to use to get the results. It can be set to
@@ -39,7 +46,19 @@ export type BaseParameters = {
    */
   timeout?: number;
 };
-export type BaseResponse<P = Record<string | number | symbol, never>> = {
+
+// https://github.com/microsoft/TypeScript/issues/29729
+// deno-lint-ignore ban-types
+type AnyEngineName = string & {};
+export type EngineName = (keyof EngineMap) | AnyEngineName;
+export type EngineParameters<
+  E extends EngineName = EngineName,
+> = {
+  [K in E]: K extends keyof EngineMap ? EngineMap[K]["parameters"]
+    : BaseParameters & Record<string, unknown>;
+}[E];
+
+export type BaseResponse<E extends EngineName = EngineName> = {
   search_metadata: {
     id: string;
     status: "Queued" | "Processing" | "Success";
@@ -49,14 +68,15 @@ export type BaseResponse<P = Record<string | number | symbol, never>> = {
     raw_html_file: string;
     total_time_taken: number;
   };
-  search_parameters:
-    & { engine: string }
-    & Omit<BaseParameters & P, "api_key" | "no_cache" | "async" | "timeout">;
+  search_parameters: Omit<
+    EngineParameters<E>,
+    "api_key" | "no_cache" | "async" | "timeout"
+  >;
   serpapi_pagination?: { next: string };
   pagination?: { next: string };
   next?: (
-    callback?: (json: BaseResponse<P>) => void,
-  ) => Promise<BaseResponse<P>>;
+    callback?: (json: BaseResponse<E>) => void,
+  ) => Promise<BaseResponse<E>>;
   // deno-lint-ignore no-explicit-any
   [key: string]: any; // TODO(seb): use recursive type
 };

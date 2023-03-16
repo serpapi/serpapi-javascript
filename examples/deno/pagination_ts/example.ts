@@ -1,5 +1,10 @@
 import { loadSync } from "https://deno.land/std@0.173.0/dotenv/mod.ts";
-import { config, getJson, GoogleParameters } from "../../../mod.ts";
+import {
+  AllowArbitraryParams,
+  config,
+  getJson,
+  GoogleParameters,
+} from "../../../mod.ts";
 
 const { API_KEY: apiKey } = loadSync();
 
@@ -9,7 +14,7 @@ const extractLinks = (results: { link: string }[]) =>
 const params = {
   q: "Coffee",
   api_key: apiKey,
-} satisfies GoogleParameters;
+} satisfies AllowArbitraryParams<GoogleParameters>;
 
 // Pagination (async/await)
 let page1 = await getJson("google", params);
