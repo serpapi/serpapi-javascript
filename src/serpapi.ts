@@ -154,13 +154,44 @@ async function _getJson<
  * // callback
  * getHtml({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
  */
-export async function getHtml<
+export function getHtml<
+  E extends EngineName = EngineName,
+  P1 extends AllowArbitraryParams<EngineParameters<E>> = EngineParameters<E>,
+  P2 extends AllowArbitraryParams<EngineParameters<E, false>> =
+    EngineParameters<E, false>,
+>(
+  ...args:
+    | [parameters: P1, callback?: (html: string) => void]
+    | [
+      engine: string, // intentionally kept as a string to support arbitrary params
+      parameters: P2,
+      callback?: (html: string) => void,
+    ]
+): Promise<string> {
+  if (
+    typeof args[0] === "string" &&
+    typeof args[1] === "object"
+  ) {
+    const [engine, parameters, callback] = args;
+    return _getHtml({ ...parameters, engine: engine as E }, callback);
+  } else if (
+    typeof args[0] === "object" &&
+    (typeof args[1] === "undefined" || typeof args[1] === "function")
+  ) {
+    const [parameters, callback] = args;
+    return _getHtml(parameters, callback);
+  } else {
+    throw new InvalidArgumentTypesError();
+  }
+}
+
+async function _getHtml<
   E extends EngineName = EngineName,
   P extends AllowArbitraryParams<EngineParameters<E>> = EngineParameters<E>,
 >(
   parameters: P,
   callback?: (html: string) => void,
-) {
+): Promise<string> {
   const key = validateApiKey(parameters.api_key, true);
   const timeout = validateTimeout(parameters.timeout);
   const response = await _internals.execute(
