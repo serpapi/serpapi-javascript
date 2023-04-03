@@ -89,7 +89,8 @@ export function getJson<
     typeof args[1] === "object"
   ) {
     const [engine, parameters, callback] = args;
-    return _getJson({ ...parameters, engine: engine as E }, callback);
+    const newParameters = { engine, ...parameters } as P1;
+    return _getJson(newParameters, callback);
   } else if (
     typeof args[0] === "object" &&
     (typeof args[1] === "undefined" || typeof args[1] === "function")
@@ -173,7 +174,8 @@ export function getHtml<
     typeof args[1] === "object"
   ) {
     const [engine, parameters, callback] = args;
-    return _getHtml({ ...parameters, engine: engine as E }, callback);
+    const newParameters = { engine, ...parameters } as P1;
+    return _getHtml(newParameters, callback);
   } else if (
     typeof args[0] === "object" &&
     (typeof args[1] === "undefined" || typeof args[1] === "function")
