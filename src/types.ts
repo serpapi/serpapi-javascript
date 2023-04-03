@@ -53,9 +53,10 @@ type AnyEngineName = string & {};
 export type EngineName = (keyof EngineMap) | AnyEngineName;
 export type EngineParameters<
   E extends EngineName = EngineName,
+  W = true, // flag for whether `engine` is a required param
 > = {
   [K in E]:
-    & { engine: K }
+    & (W extends true ? { engine: K } : { engine?: K })
     & (K extends keyof EngineMap ? EngineMap[K]["parameters"] : BaseParameters);
 }[E];
 

@@ -1,7 +1,11 @@
 export type { Config } from "./src/config.ts";
 export { config } from "./src/config.ts";
 
-export { InvalidTimeoutError, MissingApiKeyError } from "./src/errors.ts";
+export {
+  InvalidArgumentTypesError,
+  InvalidTimeoutError,
+  MissingApiKeyError,
+} from "./src/errors.ts";
 
 export type {
   AccountApiParameters,

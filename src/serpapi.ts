@@ -1,3 +1,4 @@
+import { InvalidArgumentTypesError } from "./errors.ts";
 import {
   AccountApiParameters,
   AccountInformation,
@@ -69,13 +70,44 @@ const SEARCH_ARCHIVE_PATH = `/searches`;
  *   }
  * });
  */
-export async function getJson<
+export function getJson<
+  E extends EngineName = EngineName,
+  P1 extends AllowArbitraryParams<EngineParameters<E>> = EngineParameters<E>,
+  P2 extends AllowArbitraryParams<EngineParameters<E, false>> =
+    EngineParameters<E, false>,
+>(
+  ...args:
+    | [parameters: P1, callback?: (json: BaseResponse<E>) => void]
+    | [
+      engine: string, // intentionally kept as a string to support arbitrary params
+      parameters: P2,
+      callback?: (json: BaseResponse<E>) => void,
+    ]
+): Promise<BaseResponse<E>> {
+  if (
+    typeof args[0] === "string" &&
+    typeof args[1] === "object"
+  ) {
+    const [engine, parameters, callback] = args;
+    return _getJson({ ...parameters, engine: engine as E }, callback);
+  } else if (
+    typeof args[0] === "object" &&
+    (typeof args[1] === "undefined" || typeof args[1] === "function")
+  ) {
+    const [parameters, callback] = args;
+    return _getJson(parameters, callback);
+  } else {
+    throw new InvalidArgumentTypesError();
+  }
+}
+
+async function _getJson<
   E extends EngineName = EngineName,
   P extends AllowArbitraryParams<EngineParameters<E>> = EngineParameters<E>,
 >(
   parameters: P,
   callback?: (json: BaseResponse<E>) => void,
-) {
+): Promise<BaseResponse<E>> {
   const key = validateApiKey(parameters.api_key, true);
   const timeout = validateTimeout(parameters.timeout);
   const response = await _internals.execute(

@@ -11,6 +11,7 @@ and this project adheres to
 ### Added
 
 - Expose `EngineName`, `EngineParameters` and `AllowArbitraryParams` types.
+- Expose `InvalidArgumentTypesError` error.
 
 ### Changed
 
