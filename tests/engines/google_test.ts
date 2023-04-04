@@ -134,6 +134,35 @@ describe("google", {
     ]);
   });
 
+  it("getJson with engine as first parameter (async/await)", async () => {
+    const response = await getJson(engine, {
+      api_key: null, // null to support the "coffee" unmetered query
+      q: "coffee",
+    });
+    assertArrayIncludes(Object.keys(response).sort(), [
+      "organic_results",
+      "pagination",
+      "search_information",
+      "search_metadata",
+      "search_parameters",
+      "serpapi_pagination",
+    ]);
+  });
+
+  it("getJson with engine as first parameter (callback)", async () => {
+    const response = await new Promise<Awaited<ReturnType<typeof getJson>>>(
+      (res) => getJson(engine, { api_key: null, q: "coffee" }, res),
+    );
+    assertArrayIncludes(Object.keys(response).sort(), [
+      "organic_results",
+      "pagination",
+      "search_information",
+      "search_metadata",
+      "search_parameters",
+      "serpapi_pagination",
+    ]);
+  });
+
   it("getHtml for an unmetered query (async/await)", async () => {
     const response = await getHtml({ engine, api_key: null, q: "coffee" });
     assertStringIncludes(response, "<html");
@@ -209,6 +238,24 @@ describe("google", {
       "search_parameters",
     ]);
     assertEquals(json["search_metadata"]["status"], "Processing");
+  });
+
+  it("getHtml with engine as first parameter (async/await)", async () => {
+    const response = await getHtml(engine, { api_key: null, q: "coffee" });
+    assertStringIncludes(response, "<html");
+    assertStringIncludes(response, "<body");
+    assertStringIncludes(response, "</body>");
+    assertStringIncludes(response, "</html>");
+  });
+
+  it("getHtml with engine as first parameter (callback)", async () => {
+    const response = await new Promise<Awaited<ReturnType<typeof getHtml>>>(
+      (res) => getHtml(engine, { api_key: null, q: "coffee" }, res),
+    );
+    assertStringIncludes(response, "<html");
+    assertStringIncludes(response, "<body");
+    assertStringIncludes(response, "</body>");
+    assertStringIncludes(response, "</html>");
   });
 
   // get(Json|Html)BySearchId always require a valid API key even for unmetered queries
