@@ -1,10 +1,9 @@
+import { EngineMap } from "./engines/engine_map.ts";
 import { InvalidArgumentTypesError } from "./errors.ts";
 import {
   AccountApiParameters,
   AccountInformation,
-  AllowArbitraryParams,
   BaseResponse,
-  EngineName,
   EngineParameters,
   GetBySearchIdParameters,
   Locations,
@@ -71,16 +70,16 @@ const SEARCH_ARCHIVE_PATH = `/searches`;
  * });
  */
 export function getJson<
-  E extends EngineName = EngineName,
-  P1 extends AllowArbitraryParams<EngineParameters<E>> = EngineParameters<E>,
-  P2 extends AllowArbitraryParams<EngineParameters<E, false>> =
-    EngineParameters<E, false>,
+  E extends keyof EngineMap,
 >(
   ...args:
-    | [parameters: P1, callback?: (json: BaseResponse<E>) => void]
     | [
-      engine: string, // intentionally kept as a string to support arbitrary params
-      parameters: P2,
+      parameters: EngineParameters<E>,
+      callback?: (json: BaseResponse<E>) => void,
+    ]
+    | [
+      engine: E | string,
+      parameters: EngineParameters<E, false>,
       callback?: (json: BaseResponse<E>) => void,
     ]
 ): Promise<BaseResponse<E>> {
@@ -89,7 +88,7 @@ export function getJson<
     typeof args[1] === "object"
   ) {
     const [engine, parameters, callback] = args;
-    const newParameters = { engine, ...parameters } as P1;
+    const newParameters = { ...parameters, engine } as EngineParameters<E>;
     return _getJson(newParameters, callback);
   } else if (
     typeof args[0] === "object" &&
@@ -103,10 +102,9 @@ export function getJson<
 }
 
 async function _getJson<
-  E extends EngineName = EngineName,
-  P extends AllowArbitraryParams<EngineParameters<E>> = EngineParameters<E>,
+  E extends keyof EngineMap,
 >(
-  parameters: P,
+  parameters: EngineParameters<E>,
   callback?: (json: BaseResponse<E>) => void,
 ): Promise<BaseResponse<E>> {
   const key = validateApiKey(parameters.api_key, true);
@@ -156,16 +154,16 @@ async function _getJson<
  * getHtml({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
  */
 export function getHtml<
-  E extends EngineName = EngineName,
-  P1 extends AllowArbitraryParams<EngineParameters<E>> = EngineParameters<E>,
-  P2 extends AllowArbitraryParams<EngineParameters<E, false>> =
-    EngineParameters<E, false>,
+  E extends keyof EngineMap,
 >(
   ...args:
-    | [parameters: P1, callback?: (html: string) => void]
     | [
-      engine: string, // intentionally kept as a string to support arbitrary params
-      parameters: P2,
+      parameters: EngineParameters<E>,
+      callback?: (html: string) => void,
+    ]
+    | [
+      engine: E | string,
+      parameters: EngineParameters<E, false>,
       callback?: (html: string) => void,
     ]
 ): Promise<string> {
@@ -174,7 +172,7 @@ export function getHtml<
     typeof args[1] === "object"
   ) {
     const [engine, parameters, callback] = args;
-    const newParameters = { engine, ...parameters } as P1;
+    const newParameters = { ...parameters, engine } as EngineParameters<E>;
     return _getHtml(newParameters, callback);
   } else if (
     typeof args[0] === "object" &&
@@ -188,10 +186,9 @@ export function getHtml<
 }
 
 async function _getHtml<
-  E extends EngineName = EngineName,
-  P extends AllowArbitraryParams<EngineParameters<E>> = EngineParameters<E>,
+  E extends keyof EngineMap,
 >(
-  parameters: P,
+  parameters: EngineParameters<E>,
   callback?: (html: string) => void,
 ): Promise<string> {
   const key = validateApiKey(parameters.api_key, true);
@@ -233,7 +230,7 @@ async function _getHtml<
  * getJsonBySearchId(id, { api_key: API_KEY }, console.log);
  */
 export async function getJsonBySearchId<
-  R extends BaseResponse,
+  R extends BaseResponse<keyof EngineMap>,
 >(
   searchId: string,
   parameters: GetBySearchIdParameters = {},

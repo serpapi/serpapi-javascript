@@ -13,7 +13,6 @@ export type {
   AllowArbitraryParams,
   BaseParameters,
   BaseResponse,
-  EngineName,
   EngineParameters,
   GetBySearchIdParameters,
   Location,

@@ -47,20 +47,19 @@ export type BaseParameters = {
   timeout?: number;
 };
 
-// https://github.com/microsoft/TypeScript/issues/29729
-// deno-lint-ignore ban-types
-type AnyEngineName = string & {};
-export type EngineName = (keyof EngineMap) | AnyEngineName;
 export type EngineParameters<
-  E extends EngineName = EngineName,
-  W = true, // flag for whether `engine` is a required param
-> = {
-  [K in E]:
-    & (W extends true ? { engine: K } : { engine?: K })
-    & (K extends keyof EngineMap ? EngineMap[K]["parameters"] : BaseParameters);
-}[E];
+  E extends keyof EngineMap,
+  EngineRequired = true,
+> =
+  // https://github.com/microsoft/TypeScript/issues/29729
+  // deno-lint-ignore ban-types
+  & (EngineRequired extends true ? { engine: E | (string & {}) }
+    // deno-lint-ignore ban-types
+    : { engine?: E | (string & {}) })
+  & EngineMap[E]["parameters"]
+  & Record<string, unknown>;
 
-export type BaseResponse<E extends EngineName = EngineName> = {
+export type BaseResponse<E extends keyof EngineMap> = {
   search_metadata: {
     id: string;
     status: "Queued" | "Processing" | "Success";

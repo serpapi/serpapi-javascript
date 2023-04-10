@@ -1,5 +1,6 @@
-import type { EngineName, EngineParameters } from "./types.ts";
+import type { EngineParameters } from "./types.ts";
 import { version } from "../version.ts";
+import { EngineMap } from "./engines/engine_map.ts";
 
 type UrlParameters = Record<
   string,
@@ -35,7 +36,7 @@ function getBaseUrl() {
   return "https://serpapi.com";
 }
 
-type NextParameters<E extends EngineName = EngineName> = {
+type NextParameters<E extends keyof EngineMap> = {
   [
     K in keyof Omit<
       EngineParameters<E>,
@@ -43,7 +44,7 @@ type NextParameters<E extends EngineName = EngineName> = {
     >
   ]: string;
 };
-export function extractNextParameters<E extends EngineName = EngineName>(json: {
+export function extractNextParameters<E extends keyof EngineMap>(json: {
   serpapi_pagination?: { next: string };
   pagination?: { next: string };
 }) {
