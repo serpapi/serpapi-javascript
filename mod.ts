@@ -10,7 +10,6 @@ export {
 export type {
   AccountApiParameters,
   AccountInformation,
-  AllowArbitraryParams,
   BaseParameters,
   BaseResponse,
   EngineParameters,

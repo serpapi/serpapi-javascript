@@ -20,7 +20,6 @@ deno run example.ts
   following:
   ```ts
   import {
-    AllowArbitraryParams,
     config,
     getJson,
     GoogleParameters,

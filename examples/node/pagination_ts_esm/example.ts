@@ -1,5 +1,5 @@
 import * as Dotenv from "dotenv";
-import { AllowArbitraryParams, config, EngineParameters, getJson } from "serpapi";
+import { config, EngineParameters, getJson } from "serpapi";
 
 Dotenv.config();
 const apiKey = process.env.API_KEY;
@@ -11,7 +11,7 @@ const params = {
   engine: "google",
   q: "Coffee",
   api_key: apiKey,
-} satisfies AllowArbitraryParams<EngineParameters<"google">>;
+} satisfies EngineParameters<"google">;
 
 // Pagination (async/await)
 let page1 = await getJson(params);
