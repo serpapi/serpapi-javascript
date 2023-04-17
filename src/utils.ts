@@ -105,6 +105,7 @@ export function execute(
     source: getSource(),
   });
   return new Promise((resolve, reject) => {
+    let timer: number;
     const req = https.get(url, (resp) => {
       let data = "";
 
@@ -123,14 +124,17 @@ export function execute(
           }
         } catch (e) {
           reject(e);
+        } finally {
+          if (timer) clearTimeout(timer);
         }
       });
     }).on("error", (err) => {
       reject(err);
+      if (timer) clearTimeout(timer);
     });
 
     if (timeout > 0) {
-      setTimeout(() => {
+      timer = setTimeout(() => {
         reject(new RequestTimeoutError());
         req.destroy();
       }, timeout);
