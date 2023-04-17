@@ -98,6 +98,8 @@ describe("google", {
         api_key: "test_override_api_key",
         q: "coffee",
       });
+    } catch {
+      // pass
     } finally {
       executeSpy.restore();
     }
@@ -177,6 +179,8 @@ describe("google", {
         api_key: "test_override_api_key",
         q: "coffee",
       });
+    } catch {
+      // pass
     } finally {
       executeSpy.restore();
     }

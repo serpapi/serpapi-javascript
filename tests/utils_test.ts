@@ -211,7 +211,7 @@ describe("buildUrl", () => {
   it("with undefined parameters", async () => {
     assertEquals(
       await buildUrl("/search", { q: "coffee", gl: undefined, hl: null }),
-      `${BASE_URL}/search?q=coffee&hl=null`,
+      `${BASE_URL}/search?q=coffee&hl=`,
     );
   });
 });

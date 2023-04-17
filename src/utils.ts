@@ -84,7 +84,13 @@ export function buildUrl(
   path: string,
   parameters: qs.ParsedUrlQueryInput,
 ): string {
-  return `${_internals.getBaseUrl()}${path}?${qs.stringify(parameters)}`;
+  const clonedParams = { ...parameters };
+  for (const k in clonedParams) {
+    if (clonedParams[k] === undefined) {
+      delete clonedParams[k];
+    }
+  }
+  return `${_internals.getBaseUrl()}${path}?${qs.stringify(clonedParams)}`;
 }
 
 export function execute(
