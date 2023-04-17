@@ -2,6 +2,7 @@ import type { EngineName, EngineParameters } from "./types.ts";
 import { version } from "../version.ts";
 import https from "node:https";
 import qs from "node:querystring";
+import { RequestTimeoutError } from "./errors.ts";
 
 /**
  * This `_internals` object is needed to support stubbing/spying of
@@ -103,7 +104,7 @@ export function execute(
     source: getSource(),
   });
   return new Promise((resolve, reject) => {
-    https.get(url, { timeout }, (resp) => {
+    const req = https.get(url, (resp) => {
       let data = "";
 
       // A chunk of data has been recieved.
@@ -126,5 +127,12 @@ export function execute(
     }).on("error", (err) => {
       reject(err);
     });
+
+    if (timeout > 0) {
+      setTimeout(() => {
+        reject(new RequestTimeoutError());
+        req.destroy();
+      }, timeout);
+    }
   });
 }

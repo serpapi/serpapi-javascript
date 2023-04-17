@@ -13,3 +13,10 @@ export class InvalidTimeoutError extends Error {
     Object.setPrototypeOf(this, InvalidTimeoutError.prototype);
   }
 }
+
+export class RequestTimeoutError extends Error {
+  constructor() {
+    super("The request was timed out");
+    Object.setPrototypeOf(this, RequestTimeoutError.prototype);
+  }
+}

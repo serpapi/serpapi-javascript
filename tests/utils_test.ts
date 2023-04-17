@@ -8,8 +8,8 @@ import {
 import { Stub, stub } from "https://deno.land/std@0.170.0/testing/mock.ts";
 import {
   assertEquals,
+  assertInstanceOf,
   assertMatch,
-  assertRejects,
 } from "https://deno.land/std@0.170.0/testing/asserts.ts";
 import {
   _internals,
@@ -19,6 +19,7 @@ import {
   getSource,
   haveParametersChanged,
 } from "../src/utils.ts";
+import { RequestTimeoutError } from "../src/errors.ts";
 
 loadSync({ export: true });
 const BASE_URL = Deno.env.get("ENV_TYPE") === "local"
@@ -230,9 +231,11 @@ describe("execute", {
     urlStub.restore();
   });
 
-  it("with short timeout", () => {
-    assertRejects(async () =>
-      await execute("/search", { q: "coffee", gl: "us" }, 1)
-    );
+  it("with short timeout", async () => {
+    try {
+      await execute("/search", { q: "coffee", gl: "us" }, 1);
+    } catch (e) {
+      assertInstanceOf(e, RequestTimeoutError);
+    }
   });
 });
