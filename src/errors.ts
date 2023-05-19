@@ -1,7 +1,7 @@
-export class InvalidArgumentTypesError extends Error {
+export class InvalidArgumentError extends Error {
   constructor() {
-    super("Provide the arguments with the correct type");
-    Object.setPrototypeOf(this, InvalidArgumentTypesError.prototype);
+    super("Arguments are missing or of incorrect type");
+    Object.setPrototypeOf(this, InvalidArgumentError.prototype);
   }
 }
 

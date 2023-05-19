@@ -21,7 +21,7 @@ import {
   getHtml,
   getJson,
   getLocations,
-  InvalidArgumentTypesError,
+  InvalidArgumentError,
   InvalidTimeoutError,
   MissingApiKeyError,
 } from "../mod.ts";
@@ -238,12 +238,12 @@ describe("getJson", {
     assertRejects(
       // @ts-ignore testing invalid usage
       async () => await getJson("google"),
-      InvalidArgumentTypesError,
+      InvalidArgumentError,
     );
     assertRejects(
       // @ts-ignore testing invalid usage
       async () => await getJson(),
-      InvalidArgumentTypesError,
+      InvalidArgumentError,
     );
   });
 
@@ -367,12 +367,12 @@ describe("getHtml", {
     assertRejects(
       // @ts-ignore testing invalid usage
       async () => await getHtml("google"),
-      InvalidArgumentTypesError,
+      InvalidArgumentError,
     );
     assertRejects(
       // @ts-ignore testing invalid usage
       async () => await getHtml(),
-      InvalidArgumentTypesError,
+      InvalidArgumentError,
     );
   });
 

@@ -1,5 +1,5 @@
 import { EngineMap } from "./engines/engine_map.ts";
-import { InvalidArgumentTypesError } from "./errors.ts";
+import { InvalidArgumentError } from "./errors.ts";
 import {
   AccountApiParameters,
   AccountInformation,
@@ -97,7 +97,7 @@ export function getJson<
     const [parameters, callback] = args;
     return _getJson(parameters, callback);
   } else {
-    throw new InvalidArgumentTypesError();
+    throw new InvalidArgumentError();
   }
 }
 
@@ -181,7 +181,7 @@ export function getHtml<
     const [parameters, callback] = args;
     return _getHtml(parameters, callback);
   } else {
-    throw new InvalidArgumentTypesError();
+    throw new InvalidArgumentError();
   }
 }
 
