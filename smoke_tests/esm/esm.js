@@ -31,7 +31,7 @@ let searchId;
 
 {
   console.log("getJson async await");
-  const page1 = await getJson("google", params);
+  const page1 = await getJson({ engine: "google", ...params });
   searchId = page1["search_metadata"]["id"];
   if (!page1["organic_results"]) throw new Error("No organic results");
   const page2 = await page1.next?.();
@@ -40,7 +40,7 @@ let searchId;
 
 {
   console.log("getJson callback");
-  getJson("google", params, (page1) => {
+  getJson({ engine: "google", ...params }, (page1) => {
     if (!page1["organic_results"]) throw new Error("No organic results");
     page1.next?.((page2) => {
       if (!page2["organic_results"]) throw new Error("No organic results");
@@ -50,6 +50,34 @@ let searchId;
 
 {
   console.log("getJson using global config");
+  config.api_key = apiKey;
+  const page1 = await getJson({ engine: "google", q: "Coffee" });
+  if (!page1["organic_results"]) throw new Error("No organic results");
+  const page2 = await page1.next?.();
+  if (!page2["organic_results"]) throw new Error("No organic results");
+}
+
+{
+  console.log("getJson (old API) async await");
+  const page1 = await getJson("google", params);
+  searchId = page1["search_metadata"]["id"];
+  if (!page1["organic_results"]) throw new Error("No organic results");
+  const page2 = await page1.next?.();
+  if (!page2["organic_results"]) throw new Error("No organic results");
+}
+
+{
+  console.log("getJson (old API) callback");
+  getJson("google", params, (page1) => {
+    if (!page1["organic_results"]) throw new Error("No organic results");
+    page1.next?.((page2) => {
+      if (!page2["organic_results"]) throw new Error("No organic results");
+    });
+  });
+}
+
+{
+  console.log("getJson (old API) using global config");
   config.api_key = apiKey;
   const page1 = await getJson("google", { q: "Coffee" });
   if (!page1["organic_results"]) throw new Error("No organic results");
@@ -84,6 +112,16 @@ let searchId;
 
 {
   console.log("getHtml");
+  const html = await getHtml({ engine: "google", ...params });
+  if (html.length < 1000) throw new Error("Incorrect HTML");
+
+  getHtml({ engine: "google", ...params }, (html) => {
+    if (html.length < 1000) throw new Error("Incorrect HTML");
+  });
+}
+
+{
+  console.log("getHtml (old API)");
   const html = await getHtml("google", params);
   if (html.length < 1000) throw new Error("Incorrect HTML");
 
