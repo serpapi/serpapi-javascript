@@ -2,6 +2,7 @@ import type { EngineParameters } from "./types.ts";
 import { version } from "../version.ts";
 import https from "node:https";
 import qs from "node:querystring";
+import url from "node:url";
 import { RequestTimeoutError } from "./errors.ts";
 import { EngineMap } from "./engines/engine_map.ts";
 
@@ -30,16 +31,21 @@ type NextParameters<E extends keyof EngineMap> = {
     >
   ]: string;
 };
-export function extractNextParameters<E extends keyof EngineMap>(json: {
-  serpapi_pagination?: { next: string };
-  pagination?: { next: string };
-}) {
+export function extractNextParameters<E extends keyof EngineMap>(
+  json: {
+    serpapi_pagination?: { next: string };
+    pagination?: { next: string };
+  },
+) {
   const nextUrlString = json["serpapi_pagination"]?.["next"] ||
     json["pagination"]?.["next"];
 
   if (nextUrlString) {
-    const nextUrl = new URL(nextUrlString);
-    const nextParameters = Object.fromEntries(nextUrl.searchParams.entries());
+    const nextUrl = new url.URL(nextUrlString);
+    const nextParameters: Record<string, string> = {};
+    for (const [k, v] of nextUrl.searchParams.entries()) {
+      nextParameters[k] = v;
+    }
     return nextParameters as NextParameters<E>;
   }
 }
