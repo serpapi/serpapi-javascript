@@ -60,7 +60,7 @@ describe("baidu", {
     await t.step("async/await", async () => {
       const links: string[] = [];
       let page;
-      page = await getJson(engine, { q });
+      page = await getJson({ engine, q });
       while (page) {
         links.push(...page.organic_results.map((r: any) => r.link));
         if (links.length >= 20) break;
@@ -72,7 +72,7 @@ describe("baidu", {
     await t.step("callback", async () => {
       const links: string[] = [];
       await new Promise<void>((done) => {
-        getJson(engine, { q }, (page) => {
+        getJson({ engine, q }, (page) => {
           links.push(...page.organic_results.map((r: any) => r.link));
           if (links.length < 20 && page.next) {
             page.next();
@@ -92,7 +92,8 @@ describe("baidu", {
     config.api_key = null;
 
     await t.step("async/await", async () => {
-      const page1 = await getJson(engine, {
+      const page1 = await getJson({
+        engine,
         api_key: SERPAPI_TEST_KEY,
         no_cache: false,
         q,
@@ -109,11 +110,10 @@ describe("baidu", {
     await t.step("callback", async () => {
       const page1 = await new Promise<Awaited<ReturnType<typeof getJson>>>(
         (res) =>
-          getJson(engine, {
-            api_key: SERPAPI_TEST_KEY,
-            no_cache: false,
-            q,
-          }, res),
+          getJson(
+            { engine, api_key: SERPAPI_TEST_KEY, no_cache: false, q },
+            res,
+          ),
       );
       assertMatch(executeSpy.calls[0].args[1].api_key as string, /[a-z0-9]+/);
       assertEquals(executeSpy.calls[0].args[1].no_cache, false);
@@ -130,13 +130,13 @@ describe("baidu", {
   it("getJson pagination with offset + size", {
     ignore: !HAS_API_KEY,
   }, async (t) => {
-    const firstPage = await getJson(engine, { q });
+    const firstPage = await getJson({ engine, q });
     const linksOnFirstPage = firstPage.organic_results.map((r: any) => r.link);
 
     await t.step("async/await", async () => {
       const links: string[] = [];
       let page;
-      page = await getJson(engine, { q, pn: "30", rn: "30" });
+      page = await getJson({ engine, q, pn: "30", rn: "30" });
       while (page) {
         links.push(...page.organic_results.map((r: any) => r.link));
         if (links.length >= 60) break;
@@ -152,7 +152,7 @@ describe("baidu", {
     await t.step("callback", async () => {
       const links: string[] = [];
       await new Promise<void>((done) => {
-        getJson(engine, { q, pn: "30", rn: "30" }, (page) => {
+        getJson({ engine, q, pn: "30", rn: "30" }, (page) => {
           links.push(...page.organic_results.map((r: any) => r.link));
           if (links.length < 60 && page.next) {
             page.next();
@@ -175,7 +175,7 @@ describe("baidu", {
     await t.step("async/await", async () => {
       let page;
       let pageNum = 0;
-      page = await getJson(engine, { q, pn: "750" });
+      page = await getJson({ engine, q, pn: "750" });
       while (page && pageNum < 5) {
         pageNum++;
         page = await page.next?.();
@@ -186,7 +186,7 @@ describe("baidu", {
     await t.step("callback", async () => {
       let pageNum = 0;
       await new Promise<void>((done) => {
-        getJson(engine, { q, pn: "750" }, (page) => {
+        getJson({ engine, q, pn: "750" }, (page) => {
           pageNum++;
           if (pageNum < 5 && page.next) {
             page.next();

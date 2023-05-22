@@ -62,7 +62,7 @@ describe("google_maps", {
     await t.step("async/await", async () => {
       const placeIds: string[] = [];
       let page;
-      page = await getJson(engine, { q, type, ll });
+      page = await getJson({ engine, q, type, ll });
       while (page) {
         placeIds.push(...page.local_results.map((r: any) => r.place_id));
         if (placeIds.length >= 40) break;
@@ -74,7 +74,7 @@ describe("google_maps", {
     await t.step("callback", async () => {
       const placeIds: string[] = [];
       await new Promise<void>((done) => {
-        getJson(engine, { q, type, ll }, (page) => {
+        getJson({ engine, q, type, ll }, (page) => {
           placeIds.push(...page.local_results.map((r: any) => r.place_id));
           if (placeIds.length < 40 && page.next) {
             page.next();
@@ -94,7 +94,8 @@ describe("google_maps", {
     config.api_key = null;
 
     await t.step("async/await", async () => {
-      const page1 = await getJson(engine, {
+      const page1 = await getJson({
+        engine,
         api_key: SERPAPI_TEST_KEY,
         no_cache: false,
         q,
@@ -113,7 +114,8 @@ describe("google_maps", {
     await t.step("callback", async () => {
       const page1 = await new Promise<Awaited<ReturnType<typeof getJson>>>(
         (res) =>
-          getJson(engine, {
+          getJson({
+            engine,
             api_key: SERPAPI_TEST_KEY,
             no_cache: false,
             q,
@@ -136,7 +138,7 @@ describe("google_maps", {
   it("getJson pagination with offset", {
     ignore: !HAS_API_KEY,
   }, async (t) => {
-    const firstPage = await getJson(engine, { q, type, ll });
+    const firstPage = await getJson({ engine, q, type, ll });
     const placeIdsOnFirstPage: string[] = firstPage.local_results.map((
       r: any,
     ) => r.place_id);
@@ -144,7 +146,7 @@ describe("google_maps", {
     await t.step("async/await", async () => {
       const placeIds: string[] = [];
       let page;
-      page = await getJson(engine, { q, type, ll, start: 40 });
+      page = await getJson({ engine, q, type, ll, start: 40 });
       while (page) {
         placeIds.push(...page.local_results.map((r: any) => r.place_id));
         if (placeIds.length >= 40) break;
@@ -161,7 +163,7 @@ describe("google_maps", {
     await t.step("callback", async () => {
       const placeIds: string[] = [];
       await new Promise<void>((done) => {
-        getJson(engine, { q, type, ll, start: 20 }, (page) => {
+        getJson({ engine, q, type, ll, start: 20 }, (page) => {
           placeIds.push(...page.local_results.map((r: any) => r.place_id));
           if (placeIds.length < 40 && page.next) {
             page.next();
@@ -184,7 +186,7 @@ describe("google_maps", {
     await t.step("async/await", async () => {
       let page;
       let pageNum = 0;
-      page = await getJson(engine, { q, type, ll, start: 260 });
+      page = await getJson({ engine, q, type, ll, start: 260 });
       while (page && pageNum < 5) {
         pageNum++;
         page = await page.next?.();
@@ -195,7 +197,7 @@ describe("google_maps", {
     await t.step("callback", async () => {
       let pageNum = 0;
       await new Promise<void>((done) => {
-        getJson(engine, { q, type, ll, start: 260 }, (page) => {
+        getJson({ engine, q, type, ll, start: 260 }, (page) => {
           pageNum++;
           if (pageNum < 5 && page.next) {
             page.next();

@@ -60,7 +60,7 @@ describe("duckduckgo", {
     await t.step("async/await", async () => {
       const links: string[] = [];
       let page;
-      page = await getJson(engine, { q });
+      page = await getJson({ engine, q });
       while (page) {
         links.push(...page.organic_results.map((r: any) => r.link));
         if (links.length >= 50) break;
@@ -72,7 +72,7 @@ describe("duckduckgo", {
     await t.step("callback", async () => {
       const links: string[] = [];
       await new Promise<void>((done) => {
-        getJson(engine, { q }, (page) => {
+        getJson({ engine, q }, (page) => {
           links.push(...page.organic_results.map((r: any) => r.link));
           if (links.length < 50 && page.next) {
             page.next();
@@ -92,7 +92,8 @@ describe("duckduckgo", {
     config.api_key = null;
 
     await t.step("async/await", async () => {
-      const page1 = await getJson(engine, {
+      const page1 = await getJson({
+        engine,
         api_key: SERPAPI_TEST_KEY,
         no_cache: false,
         q,
@@ -109,11 +110,10 @@ describe("duckduckgo", {
     await t.step("callback", async () => {
       const page1 = await new Promise<Awaited<ReturnType<typeof getJson>>>(
         (res) =>
-          getJson(engine, {
-            api_key: SERPAPI_TEST_KEY,
-            no_cache: false,
-            q,
-          }, res),
+          getJson(
+            { engine, api_key: SERPAPI_TEST_KEY, no_cache: false, q },
+            res,
+          ),
       );
       assertMatch(executeSpy.calls[0].args[1].api_key as string, /[a-z0-9]+/);
       assertEquals(executeSpy.calls[0].args[1].no_cache, false);
@@ -130,7 +130,7 @@ describe("duckduckgo", {
   it("getJson pagination with offset", {
     ignore: !HAS_API_KEY,
   }, async (t) => {
-    const firstPage = await getJson(engine, { q });
+    const firstPage = await getJson({ engine, q });
     const linksOnFirstPage: string[] = firstPage.organic_results.map((
       r: any,
     ) => r.link);
@@ -138,7 +138,7 @@ describe("duckduckgo", {
     await t.step("async/await", async () => {
       const links: string[] = [];
       let page;
-      page = await getJson(engine, { q, start: 10 });
+      page = await getJson({ engine, q, start: 10 });
       while (page) {
         links.push(...page.organic_results.map((r: any) => r.link));
         if (links.length >= 50) break;
@@ -155,7 +155,7 @@ describe("duckduckgo", {
     await t.step("callback", async () => {
       const links: string[] = [];
       await new Promise<void>((done) => {
-        getJson(engine, { q, start: 10 }, (page) => {
+        getJson({ engine, q, start: 10 }, (page) => {
           links.push(...page.organic_results.map((r: any) => r.link));
           if (links.length < 50 && page.next) {
             page.next();
@@ -178,7 +178,7 @@ describe("duckduckgo", {
     await t.step("async/await", async () => {
       let page;
       let pageNum = 0;
-      page = await getJson(engine, { q, kl: "uk-en", no_cache: true });
+      page = await getJson({ engine, q, kl: "uk-en", no_cache: true });
       while (page && pageNum < 8) {
         pageNum++;
         page = await page.next?.();
@@ -189,7 +189,7 @@ describe("duckduckgo", {
     await t.step("callback", async () => {
       let pageNum = 0;
       await new Promise<void>((done) => {
-        getJson(engine, { q, kl: "uk-en" }, (page) => {
+        getJson({ engine, q, kl: "uk-en" }, (page) => {
           pageNum++;
           if (pageNum < 8 && page.next) {
             page.next();

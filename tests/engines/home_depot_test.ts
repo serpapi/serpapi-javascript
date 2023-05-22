@@ -60,7 +60,7 @@ describe("home_depot", {
     await t.step("async/await", async () => {
       const ids: string[] = [];
       let page;
-      page = await getJson(engine, { q });
+      page = await getJson({ engine, q });
       while (page) {
         ids.push(...page.products.map((r: any) => r.product_id));
         if (ids.length >= 48) break;
@@ -72,7 +72,7 @@ describe("home_depot", {
     await t.step("callback", async () => {
       const ids: string[] = [];
       await new Promise<void>((done) => {
-        getJson(engine, { q }, (page) => {
+        getJson({ engine, q }, (page) => {
           ids.push(...page.products.map((r: any) => r.product_id));
           if (ids.length < 48 && page.next) {
             page.next();
@@ -92,7 +92,8 @@ describe("home_depot", {
     config.api_key = null;
 
     await t.step("async/await", async () => {
-      const page1 = await getJson(engine, {
+      const page1 = await getJson({
+        engine,
         api_key: SERPAPI_TEST_KEY,
         no_cache: false,
         q,
@@ -109,11 +110,10 @@ describe("home_depot", {
     await t.step("callback", async () => {
       const page1 = await new Promise<Awaited<ReturnType<typeof getJson>>>(
         (res) =>
-          getJson(engine, {
-            api_key: SERPAPI_TEST_KEY,
-            no_cache: false,
-            q,
-          }, res),
+          getJson(
+            { engine, api_key: SERPAPI_TEST_KEY, no_cache: false, q },
+            res,
+          ),
       );
       assertMatch(executeSpy.calls[0].args[1].api_key as string, /[a-z0-9]+/);
       assertEquals(executeSpy.calls[0].args[1].no_cache, false);
@@ -130,13 +130,13 @@ describe("home_depot", {
   it("getJson pagination with offset + size", {
     ignore: !HAS_API_KEY,
   }, async (t) => {
-    const firstPage = await getJson(engine, { q, ps: 3 });
+    const firstPage = await getJson({ engine, q, ps: 3 });
     const idsOnFirstPage = firstPage.products.map((r: any) => r.product_id);
 
     await t.step("async/await", async () => {
       const ids: string[] = [];
       let page;
-      page = await getJson(engine, { q, nao: "6", ps: 3 });
+      page = await getJson({ engine, q, nao: "6", ps: 3 });
       while (page) {
         ids.push(...page.products.map((r: any) => r.product_id));
         if (ids.length >= 6) break;
@@ -152,7 +152,7 @@ describe("home_depot", {
     await t.step("callback", async () => {
       const ids: string[] = [];
       await new Promise<void>((done) => {
-        getJson(engine, { q, nao: "6", ps: 3 }, (page) => {
+        getJson({ engine, q, nao: "6", ps: 3 }, (page) => {
           ids.push(...page.products.map((r: any) => r.product_id));
           if (ids.length < 6 && page.next) {
             page.next();
@@ -172,13 +172,13 @@ describe("home_depot", {
   it("getJson pagination with page + size", {
     ignore: !HAS_API_KEY,
   }, async (t) => {
-    const firstPage = await getJson(engine, { q, ps: 3 });
+    const firstPage = await getJson({ engine, q, ps: 3 });
     const idsOnFirstPage = firstPage.products.map((r: any) => r.product_id);
 
     await t.step("async/await", async () => {
       const ids: string[] = [];
       let page;
-      page = await getJson(engine, { q, page: "3", ps: 3 });
+      page = await getJson({ engine, q, page: "3", ps: 3 });
       while (page) {
         ids.push(...page.products.map((r: any) => r.product_id));
         if (ids.length >= 6) break;
@@ -194,7 +194,7 @@ describe("home_depot", {
     await t.step("callback", async () => {
       const ids: string[] = [];
       await new Promise<void>((done) => {
-        getJson(engine, { q, page: "3", ps: 3 }, (page) => {
+        getJson({ engine, q, page: "3", ps: 3 }, (page) => {
           ids.push(...page.products.map((r: any) => r.product_id));
           if (ids.length < 6 && page.next) {
             page.next();
@@ -214,13 +214,13 @@ describe("home_depot", {
   it("getJson pagination with offset + page + size", {
     ignore: !HAS_API_KEY,
   }, async (t) => {
-    const firstPage = await getJson(engine, { q, ps: 3 });
+    const firstPage = await getJson({ engine, q, ps: 3 });
     const idsOnFirstPage = firstPage.products.map((r: any) => r.product_id);
 
     await t.step("async/await", async () => {
       const ids: string[] = [];
       let page;
-      page = await getJson(engine, { q, nao: "6", page: "3", ps: 3 });
+      page = await getJson({ engine, q, nao: "6", page: "3", ps: 3 });
       while (page) {
         ids.push(...page.products.map((r: any) => r.product_id));
         if (ids.length >= 6) break;
@@ -236,7 +236,7 @@ describe("home_depot", {
     await t.step("callback", async () => {
       const ids: string[] = [];
       await new Promise<void>((done) => {
-        getJson(engine, { q, nao: "6", page: "3", ps: 3 }, (page) => {
+        getJson({ engine, q, nao: "6", page: "3", ps: 3 }, (page) => {
           ids.push(...page.products.map((r: any) => r.product_id));
           if (ids.length < 6 && page.next) {
             page.next();
@@ -259,7 +259,7 @@ describe("home_depot", {
     await t.step("async/await", async () => {
       let page;
       let pageNum = 0;
-      page = await getJson(engine, { q, page: "17", ps: 48 });
+      page = await getJson({ engine, q, page: "17", ps: 48 });
       while (page && pageNum < 5) {
         pageNum++;
         page = await page.next?.();
@@ -270,7 +270,7 @@ describe("home_depot", {
     await t.step("callback", async () => {
       let pageNum = 0;
       await new Promise<void>((done) => {
-        getJson(engine, { q, page: "17", ps: 48 }, (page) => {
+        getJson({ engine, q, page: "17", ps: 48 }, (page) => {
           pageNum++;
           if (pageNum < 5 && page.next) {
             page.next();

@@ -36,6 +36,7 @@ describe("extractNextParameters", () => {
         },
       }),
       {
+        engine: "google",
         device: "desktop",
         gl: "us",
         google_domain: "google.com",
@@ -58,6 +59,7 @@ describe("extractNextParameters", () => {
         },
       ),
       {
+        engine: "google_scholar_profiles",
         after_author: "rZlDAYoq__8J",
         hl: "en",
         mauthors: "Mike",

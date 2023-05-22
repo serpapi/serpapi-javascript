@@ -1,9 +1,9 @@
+import { EngineMap } from "./engines/engine_map.ts";
+import { InvalidArgumentError } from "./errors.ts";
 import {
   AccountApiParameters,
   AccountInformation,
-  AllowArbitraryParams,
   BaseResponse,
-  EngineName,
   EngineParameters,
   GetBySearchIdParameters,
   Locations,
@@ -26,24 +26,23 @@ const SEARCH_ARCHIVE_PATH = `/searches`;
  * - Accepts an optional callback.
  * - Get the next page of results by calling the `.next()` method on the returned response object.
  *
- * @param {string} engine - engine name
  * @param {object} parameters - search query parameters for the engine
  * @param {fn=} callback - optional callback
  * @example
  * // single call (async/await)
- * const json = await getJson("google", { api_key: API_KEY, q: "coffee" });
+ * const json = await getJson({ engine: "google", api_key: API_KEY, q: "coffee" });
  *
  * // single call (callback)
- * getJson("google", { api_key: API_KEY, q: "coffee" }, console.log);
+ * getJson({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
  *
  * @example
  * // pagination (async/await)
- * const page1 = await getJson("google", { q: "coffee", start: 15 });
+ * const page1 = await getJson({ engine: "google", q: "coffee", start: 15 });
  * const page2 = await page1.next?.();
  *
  * @example
  * // pagination (callback)
- * getJson("google", { q: "coffee", start: 15 }, (page1) => {
+ * getJson({ engine: "google", q: "coffee", start: 15 }, (page1) => {
  *   page1.next?.((page2) => {
  *     console.log(page2);
  *   });
@@ -52,7 +51,7 @@ const SEARCH_ARCHIVE_PATH = `/searches`;
  * @example
  * // pagination loop (async/await)
  * const organicResults = [];
- * let page = await getJson("google", { api_key: API_KEY, q: "coffee" });
+ * let page = await getJson({ engine: "google", api_key: API_KEY, q: "coffee" });
  * while (page) {
  *   organicResults.push(...page.organic_results);
  *   if (organicResults.length >= 30) break;
@@ -62,28 +61,57 @@ const SEARCH_ARCHIVE_PATH = `/searches`;
  * @example
  * // pagination loop (callback)
  * const organicResults = [];
- * getJson("google", { api_key: API_KEY, q: "coffee" }, (page) => {
+ * getJson({ engine: "google", api_key: API_KEY, q: "coffee" }, (page) => {
  *   organicResults.push(...page.organic_results);
  *   if (organicResults.length < 30 && page.next) {
  *     page.next();
  *   }
  * });
  */
-export async function getJson<
-  E extends EngineName = EngineName,
-  P extends AllowArbitraryParams<EngineParameters<E>> = EngineParameters<E>,
+export function getJson<
+  E extends keyof EngineMap,
 >(
-  engine: E,
-  parameters: P,
+  ...args:
+    | [
+      parameters: EngineParameters<E>,
+      callback?: (json: BaseResponse<E>) => void,
+    ]
+    | [
+      engine: E | string,
+      parameters: EngineParameters<E, false>,
+      callback?: (json: BaseResponse<E>) => void,
+    ]
+): Promise<BaseResponse<E>> {
+  if (
+    typeof args[0] === "string" &&
+    typeof args[1] === "object"
+  ) {
+    const [engine, parameters, callback] = args;
+    const newParameters = { ...parameters, engine } as EngineParameters<E>;
+    return _getJson(newParameters, callback);
+  } else if (
+    typeof args[0] === "object" &&
+    (typeof args[1] === "undefined" || typeof args[1] === "function")
+  ) {
+    const [parameters, callback] = args;
+    return _getJson(parameters, callback);
+  } else {
+    throw new InvalidArgumentError();
+  }
+}
+
+async function _getJson<
+  E extends keyof EngineMap,
+>(
+  parameters: EngineParameters<E>,
   callback?: (json: BaseResponse<E>) => void,
-) {
+): Promise<BaseResponse<E>> {
   const key = validateApiKey(parameters.api_key, true);
   const timeout = validateTimeout(parameters.timeout);
   const response = await _internals.execute(
     SEARCH_PATH,
     {
       ...parameters,
-      engine,
       api_key: key,
       output: "json",
     },
@@ -94,14 +122,13 @@ export async function getJson<
   if (
     // https://github.com/serpapi/public-roadmap/issues/562
     // https://github.com/serpapi/public-roadmap/issues/563
-    engine !== "yahoo_shopping" &&
+    parameters.engine !== "yahoo_shopping" &&
     nextParametersFromResponse
   ) {
     const nextParameters = { ...parameters, ...nextParametersFromResponse };
     if (haveParametersChanged(parameters, nextParameters)) {
       json.next = (innerCallback = callback) =>
         getJson(
-          engine,
           nextParameters,
           innerCallback,
         );
@@ -116,31 +143,59 @@ export async function getJson<
  * - Accepts an optional callback.
  * - Responds with a JSON string if the search request hasn't completed.
  *
- * @param {string} engine - engine name
  * @param {object} parameters - search query parameters for the engine
  * @param {fn=} callback - optional callback
  * @example
  * // async/await
- * const html = await getHtml("google", { api_key: API_KEY, q: "coffee" });
+ * const html = await getHtml({ engine: "google", api_key: API_KEY, q: "coffee" });
  *
  * // callback
- * getHtml("google", { api_key: API_KEY, q: "coffee" }, console.log);
+ * getHtml({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
  */
-export async function getHtml<
-  E extends EngineName = EngineName,
-  P extends AllowArbitraryParams<EngineParameters<E>> = EngineParameters<E>,
+export function getHtml<
+  E extends keyof EngineMap,
 >(
-  engine: E,
-  parameters: P,
+  ...args:
+    | [
+      parameters: EngineParameters<E>,
+      callback?: (html: string) => void,
+    ]
+    | [
+      engine: E | string,
+      parameters: EngineParameters<E, false>,
+      callback?: (html: string) => void,
+    ]
+): Promise<string> {
+  if (
+    typeof args[0] === "string" &&
+    typeof args[1] === "object"
+  ) {
+    const [engine, parameters, callback] = args;
+    const newParameters = { ...parameters, engine } as EngineParameters<E>;
+    return _getHtml(newParameters, callback);
+  } else if (
+    typeof args[0] === "object" &&
+    (typeof args[1] === "undefined" || typeof args[1] === "function")
+  ) {
+    const [parameters, callback] = args;
+    return _getHtml(parameters, callback);
+  } else {
+    throw new InvalidArgumentError();
+  }
+}
+
+async function _getHtml<
+  E extends keyof EngineMap,
+>(
+  parameters: EngineParameters<E>,
   callback?: (html: string) => void,
-) {
+): Promise<string> {
   const key = validateApiKey(parameters.api_key, true);
   const timeout = validateTimeout(parameters.timeout);
   const html = await _internals.execute(
     SEARCH_PATH,
     {
       ...parameters,
-      engine,
       api_key: key,
       output: "html",
     },
@@ -162,7 +217,7 @@ export async function getHtml<
  * @param {number=} [parameters.timeout] - timeout in milliseconds
  * @param {fn=} callback - optional callback
  * @example
- * const response = await getJson("google", { api_key: API_KEY, async: true, q: "coffee" });
+ * const response = await getJson({ engine: "google", api_key: API_KEY, async: true, q: "coffee" });
  * const { id } = response.search_metadata;
  * await delay(1000); // wait for the request to be processed.
  *
@@ -173,7 +228,7 @@ export async function getHtml<
  * getJsonBySearchId(id, { api_key: API_KEY }, console.log);
  */
 export async function getJsonBySearchId<
-  R extends BaseResponse,
+  R extends BaseResponse<keyof EngineMap>,
 >(
   searchId: string,
   parameters: GetBySearchIdParameters = {},
@@ -207,7 +262,7 @@ export async function getJsonBySearchId<
  * @param {number=} [parameters.timeout] - timeout in milliseconds
  * @param {fn=} callback - optional callback
  * @example
- * const response = await getJson("google", { api_key: API_KEY, async: true, q: "coffee" });
+ * const response = await getJson({ engine: "google", api_key: API_KEY, async: true, q: "coffee" });
  * const { id } = response.search_metadata;
  * await delay(1000); // wait for the request to be processed.
  *

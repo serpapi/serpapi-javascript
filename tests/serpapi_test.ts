@@ -8,15 +8,20 @@ import {
 } from "https://deno.land/std@0.170.0/testing/bdd.ts";
 import {
   assertEquals,
+  assertExists,
   assertInstanceOf,
   assertRejects,
 } from "https://deno.land/std@0.170.0/testing/asserts.ts";
 import { Stub, stub } from "https://deno.land/std@0.170.0/testing/mock.ts";
 import { _internals } from "../src/utils.ts";
 import {
+  BaseResponse,
   config,
   getAccount,
+  getHtml,
+  getJson,
   getLocations,
+  InvalidArgumentError,
   InvalidTimeoutError,
   MissingApiKeyError,
 } from "../mod.ts";
@@ -192,5 +197,260 @@ describe("getLocations", {
   it("without parameters", async () => {
     const locations = await getLocations();
     assertInstanceOf(locations, Array);
+  });
+});
+
+describe("getJson", {
+  sanitizeOps: false,
+  sanitizeResources: false,
+}, () => {
+  let urlStub: Stub;
+
+  beforeAll(() => {
+    urlStub = stub(_internals, "getBaseUrl", () => BASE_URL);
+  });
+
+  afterEach(() => {
+    config.api_key = null;
+  });
+
+  afterAll(() => {
+    urlStub.restore();
+  });
+
+  it("with no api_key", () => {
+    assertRejects(
+      async () => await getJson({ engine: "google", q: "Paris" }),
+      MissingApiKeyError,
+    );
+    assertRejects(
+      async () => await getJson("google", { q: "Paris" }),
+      MissingApiKeyError,
+    );
+    assertRejects(
+      // @ts-ignore testing invalid usage
+      async () => await getJson({}),
+      MissingApiKeyError,
+    );
+  });
+
+  it("with invalid arguments", () => {
+    assertRejects(
+      // @ts-ignore testing invalid usage
+      async () => await getJson("google"),
+      InvalidArgumentError,
+    );
+    assertRejects(
+      // @ts-ignore testing invalid usage
+      async () => await getJson(),
+      InvalidArgumentError,
+    );
+  });
+
+  it("with invalid timeout", {
+    ignore: !HAS_API_KEY,
+  }, () => {
+    config.api_key = SERPAPI_TEST_KEY;
+    assertRejects(
+      async () => await getJson({ engine: "google", q: "Paris", timeout: 0 }),
+      InvalidTimeoutError,
+    );
+    assertRejects(
+      async () => await getJson({ engine: "google", q: "Paris", timeout: -10 }),
+      InvalidTimeoutError,
+    );
+    assertRejects(
+      async () => await getJson("google", { q: "Paris", timeout: 0 }),
+      InvalidTimeoutError,
+    );
+    assertRejects(
+      async () => await getJson("google", { q: "Paris", timeout: -10 }),
+      InvalidTimeoutError,
+    );
+  });
+
+  it("async/await", {
+    ignore: !HAS_API_KEY,
+  }, async () => {
+    const json = await getJson({
+      engine: "google",
+      q: "Paris",
+      api_key: SERPAPI_TEST_KEY,
+      timeout: 10000,
+    });
+    assertEquals(json.search_metadata["status"], "Success");
+    assertExists(json.organic_results);
+
+    // old API
+    const json2 = await getJson("google", {
+      q: "Paris",
+      api_key: SERPAPI_TEST_KEY,
+      timeout: 10000,
+    });
+    assertEquals(json2.search_metadata.id, json.search_metadata.id);
+  });
+
+  it("callback", {
+    ignore: !HAS_API_KEY,
+  }, async () => {
+    const json = await new Promise<BaseResponse<"google">>((done) => {
+      getJson({
+        engine: "google",
+        q: "Paris",
+        api_key: SERPAPI_TEST_KEY,
+        timeout: 10000,
+      }, done);
+    });
+    assertEquals(json.search_metadata["status"], "Success");
+    assertExists(json.organic_results);
+
+    // old API
+    const json2 = await new Promise<BaseResponse<"google">>((done) => {
+      getJson("google", {
+        q: "Paris",
+        api_key: SERPAPI_TEST_KEY,
+        timeout: 10000,
+      }, done);
+    });
+    assertEquals(json2.search_metadata.id, json.search_metadata.id);
+  });
+
+  it("rely on global config", {
+    ignore: !HAS_API_KEY,
+  }, async () => {
+    config.api_key = SERPAPI_TEST_KEY;
+    const json = await getJson({
+      engine: "google",
+      q: "Paris",
+      timeout: 10000,
+    });
+    assertEquals(json.search_metadata["status"], "Success");
+    assertExists(json.organic_results);
+  });
+});
+
+describe("getHtml", {
+  sanitizeOps: false,
+  sanitizeResources: false,
+}, () => {
+  let urlStub: Stub;
+
+  beforeAll(() => {
+    urlStub = stub(_internals, "getBaseUrl", () => BASE_URL);
+  });
+
+  afterEach(() => {
+    config.api_key = null;
+  });
+
+  afterAll(() => {
+    urlStub.restore();
+  });
+
+  it("with no api_key", () => {
+    assertRejects(
+      async () => await getHtml({ engine: "google", q: "Paris" }),
+      MissingApiKeyError,
+    );
+    assertRejects(
+      async () => await getHtml("google", { q: "Paris" }),
+      MissingApiKeyError,
+    );
+    assertRejects(
+      // @ts-ignore testing invalid usage
+      async () => await getHtml({}),
+      MissingApiKeyError,
+    );
+  });
+
+  it("with invalid arguments", () => {
+    assertRejects(
+      // @ts-ignore testing invalid usage
+      async () => await getHtml("google"),
+      InvalidArgumentError,
+    );
+    assertRejects(
+      // @ts-ignore testing invalid usage
+      async () => await getHtml(),
+      InvalidArgumentError,
+    );
+  });
+
+  it("with invalid timeout", {
+    ignore: !HAS_API_KEY,
+  }, () => {
+    config.api_key = SERPAPI_TEST_KEY;
+    assertRejects(
+      async () => await getHtml({ engine: "google", q: "Paris", timeout: 0 }),
+      InvalidTimeoutError,
+    );
+    assertRejects(
+      async () => await getHtml({ engine: "google", q: "Paris", timeout: -10 }),
+      InvalidTimeoutError,
+    );
+    assertRejects(
+      async () => await getHtml("google", { q: "Paris", timeout: 0 }),
+      InvalidTimeoutError,
+    );
+    assertRejects(
+      async () => await getHtml("google", { q: "Paris", timeout: -10 }),
+      InvalidTimeoutError,
+    );
+  });
+
+  it("async/await", {
+    ignore: !HAS_API_KEY,
+  }, async () => {
+    const html = await getHtml({
+      engine: "google",
+      q: "Paris",
+      api_key: SERPAPI_TEST_KEY,
+      timeout: 10000,
+    });
+    assertEquals(html.includes("Paris"), true);
+
+    // old API
+    const html2 = await getHtml("google", {
+      q: "Paris",
+      api_key: SERPAPI_TEST_KEY,
+      timeout: 10000,
+    });
+    assertEquals(html2, html);
+  });
+
+  it("callback", {
+    ignore: !HAS_API_KEY,
+  }, async () => {
+    const html = await new Promise<string>((done) => {
+      getHtml({
+        engine: "google",
+        q: "Paris",
+        api_key: SERPAPI_TEST_KEY,
+        timeout: 10000,
+      }, done);
+    });
+    assertEquals(html.includes("Paris"), true);
+
+    // old API
+    const html2 = await new Promise<string>((done) => {
+      getHtml("google", {
+        q: "Paris",
+        api_key: SERPAPI_TEST_KEY,
+        timeout: 10000,
+      }, done);
+    });
+    assertEquals(html2, html);
+  });
+
+  it("rely on global config", {
+    ignore: !HAS_API_KEY,
+  }, async () => {
+    config.api_key = SERPAPI_TEST_KEY;
+    const html = await getHtml({
+      engine: "google",
+      q: "Paris",
+      timeout: 10000,
+    });
+    assertEquals(html.includes("Paris"), true);
   });
 });
