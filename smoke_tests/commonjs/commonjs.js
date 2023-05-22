@@ -28,7 +28,7 @@ const run = async () => {
 
   {
     console.log("getJson async await");
-    const page1 = await getJson({ engine: "google", ...params });
+    const page1 = await getJson(Object.assign({ engine: "google" }, params));
     searchId = page1["search_metadata"]["id"];
     if (!page1["organic_results"]) throw new Error("No organic results");
     if (page1.next) {
@@ -39,7 +39,7 @@ const run = async () => {
 
   {
     console.log("getJson callback");
-    getJson({ engine: "google", ...params }, (page1) => {
+    getJson(Object.assign({ engine: "google" }, params), (page1) => {
       if (!page1["organic_results"]) throw new Error("No organic results");
       if (page1.next) {
         page1.next((page2) => {
@@ -121,10 +121,10 @@ const run = async () => {
 
   {
     console.log("getHtml");
-    const html = await getHtml({ engine: "google", ...params });
+    const html = await getHtml(Object.assign({ engine: "google" }, params));
     if (html.length < 1000) throw new Error("Incorrect HTML");
 
-    getHtml({ engine: "google", ...params }, (html) => {
+    getHtml(Object.assign({ engine: "google" }, params), (html) => {
       if (html.length < 1000) throw new Error("Incorrect HTML");
     });
   }
