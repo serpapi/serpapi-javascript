@@ -1,3 +1,10 @@
+export class InvalidArgumentError extends Error {
+  constructor() {
+    super("Arguments are missing or of incorrect type");
+    Object.setPrototypeOf(this, InvalidArgumentError.prototype);
+  }
+}
+
 export class MissingApiKeyError extends Error {
   constructor() {
     super(

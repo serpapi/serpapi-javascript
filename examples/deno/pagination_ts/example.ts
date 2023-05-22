@@ -1,10 +1,5 @@
 import { loadSync } from "https://deno.land/std@0.173.0/dotenv/mod.ts";
-import {
-  AllowArbitraryParams,
-  config,
-  getJson,
-  GoogleParameters,
-} from "../../../mod.ts";
+import { config, EngineParameters, getJson } from "../../../mod.ts";
 
 const { API_KEY: apiKey } = loadSync();
 
@@ -12,12 +7,13 @@ const extractLinks = (results: { link: string }[]) =>
   results.map((r) => r.link);
 
 const params = {
+  engine: "google",
   q: "Coffee",
   api_key: apiKey,
-} satisfies AllowArbitraryParams<GoogleParameters>;
+} satisfies EngineParameters<"google">;
 
 // Pagination (async/await)
-let page1 = await getJson("google", params);
+let page1 = await getJson(params);
 console.log(
   "First page links",
   extractLinks(page1.organic_results),
@@ -29,7 +25,7 @@ console.log(
 );
 
 // Pagination (callback)
-getJson("google", params, (page1) => {
+getJson(params, (page1) => {
   console.log(
     "First page links",
     extractLinks(page1.organic_results),
@@ -44,7 +40,7 @@ getJson("google", params, (page1) => {
 
 // Use global config
 config.api_key = apiKey;
-page1 = await getJson("google", { q: "Coffee" });
+page1 = await getJson({ engine: "google", q: "Coffee" });
 page2 = await page1.next?.();
 console.log(
   "Second page links",
@@ -54,7 +50,7 @@ console.log(
 // Pagination loop (async/await)
 let links: string[] = [];
 let page;
-page = await getJson("google", { q: "Coffee" });
+page = await getJson({ engine: "google", q: "Coffee" });
 while (page) {
   links.push(...extractLinks(page.organic_results));
   if (links.length >= 30) break;
@@ -64,7 +60,7 @@ console.log(links);
 
 // Pagination loop (callback)
 links = [];
-getJson("google", { q: "Coffee" }, (page) => {
+getJson({ engine: "google", q: "Coffee" }, (page) => {
   links.push(...extractLinks(page.organic_results));
   if (links.length < 30 && page.next) {
     page.next();

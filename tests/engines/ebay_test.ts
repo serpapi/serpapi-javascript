@@ -60,7 +60,7 @@ describe("ebay", {
     await t.step("async/await", async () => {
       const links: string[] = [];
       let page;
-      page = await getJson(engine, { _nkw: nkw });
+      page = await getJson({ engine, _nkw: nkw });
       while (page) {
         links.push(...page.organic_results.map((r: any) => r.link));
         if (links.length >= 120) break;
@@ -72,7 +72,7 @@ describe("ebay", {
     await t.step("callback", async () => {
       const links: string[] = [];
       await new Promise<void>((done) => {
-        getJson(engine, { _nkw: nkw }, (page) => {
+        getJson({ engine, _nkw: nkw }, (page) => {
           links.push(...page.organic_results.map((r: any) => r.link));
           if (links.length < 120 && page.next) {
             page.next();
@@ -92,7 +92,8 @@ describe("ebay", {
     config.api_key = null;
 
     await t.step("async/await", async () => {
-      const page1 = await getJson(engine, {
+      const page1 = await getJson({
+        engine,
         api_key: SERPAPI_TEST_KEY,
         no_cache: false,
         _nkw: nkw,
@@ -109,7 +110,8 @@ describe("ebay", {
     await t.step("callback", async () => {
       const page1 = await new Promise<Awaited<ReturnType<typeof getJson>>>(
         (res) =>
-          getJson(engine, {
+          getJson({
+            engine,
             api_key: SERPAPI_TEST_KEY,
             no_cache: false,
             _nkw: nkw,
@@ -130,13 +132,13 @@ describe("ebay", {
   it("getJson pagination with page + size", {
     ignore: !HAS_API_KEY,
   }, async (t) => {
-    const firstPage = await getJson(engine, { _nkw: nkw });
+    const firstPage = await getJson({ engine, _nkw: nkw });
     const linksOnFirstPage = firstPage.organic_results.map((r: any) => r.link);
 
     await t.step("async/await", async () => {
       const links: string[] = [];
       let page;
-      page = await getJson(engine, { _nkw: nkw, _pgn: "2", _ipg: "100" });
+      page = await getJson({ engine, _nkw: nkw, _pgn: "2", _ipg: "100" });
       while (page) {
         links.push(...page.organic_results.map((r: any) => r.link));
         if (links.length >= 200) break;
@@ -152,7 +154,7 @@ describe("ebay", {
     await t.step("callback", async () => {
       const links: string[] = [];
       await new Promise<void>((done) => {
-        getJson(engine, { _nkw: nkw, _pgn: "2", _ipg: "100" }, (page) => {
+        getJson({ engine, _nkw: nkw, _pgn: "2", _ipg: "100" }, (page) => {
           links.push(...page.organic_results.map((r: any) => r.link));
           if (links.length < 200 && page.next) {
             page.next();
@@ -175,7 +177,7 @@ describe("ebay", {
     await t.step("async/await", async () => {
       let page;
       let pageNum = 0;
-      page = await getJson(engine, { _nkw: nkw, _pgn: "7", _ipg: "200" });
+      page = await getJson({ engine, _nkw: nkw, _pgn: "7", _ipg: "200" });
       while (page && pageNum < 5) {
         pageNum++;
         page = await page.next?.();
@@ -186,7 +188,7 @@ describe("ebay", {
     await t.step("callback", async () => {
       let pageNum = 0;
       await new Promise<void>((done) => {
-        getJson(engine, { _nkw: nkw, _pgn: "7", _ipg: "200" }, (page) => {
+        getJson({ engine, _nkw: nkw, _pgn: "7", _ipg: "200" }, (page) => {
           pageNum++;
           if (pageNum < 5 && page.next) {
             page.next();

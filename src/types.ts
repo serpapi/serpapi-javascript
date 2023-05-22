@@ -1,10 +1,5 @@
 import { EngineMap } from "./engines/engine_map.ts";
 
-/**
- * Allow arbitrary parameters in addition to parameters in T.
- */
-export type AllowArbitraryParams<T> = T & Record<string, unknown>;
-
 export type BaseParameters = {
   /**
    * Parameter defines the device to use to get the results. It can be set to
@@ -47,18 +42,19 @@ export type BaseParameters = {
   timeout?: number;
 };
 
-// https://github.com/microsoft/TypeScript/issues/29729
-// deno-lint-ignore ban-types
-type AnyEngineName = string & {};
-export type EngineName = (keyof EngineMap) | AnyEngineName;
 export type EngineParameters<
-  E extends EngineName = EngineName,
-> = {
-  [K in E]: K extends keyof EngineMap ? EngineMap[K]["parameters"]
-    : BaseParameters & Record<string, unknown>;
-}[E];
+  E extends keyof EngineMap,
+  EngineRequired = true,
+> =
+  // https://github.com/microsoft/TypeScript/issues/29729
+  // deno-lint-ignore ban-types
+  & (EngineRequired extends true ? { engine: E | (string & {}) }
+    // deno-lint-ignore ban-types
+    : { engine?: E | (string & {}) })
+  & EngineMap[E]["parameters"]
+  & Record<string, unknown>;
 
-export type BaseResponse<E extends EngineName = EngineName> = {
+export type BaseResponse<E extends keyof EngineMap> = {
   search_metadata: {
     id: string;
     status: "Queued" | "Processing" | "Success";

@@ -7,12 +7,13 @@ const apiKey = process.env.API_KEY;
 const extractLinks = (results) => results.map((r) => r.link);
 
 const params = {
+  engine: "google",
   q: "Coffee",
   api_key: apiKey,
 };
 
 // Pagination (async/await)
-let page1 = await getJson("google", params);
+let page1 = await getJson(params);
 console.log(
   "First page links",
   extractLinks(page1.organic_results),
@@ -24,7 +25,7 @@ console.log(
 );
 
 // Pagination (callback)
-getJson("google", params, (page1) => {
+getJson(params, (page1) => {
   console.log(
     "First page links",
     extractLinks(page1.organic_results),
@@ -39,7 +40,7 @@ getJson("google", params, (page1) => {
 
 // Use global config
 config.api_key = apiKey;
-page1 = await getJson("google", { q: "Coffee" });
+page1 = await getJson({ engine: "google", q: "Coffee" });
 page2 = await page1.next?.();
 console.log(
   "Second page links",
@@ -48,7 +49,7 @@ console.log(
 
 // Pagination loop (async/await)
 let links = [];
-let page = await getJson("google", { q: "Coffee" });
+let page = await getJson({ engine: "google", q: "Coffee" });
 while (page) {
   links.push(...extractLinks(page.organic_results));
   if (links.length >= 30) break;
@@ -58,7 +59,7 @@ console.log(links);
 
 // Pagination loop (callback)
 links = [];
-getJson("google", { q: "Coffee" }, (page) => {
+getJson({ engine: "google", q: "Coffee" }, (page) => {
   links.push(...extractLinks(page.organic_results));
   if (links.length < 30 && page.next) {
     page.next();

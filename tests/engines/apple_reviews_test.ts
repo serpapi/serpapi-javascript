@@ -60,7 +60,7 @@ describe("apple_reviews", {
     await t.step("async/await", async () => {
       const ids: number[] = [];
       let page;
-      page = await getJson(engine, { product_id: productId });
+      page = await getJson({ engine, product_id: productId });
       while (page) {
         ids.push(...page.reviews.map((r: any) => r.id));
         if (ids.length >= 50) break;
@@ -72,7 +72,7 @@ describe("apple_reviews", {
     await t.step("callback", async () => {
       const ids: number[] = [];
       await new Promise<void>((done) => {
-        getJson(engine, { product_id: productId }, (page) => {
+        getJson({ engine, product_id: productId }, (page) => {
           ids.push(...page.reviews.map((r: any) => r.id));
           if (ids.length < 50 && page.next) {
             page.next();
@@ -92,7 +92,8 @@ describe("apple_reviews", {
     config.api_key = null;
 
     await t.step("async/await", async () => {
-      const page1 = await getJson(engine, {
+      const page1 = await getJson({
+        engine,
         api_key: SERPAPI_TEST_KEY,
         no_cache: false,
         product_id: productId,
@@ -109,7 +110,8 @@ describe("apple_reviews", {
     await t.step("callback", async () => {
       const page1 = await new Promise<Awaited<ReturnType<typeof getJson>>>(
         (res) =>
-          getJson(engine, {
+          getJson({
+            engine,
             api_key: SERPAPI_TEST_KEY,
             no_cache: false,
             product_id: productId,
@@ -130,13 +132,13 @@ describe("apple_reviews", {
   it("getJson pagination with page", {
     ignore: !HAS_API_KEY,
   }, async (t) => {
-    const firstPage = await getJson(engine, { product_id: productId });
+    const firstPage = await getJson({ engine, product_id: productId });
     const idsOnFirstPage = firstPage.reviews.map((r: any) => r.id);
 
     await t.step("async/await", async () => {
       const ids: number[] = [];
       let page;
-      page = await getJson(engine, { product_id: productId, page: "2" });
+      page = await getJson({ engine, product_id: productId, page: "2" });
       while (page) {
         ids.push(...page.reviews.map((r: any) => r.id));
         if (ids.length >= 50) break;
@@ -153,7 +155,7 @@ describe("apple_reviews", {
     await t.step("callback", async () => {
       const ids: number[] = [];
       await new Promise<void>((done) => {
-        getJson(engine, { product_id: productId, page: "2" }, (page) => {
+        getJson({ engine, product_id: productId, page: "2" }, (page) => {
           ids.push(...page.reviews.map((r: any) => r.id));
           if (ids.length < 50 && page.next) {
             page.next();
@@ -176,7 +178,7 @@ describe("apple_reviews", {
     await t.step("async/await", async () => {
       let page;
       let pageNum = 0;
-      page = await getJson(engine, { product_id: productId, page: "99" });
+      page = await getJson({ engine, product_id: productId, page: "99" });
       while (page && pageNum < 5) {
         pageNum++;
         page = await page.next?.();
@@ -187,7 +189,7 @@ describe("apple_reviews", {
     await t.step("callback", async () => {
       let pageNum = 0;
       await new Promise<void>((done) => {
-        getJson(engine, { product_id: productId, page: "99" }, (page) => {
+        getJson({ engine, product_id: productId, page: "99" }, (page) => {
           pageNum++;
           if (pageNum < 5 && page.next) {
             page.next();

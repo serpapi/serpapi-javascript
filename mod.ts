@@ -1,15 +1,17 @@
 export type { Config } from "./src/config.ts";
 export { config } from "./src/config.ts";
 
-export { InvalidTimeoutError, MissingApiKeyError } from "./src/errors.ts";
+export {
+  InvalidArgumentError,
+  InvalidTimeoutError,
+  MissingApiKeyError,
+} from "./src/errors.ts";
 
 export type {
   AccountApiParameters,
   AccountInformation,
-  AllowArbitraryParams,
   BaseParameters,
   BaseResponse,
-  EngineName,
   EngineParameters,
   GetBySearchIdParameters,
   Location,

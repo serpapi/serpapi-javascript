@@ -58,7 +58,8 @@ describe("google", {
   });
 
   it("getJson for an unmetered query (async/await)", async () => {
-    const response = await getJson(engine, {
+    const response = await getJson({
+      engine,
       api_key: null, // null to support the "coffee" unmetered query
       q: "coffee",
     });
@@ -74,11 +75,7 @@ describe("google", {
 
   it("getJson for an unmetered query (callback)", async () => {
     const response = await new Promise<Awaited<ReturnType<typeof getJson>>>(
-      (res) =>
-        getJson(engine, {
-          api_key: null,
-          q: "coffee",
-        }, res),
+      (res) => getJson({ engine, api_key: null, q: "coffee" }, res),
     );
     assertArrayIncludes(Object.keys(response).sort(), [
       "organic_results",
@@ -94,10 +91,7 @@ describe("google", {
     const executeSpy = spy(_internals, "execute");
     config.api_key = "test_initial_api_key";
     try {
-      await getJson(engine, {
-        api_key: "test_override_api_key",
-        q: "coffee",
-      });
+      await getJson({ engine, api_key: "test_override_api_key", q: "coffee" });
     } finally {
       executeSpy.restore();
     }
@@ -111,28 +105,39 @@ describe("google", {
   });
 
   it("getJson with no api key from params or config", () => {
-    assertRejects(async () =>
-      await getJson(engine, {
-        api_key: "",
-        q: "coffee",
-      }), MissingApiKeyError);
-    assertRejects(async () =>
-      await getJson(engine, {
-        q: "coffee",
-      }), MissingApiKeyError);
-    assertRejects(async () =>
-      await getJson(engine, {
-        api_key: undefined,
-        q: "coffee",
-      }), MissingApiKeyError);
+    assertRejects(
+      async () => await getJson({ engine, api_key: "", q: "coffee" }),
+      MissingApiKeyError,
+    );
+    assertRejects(
+      async () => await getJson({ engine, q: "coffee" }),
+      MissingApiKeyError,
+    );
+    assertRejects(
+      async () => await getJson({ engine, api_key: undefined, q: "coffee" }),
+      MissingApiKeyError,
+    );
   });
 
   it("getJson with api key from config", {
     ignore: !HAS_API_KEY,
   }, async () => {
     config.api_key = SERPAPI_TEST_KEY;
+    const response = await getJson({ engine, q: "serpapi" });
+    assertArrayIncludes(Object.keys(response).sort(), [
+      "organic_results",
+      "pagination",
+      "search_information",
+      "search_metadata",
+      "search_parameters",
+      "serpapi_pagination",
+    ]);
+  });
+
+  it("getJson with engine as first parameter (async/await)", async () => {
     const response = await getJson(engine, {
-      q: "serpapi",
+      api_key: null, // null to support the "coffee" unmetered query
+      q: "coffee",
     });
     assertArrayIncludes(Object.keys(response).sort(), [
       "organic_results",
@@ -144,11 +149,22 @@ describe("google", {
     ]);
   });
 
+  it("getJson with engine as first parameter (callback)", async () => {
+    const response = await new Promise<Awaited<ReturnType<typeof getJson>>>(
+      (res) => getJson(engine, { api_key: null, q: "coffee" }, res),
+    );
+    assertArrayIncludes(Object.keys(response).sort(), [
+      "organic_results",
+      "pagination",
+      "search_information",
+      "search_metadata",
+      "search_parameters",
+      "serpapi_pagination",
+    ]);
+  });
+
   it("getHtml for an unmetered query (async/await)", async () => {
-    const response = await getHtml(engine, {
-      api_key: null,
-      q: "coffee",
-    });
+    const response = await getHtml({ engine, api_key: null, q: "coffee" });
     assertStringIncludes(response, "<html");
     assertStringIncludes(response, "<body");
     assertStringIncludes(response, "</body>");
@@ -157,11 +173,7 @@ describe("google", {
 
   it("getHtml for an unmetered query (callback)", async () => {
     const response = await new Promise<Awaited<ReturnType<typeof getHtml>>>(
-      (res) =>
-        getHtml(engine, {
-          api_key: null,
-          q: "coffee",
-        }, res),
+      (res) => getHtml({ engine, api_key: null, q: "coffee" }, res),
     );
     assertStringIncludes(response, "<html");
     assertStringIncludes(response, "<body");
@@ -173,10 +185,7 @@ describe("google", {
     const executeSpy = spy(_internals, "execute");
     config.api_key = "test_initial_api_key";
     try {
-      await getHtml(engine, {
-        api_key: "test_override_api_key",
-        q: "coffee",
-      });
+      await getHtml({ engine, api_key: "test_override_api_key", q: "coffee" });
     } finally {
       executeSpy.restore();
     }
@@ -190,29 +199,25 @@ describe("google", {
   });
 
   it("getHtml with with no api key from params or config", () => {
-    assertRejects(async () =>
-      await getHtml(engine, {
-        api_key: "",
-        q: "coffee",
-      }), MissingApiKeyError);
-    assertRejects(async () =>
-      await getHtml(engine, {
-        q: "coffee",
-      }), MissingApiKeyError);
-    assertRejects(async () =>
-      await getHtml(engine, {
-        api_key: undefined,
-        q: "coffee",
-      }), MissingApiKeyError);
+    assertRejects(
+      async () => await getHtml({ engine, api_key: "", q: "coffee" }),
+      MissingApiKeyError,
+    );
+    assertRejects(
+      async () => await getHtml({ engine, q: "coffee" }),
+      MissingApiKeyError,
+    );
+    assertRejects(
+      async () => await getHtml({ engine, api_key: undefined, q: "coffee" }),
+      MissingApiKeyError,
+    );
   });
 
   it("getHtml with api key from config", {
     ignore: !HAS_API_KEY,
   }, async () => {
     config.api_key = SERPAPI_TEST_KEY;
-    const response = await getHtml(engine, {
-      q: "serpapi",
-    });
+    const response = await getHtml({ engine, q: "serpapi" });
     assertStringIncludes(response, "<html");
     assertStringIncludes(response, "<body");
     assertStringIncludes(response, "</body>");
@@ -220,7 +225,8 @@ describe("google", {
   });
 
   it("getHtml with async parameter returns json", async () => {
-    const response = await getHtml(engine, {
+    const response = await getHtml({
+      engine,
       api_key: null,
       async: true,
       no_cache: true,
@@ -234,6 +240,24 @@ describe("google", {
     assertEquals(json["search_metadata"]["status"], "Processing");
   });
 
+  it("getHtml with engine as first parameter (async/await)", async () => {
+    const response = await getHtml(engine, { api_key: null, q: "coffee" });
+    assertStringIncludes(response, "<html");
+    assertStringIncludes(response, "<body");
+    assertStringIncludes(response, "</body>");
+    assertStringIncludes(response, "</html>");
+  });
+
+  it("getHtml with engine as first parameter (callback)", async () => {
+    const response = await new Promise<Awaited<ReturnType<typeof getHtml>>>(
+      (res) => getHtml(engine, { api_key: null, q: "coffee" }, res),
+    );
+    assertStringIncludes(response, "<html");
+    assertStringIncludes(response, "<body");
+    assertStringIncludes(response, "</body>");
+    assertStringIncludes(response, "</html>");
+  });
+
   // get(Json|Html)BySearchId always require a valid API key even for unmetered queries
   it("get(Json|Html)BySearchId", {
     ignore: !HAS_API_KEY,
@@ -241,7 +265,8 @@ describe("google", {
     let id: string;
 
     await t.step("initiate async request", async () => {
-      const response = await getJson(engine, {
+      const response = await getJson({
+        engine,
         api_key: SERPAPI_TEST_KEY,
         async: true,
         no_cache: true, // Ensure a new request is sent so we don't get cached results

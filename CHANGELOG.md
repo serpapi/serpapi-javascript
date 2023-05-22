@@ -10,7 +10,8 @@ and this project adheres to
 
 ### Added
 
-- Expose `EngineName`, `EngineParameters` and `AllowArbitraryParams` types.
+- Expose `EngineParameters` type.
+- Expose `InvalidArgumentTypesError` error.
 
 ### Changed
 
