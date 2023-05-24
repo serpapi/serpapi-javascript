@@ -9,12 +9,24 @@
   },
   "fmt": {
     "files": {
-      "exclude": ["npm/", "examples/node"]
+      "exclude": ["npm/", "examples/node", "smoke_tests/"]
     }
   },
   "lint": {
     "files": {
-      "exclude": ["npm/", "examples/node"]
+      "exclude": ["npm/", "examples/node", "smoke_tests/"]
     }
+  },
+  "test": {
+    "files": {
+      "include": ["tests/"]
+    }
+  },
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "deno.ns"
+    ]
   }
 }

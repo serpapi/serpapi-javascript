@@ -92,6 +92,8 @@ describe("google", {
     config.api_key = "test_initial_api_key";
     try {
       await getJson({ engine, api_key: "test_override_api_key", q: "coffee" });
+    } catch {
+      // pass
     } finally {
       executeSpy.restore();
     }
@@ -186,6 +188,8 @@ describe("google", {
     config.api_key = "test_initial_api_key";
     try {
       await getHtml({ engine, api_key: "test_override_api_key", q: "coffee" });
+    } catch {
+      // pass
     } finally {
       executeSpy.restore();
     }

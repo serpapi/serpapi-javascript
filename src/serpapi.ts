@@ -11,7 +11,6 @@ import {
 } from "./types.ts";
 import {
   _internals,
-  execute,
   extractNextParameters,
   haveParametersChanged,
 } from "./utils.ts";
@@ -118,8 +117,8 @@ async function _getJson<
     },
     timeout,
   );
-  const json = await response.json() as BaseResponse<E>;
-  const nextParametersFromResponse = extractNextParameters<E>(json);
+  const json = JSON.parse(response) as BaseResponse<E>;
+  const nextParametersFromResponse = await extractNextParameters<E>(json);
   if (
     // https://github.com/serpapi/public-roadmap/issues/562
     // https://github.com/serpapi/public-roadmap/issues/563
@@ -193,7 +192,7 @@ async function _getHtml<
 ): Promise<string> {
   const key = validateApiKey(parameters.api_key, true);
   const timeout = validateTimeout(parameters.timeout);
-  const response = await _internals.execute(
+  const html = await _internals.execute(
     SEARCH_PATH,
     {
       ...parameters,
@@ -202,7 +201,6 @@ async function _getHtml<
     },
     timeout,
   );
-  const html = await response.text();
   callback?.(html);
   return html;
 }
@@ -246,7 +244,7 @@ export async function getJsonBySearchId<
     },
     timeout,
   );
-  const json = await response.json() as R;
+  const json = JSON.parse(response) as R;
   callback?.(json);
   return json;
 }
@@ -281,7 +279,7 @@ export async function getHtmlBySearchId(
 ) {
   const key = validateApiKey(parameters.api_key);
   const timeout = validateTimeout(parameters.timeout);
-  const response = await _internals.execute(
+  const html = await _internals.execute(
     `${SEARCH_ARCHIVE_PATH}/${searchId}`,
     {
       api_key: key,
@@ -289,7 +287,6 @@ export async function getHtmlBySearchId(
     },
     timeout,
   );
-  const html = await response.text();
   callback?.(html);
   return html;
 }
@@ -315,10 +312,10 @@ export async function getAccount(
 ) {
   const key = validateApiKey(parameters.api_key);
   const timeout = validateTimeout(parameters.timeout);
-  const response = await execute(ACCOUNT_PATH, {
+  const response = await _internals.execute(ACCOUNT_PATH, {
     api_key: key,
   }, timeout);
-  const info = await response.json() as AccountInformation;
+  const info = JSON.parse(response) as AccountInformation;
   callback?.(info);
   return info;
 }
@@ -344,12 +341,12 @@ export async function getLocations(
   callback?: (locations: Locations) => void,
 ) {
   const timeout = validateTimeout(parameters.timeout);
-  const response = await execute(
+  const response = await _internals.execute(
     LOCATIONS_PATH,
     parameters,
     timeout,
   );
-  const locations = await response.json() as Locations;
+  const locations = JSON.parse(response) as Locations;
   callback?.(locations);
   return locations;
 }

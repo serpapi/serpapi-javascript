@@ -1,0 +1,3 @@
+# Smoke tests run on different node versions which generate different
+# package-lock.json files.
+package-lock.json

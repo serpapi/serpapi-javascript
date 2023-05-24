@@ -11,7 +11,7 @@ and this project adheres to
 ### Added
 
 - Expose `EngineParameters` type.
-- Expose `InvalidArgumentTypesError` error.
+- Expose `InvalidArgumentError` error.
 
 ### Changed
 

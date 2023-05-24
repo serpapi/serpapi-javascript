@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "dotenv": "*",
+    "serpapi": "../../npm"
+  },
+  "scripts": {
+    "test": "node commonjs.js"
+  }
+}

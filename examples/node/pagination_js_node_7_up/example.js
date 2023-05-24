@@ -1,3 +1,7 @@
+/**
+ * Example works for Node.js 7 and newer.
+ */
+
 const Dotenv = require("dotenv");
 const { config, getJson } = require("serpapi");
 
@@ -17,26 +21,30 @@ const run = async () => {
   let page1 = await getJson(params);
   console.log(
     "First page links",
-    extractLinks(page1.organic_results),
+    extractLinks(page1.organic_results)
   );
-  let page2 = await page1.next?.();
-  console.log(
-    "Second page links",
-    extractLinks(page2?.organic_results),
-  );
+  if (page1.next) {
+    let page2 = await page1.next();
+    console.log(
+      "Second page links",
+      extractLinks(page2.organic_results)
+    );
+  }
 
   // Pagination (callback)
   getJson(params, (page1) => {
     console.log(
       "First page links",
-      extractLinks(page1.organic_results),
+      extractLinks(page1.organic_results)
     );
-    page1.next?.((page2) => {
-      console.log(
-        "Second page links",
-        extractLinks(page2.organic_results),
-      );
-    });
+    if (page1.next) {
+      page1.next((page2) => {
+        console.log(
+          "Second page links",
+          extractLinks(page2.organic_results)
+        );
+      });
+    }
   });
 
   // Use global config
@@ -54,7 +62,7 @@ const run = async () => {
   while (page) {
     links.push(...extractLinks(page.organic_results));
     if (links.length >= 30) break;
-    page = await page.next?.();
+    page = page.next ? await page.next(): undefined;
   }
   console.log(links);
 

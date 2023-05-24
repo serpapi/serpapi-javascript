@@ -1,32 +1,19 @@
 import type { EngineParameters } from "./types.ts";
 import { version } from "../version.ts";
+import https from "node:https";
+import qs from "node:querystring";
+import url from "node:url";
+import { RequestTimeoutError } from "./errors.ts";
 import { EngineMap } from "./engines/engine_map.ts";
-
-type UrlParameters = Record<
-  string,
-  string | number | boolean | undefined | null
->;
 
 /**
  * This `_internals` object is needed to support stubbing/spying of
- * fetch, execute and getBaseUrl.
+ * certain functions in this file.
  * https://deno.land/manual@v1.28.3/basics/testing/mocking
  *
- * If fetch is stubbed via `globalThis`, the test phase of the npm build fails.
- * ```ts
- * const fetchStub = stub(globalThis, "fetch", resolvesNext([new Response("data")]));
- * ```
- *
- * [`dnt`](https://github.com/denoland/dnt) shims `fetch` by relying on the
- * `undici` package. It replaces all references to `fetch` with `dntShim.fetch`.
- * As a side effect, stubbing `globalThis.fetch` becomes incorrect; we want to
- * stub `dntShim.fetch` instead.
- *
- * As a workaround, the `_internals` object serves as an indirection and we
- * stub the `fetch` key of this object instead.
+ * It's also useful to encapsulate functions that are polyfilled.
  */
 export const _internals = {
-  fetch: fetch,
   execute: execute,
   getBaseUrl: getBaseUrl,
 };
@@ -44,16 +31,21 @@ type NextParameters<E extends keyof EngineMap> = {
     >
   ]: string;
 };
-export function extractNextParameters<E extends keyof EngineMap>(json: {
-  serpapi_pagination?: { next: string };
-  pagination?: { next: string };
-}) {
+export function extractNextParameters<E extends keyof EngineMap>(
+  json: {
+    serpapi_pagination?: { next: string };
+    pagination?: { next: string };
+  },
+) {
   const nextUrlString = json["serpapi_pagination"]?.["next"] ||
     json["pagination"]?.["next"];
 
   if (nextUrlString) {
-    const nextUrl = new URL(nextUrlString);
-    const nextParameters = Object.fromEntries(nextUrl.searchParams.entries());
+    const nextUrl = new url.URL(nextUrlString);
+    const nextParameters: Record<string, string> = {};
+    for (const [k, v] of nextUrl.searchParams.entries()) {
+      nextParameters[k] = v;
+    }
     return nextParameters as NextParameters<E>;
   }
 }
@@ -72,54 +64,80 @@ export function haveParametersChanged(
   );
 }
 
-function getSource() {
+export function getSource() {
   const moduleSource = `serpapi@${version}`;
-  try {
-    // Check if running in Node.js
-    // dnt-shim-ignore
-    // deno-lint-ignore no-explicit-any
-    const nodeVersion = (globalThis as any).process?.versions?.node;
-    if (nodeVersion) {
-      return `nodejs@${nodeVersion},${moduleSource}`;
-    }
-
-    // Assumes running in Deno instead. https://deno.land/api?s=Deno.version
-    // Deno.version is not shimmed since it's not used when ran in a Node env.
-    // dnt-shim-ignore
-    // deno-lint-ignore no-explicit-any
-    const denoVersion = (globalThis as any).Deno?.version?.deno;
+  if (typeof Deno == "object") {
+    const denoVersion = Deno.version?.deno;
     if (denoVersion) {
       return `deno@${denoVersion},${moduleSource}`;
     }
-
-    return `nodejs,${moduleSource}`;
-  } catch {
-    // If something unexpectedly occurs, revert to "nodejs".
-    return `nodejs,${moduleSource}`;
+    // @ts-ignore: scope of nodejs
+  } else if (typeof process == "object") {
+    // @ts-ignore: scope of nodejs
+    const nodeVersion = process.versions?.node;
+    if (nodeVersion) {
+      return `nodejs@${nodeVersion},${moduleSource}`;
+    }
   }
+  return `nodejs,${moduleSource}`;
 }
 
-export function buildUrl<P extends UrlParameters>(
+export function buildUrl(
   path: string,
-  parameters: P,
+  parameters: qs.ParsedUrlQueryInput,
 ): string {
-  const nonUndefinedParams: [string, string][] = Object.entries(parameters)
-    .filter(([_, value]) => value !== undefined)
-    .map(([key, value]) => [key, `${value}`]);
-  const searchParams = new URLSearchParams(nonUndefinedParams);
-  return `${_internals.getBaseUrl()}${path}?${searchParams}`;
+  const clonedParams = { ...parameters };
+  for (const k in clonedParams) {
+    if (clonedParams[k] === undefined) {
+      delete clonedParams[k];
+    }
+  }
+  return `${_internals.getBaseUrl()}${path}?${qs.stringify(clonedParams)}`;
 }
 
-export async function execute<P extends UrlParameters>(
+export function execute(
   path: string,
-  parameters: P,
+  parameters: qs.ParsedUrlQueryInput,
   timeout: number,
-): Promise<Response> {
+): Promise<string> {
   const url = buildUrl(path, {
     ...parameters,
     source: getSource(),
   });
-  return await _internals.fetch(url, {
-    signal: AbortSignal.timeout(timeout),
+  return new Promise((resolve, reject) => {
+    let timer: number;
+    const req = https.get(url, (resp) => {
+      let data = "";
+
+      // A chunk of data has been recieved.
+      resp.on("data", (chunk) => {
+        data += chunk;
+      });
+
+      // The whole response has been received. Print out the result.
+      resp.on("end", () => {
+        try {
+          if (resp.statusCode == 200) {
+            resolve(data);
+          } else {
+            reject(data);
+          }
+        } catch (e) {
+          reject(e);
+        } finally {
+          if (timer) clearTimeout(timer);
+        }
+      });
+    }).on("error", (err) => {
+      reject(err);
+      if (timer) clearTimeout(timer);
+    });
+
+    if (timeout > 0) {
+      timer = setTimeout(() => {
+        reject(new RequestTimeoutError());
+        req.destroy();
+      }, timeout);
+    }
   });
 }

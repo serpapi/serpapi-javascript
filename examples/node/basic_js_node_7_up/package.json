@@ -1,8 +1,7 @@
 {
-  "type": "module",
   "dependencies": {
     "dotenv": "*",
-    "serpapi": "../../../npm"
+    "serpapi": "*"
   },
   "scripts": {
     "start": "node example.js"
