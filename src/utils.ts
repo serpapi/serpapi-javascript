@@ -4,7 +4,6 @@ import https from "node:https";
 import qs from "node:querystring";
 import url from "node:url";
 import { RequestTimeoutError } from "./errors.ts";
-import { EngineMap } from "./engines/engine_map.ts";
 
 /**
  * This `_internals` object is needed to support stubbing/spying of
@@ -23,15 +22,15 @@ function getBaseUrl() {
   return "https://serpapi.com";
 }
 
-type NextParameters<E extends keyof EngineMap> = {
+type NextParameters = {
   [
     K in keyof Omit<
-      EngineParameters<E>,
+      EngineParameters,
       "api_key" | "no_cache" | "async" | "timeout"
     >
   ]: string;
 };
-export function extractNextParameters<E extends keyof EngineMap>(
+export function extractNextParameters(
   json: {
     serpapi_pagination?: { next: string };
     pagination?: { next: string };
@@ -46,7 +45,7 @@ export function extractNextParameters<E extends keyof EngineMap>(
     for (const [k, v] of nextUrl.searchParams.entries()) {
       nextParameters[k] = v;
     }
-    return nextParameters as NextParameters<E>;
+    return nextParameters as NextParameters;
   }
 }
 

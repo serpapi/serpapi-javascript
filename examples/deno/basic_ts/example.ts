@@ -6,7 +6,7 @@ const params = {
   engine: "google",
   q: "Coffee",
   api_key: apiKey,
-} satisfies EngineParameters<"google">;
+} as EngineParameters;
 
 // Show result as JSON (async/await)
 const response1 = await getJson(params);

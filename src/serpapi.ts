@@ -1,4 +1,3 @@
-import { EngineMap } from "./engines/engine_map.ts";
 import { InvalidArgumentError } from "./errors.ts";
 import {
   AccountApiParameters,
@@ -68,26 +67,24 @@ const SEARCH_ARCHIVE_PATH = `/searches`;
  *   }
  * });
  */
-export function getJson<
-  E extends keyof EngineMap,
->(
+export function getJson(
   ...args:
     | [
-      parameters: EngineParameters<E>,
-      callback?: (json: BaseResponse<E>) => void,
+      parameters: EngineParameters,
+      callback?: (json: BaseResponse) => void,
     ]
     | [
-      engine: E | string,
-      parameters: EngineParameters<E, false>,
-      callback?: (json: BaseResponse<E>) => void,
+      engine: string,
+      parameters: EngineParameters<false>,
+      callback?: (json: BaseResponse) => void,
     ]
-): Promise<BaseResponse<E>> {
+): Promise<BaseResponse> {
   if (
     typeof args[0] === "string" &&
     typeof args[1] === "object"
   ) {
     const [engine, parameters, callback] = args;
-    const newParameters = { ...parameters, engine } as EngineParameters<E>;
+    const newParameters = { ...parameters, engine } as EngineParameters;
     return _getJson(newParameters, callback);
   } else if (
     typeof args[0] === "object" &&
@@ -100,12 +97,10 @@ export function getJson<
   }
 }
 
-async function _getJson<
-  E extends keyof EngineMap,
->(
-  parameters: EngineParameters<E>,
-  callback?: (json: BaseResponse<E>) => void,
-): Promise<BaseResponse<E>> {
+async function _getJson(
+  parameters: EngineParameters,
+  callback?: (json: BaseResponse) => void,
+): Promise<BaseResponse> {
   const key = validateApiKey(parameters.api_key, true);
   const timeout = validateTimeout(parameters.timeout);
   const response = await _internals.execute(
@@ -117,8 +112,8 @@ async function _getJson<
     },
     timeout,
   );
-  const json = JSON.parse(response) as BaseResponse<E>;
-  const nextParametersFromResponse = await extractNextParameters<E>(json);
+  const json = JSON.parse(response) as BaseResponse;
+  const nextParametersFromResponse = await extractNextParameters(json);
   if (
     // https://github.com/serpapi/public-roadmap/issues/562
     // https://github.com/serpapi/public-roadmap/issues/563
@@ -152,17 +147,15 @@ async function _getJson<
  * // callback
  * getHtml({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
  */
-export function getHtml<
-  E extends keyof EngineMap,
->(
+export function getHtml(
   ...args:
     | [
-      parameters: EngineParameters<E>,
+      parameters: EngineParameters,
       callback?: (html: string) => void,
     ]
     | [
-      engine: E | string,
-      parameters: EngineParameters<E, false>,
+      engine: string,
+      parameters: EngineParameters<false>,
       callback?: (html: string) => void,
     ]
 ): Promise<string> {
@@ -171,7 +164,7 @@ export function getHtml<
     typeof args[1] === "object"
   ) {
     const [engine, parameters, callback] = args;
-    const newParameters = { ...parameters, engine } as EngineParameters<E>;
+    const newParameters = { ...parameters, engine } as EngineParameters;
     return _getHtml(newParameters, callback);
   } else if (
     typeof args[0] === "object" &&
@@ -184,10 +177,8 @@ export function getHtml<
   }
 }
 
-async function _getHtml<
-  E extends keyof EngineMap,
->(
-  parameters: EngineParameters<E>,
+async function _getHtml(
+  parameters: EngineParameters,
   callback?: (html: string) => void,
 ): Promise<string> {
   const key = validateApiKey(parameters.api_key, true);
@@ -227,12 +218,10 @@ async function _getHtml<
  * // callback
  * getJsonBySearchId(id, { api_key: API_KEY }, console.log);
  */
-export async function getJsonBySearchId<
-  R extends BaseResponse<keyof EngineMap>,
->(
+export async function getJsonBySearchId(
   searchId: string,
   parameters: GetBySearchIdParameters = {},
-  callback?: (json: R) => void,
+  callback?: (json: BaseResponse) => void,
 ) {
   const key = validateApiKey(parameters.api_key);
   const timeout = validateTimeout(parameters.timeout);
@@ -244,7 +233,7 @@ export async function getJsonBySearchId<
     },
     timeout,
   );
-  const json = JSON.parse(response) as R;
+  const json = JSON.parse(response) as BaseResponse;
   callback?.(json);
   return json;
 }

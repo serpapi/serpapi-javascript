@@ -21,7 +21,7 @@ const params = {
   engine: "google",
   q: "Coffee",
   api_key: apiKey,
-} satisfies EngineParameters<"google">;
+} satisfies EngineParameters;
 
 // Pagination (async/await)
 let page1 = await getJson(params);

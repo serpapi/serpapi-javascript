@@ -1,5 +1,3 @@
-import { EngineMap } from "./engines/engine_map.ts";
-
 export type BaseParameters = {
   /**
    * Parameter defines the device to use to get the results. It can be set to
@@ -43,18 +41,14 @@ export type BaseParameters = {
 };
 
 export type EngineParameters<
-  E extends keyof EngineMap,
   EngineRequired = true,
 > =
-  // https://github.com/microsoft/TypeScript/issues/29729
-  // deno-lint-ignore ban-types
-  & (EngineRequired extends true ? { engine: E | (string & {}) }
-    // deno-lint-ignore ban-types
-    : { engine?: E | (string & {}) })
-  & EngineMap[E]["parameters"]
+  & (EngineRequired extends true ? { engine: string }
+    : { engine?: string })
+  & BaseParameters
   & Record<string, unknown>;
 
-export type BaseResponse<E extends keyof EngineMap> = {
+export type BaseResponse = {
   search_metadata: {
     id: string;
     status: "Queued" | "Processing" | "Success";
@@ -65,14 +59,14 @@ export type BaseResponse<E extends keyof EngineMap> = {
     total_time_taken: number;
   };
   search_parameters: Omit<
-    EngineParameters<E>,
+    EngineParameters,
     "api_key" | "no_cache" | "async" | "timeout"
   >;
   serpapi_pagination?: { next: string };
   pagination?: { next: string };
   next?: (
-    callback?: (json: BaseResponse<E>) => void,
-  ) => Promise<BaseResponse<E>>;
+    callback?: (json: BaseResponse) => void,
+  ) => Promise<BaseResponse>;
   // deno-lint-ignore no-explicit-any
   [key: string]: any; // TODO(seb): use recursive type
 };
