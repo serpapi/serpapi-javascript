@@ -68,6 +68,7 @@ await build({
     ],
     contributors: [
       { name: "Sebastian Quek", email: "sebastian@serpapi.com" },
+      { name: "Yicheng Zhou", email: "zyc9012@gmail.com" },
     ],
   },
 });
