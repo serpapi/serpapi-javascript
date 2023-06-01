@@ -75,7 +75,7 @@ export function getJson(
     ]
     | [
       engine: string,
-      parameters: EngineParameters<false>,
+      parameters: EngineParameters,
       callback?: (json: BaseResponse) => void,
     ]
 ): Promise<BaseResponse> {
@@ -87,7 +87,7 @@ export function getJson(
     const newParameters = { ...parameters, engine } as EngineParameters;
     return _getJson(newParameters, callback);
   } else if (
-    typeof args[0] === "object" &&
+    typeof args[0] === "object" && typeof args[1] !== "object" &&
     (typeof args[1] === "undefined" || typeof args[1] === "function")
   ) {
     const [parameters, callback] = args;
@@ -155,7 +155,7 @@ export function getHtml(
     ]
     | [
       engine: string,
-      parameters: EngineParameters<false>,
+      parameters: EngineParameters,
       callback?: (html: string) => void,
     ]
 ): Promise<string> {
@@ -167,7 +167,7 @@ export function getHtml(
     const newParameters = { ...parameters, engine } as EngineParameters;
     return _getHtml(newParameters, callback);
   } else if (
-    typeof args[0] === "object" &&
+    typeof args[0] === "object" && typeof args[1] !== "object" &&
     (typeof args[1] === "undefined" || typeof args[1] === "function")
   ) {
     const [parameters, callback] = args;

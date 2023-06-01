@@ -10,7 +10,6 @@ export {
 export type {
   AccountApiParameters,
   AccountInformation,
-  BaseParameters,
   BaseResponse,
   EngineParameters,
   GetBySearchIdParameters,

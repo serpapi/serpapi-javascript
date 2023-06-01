@@ -31,10 +31,8 @@ type NextParameters = {
   ]: string;
 };
 export function extractNextParameters(
-  json: {
-    serpapi_pagination?: { next: string };
-    pagination?: { next: string };
-  },
+  // deno-lint-ignore no-explicit-any
+  json: any,
 ) {
   const nextUrlString = json["serpapi_pagination"]?.["next"] ||
     json["pagination"]?.["next"];

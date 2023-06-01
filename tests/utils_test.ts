@@ -29,7 +29,7 @@ const BASE_URL = Deno.env.get("ENV_TYPE") === "local"
 describe("extractNextParameters", () => {
   it("with serpapi_pagination property", async () => {
     assertEquals(
-      await extractNextParameters<"google">({
+      await extractNextParameters({
         serpapi_pagination: {
           next:
             "https://serpapi.com/search.json?device=desktop&engine=google&gl=us&google_domain=google.com&hl=en&location=Austin%2C+Texas%2C+United+States&q=coffee&start=10",
@@ -50,7 +50,7 @@ describe("extractNextParameters", () => {
 
   it("with pagination property", async () => {
     assertEquals(
-      await extractNextParameters<"google_scholar_profiles">(
+      await extractNextParameters(
         {
           pagination: {
             next:

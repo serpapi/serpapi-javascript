@@ -293,7 +293,7 @@ describe("getJson", {
   it("callback", {
     ignore: !HAS_API_KEY,
   }, async () => {
-    const json = await new Promise<BaseResponse<"google">>((done) => {
+    const json = await new Promise<BaseResponse>((done) => {
       getJson({
         engine: "google",
         q: "Paris",
@@ -305,7 +305,7 @@ describe("getJson", {
     assertExists(json.organic_results);
 
     // old API
-    const json2 = await new Promise<BaseResponse<"google">>((done) => {
+    const json2 = await new Promise<BaseResponse>((done) => {
       getJson("google", {
         q: "Paris",
         api_key: SERPAPI_TEST_KEY,

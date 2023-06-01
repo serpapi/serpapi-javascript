@@ -7,7 +7,7 @@
  */
 
 import * as Dotenv from "dotenv";
-import { config, EngineParameters, getJson } from "serpapi";
+import { config, getJson } from "serpapi";
 
 Dotenv.config();
 const apiKey = process.env.API_KEY;
@@ -16,7 +16,7 @@ const params = {
   engine: "google",
   q: "Coffee",
   api_key: apiKey,
-} satisfies EngineParameters;
+};
 
 // Show result as JSON (async/await)
 const response1 = await getJson(params);
