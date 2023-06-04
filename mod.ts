@@ -9,12 +9,9 @@ export {
 
 export type {
   AccountApiParameters,
-  AccountInformation,
   BaseResponse,
   EngineParameters,
   GetBySearchIdParameters,
-  Location,
-  Locations,
   LocationsApiParameters,
 } from "./src/types.ts";
 export {

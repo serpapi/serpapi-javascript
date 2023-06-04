@@ -1,11 +1,9 @@
 import { InvalidArgumentError } from "./errors.ts";
 import {
   AccountApiParameters,
-  AccountInformation,
   BaseResponse,
   EngineParameters,
   GetBySearchIdParameters,
-  Locations,
   LocationsApiParameters,
 } from "./types.ts";
 import {
@@ -277,13 +275,12 @@ async function _getHtml(
  * Get a JSON response given a search ID.
  * - This search ID can be obtained from the `search_metadata.id` key in the response.
  * - Typically used together with the `async` parameter.
- * - Accepts an optional callback.
  *
- * @param {string} searchId - search ID
+ * @param {string} searchId Search ID.
  * @param {object} parameters
- * @param {string=} [parameters.api_key] - API key
- * @param {number=} [parameters.timeout] - timeout in milliseconds
- * @param {fn=} callback - optional callback
+ * @param {string=} [parameters.api_key] API key.
+ * @param {number=} [parameters.timeout] Timeout in milliseconds.
+ * @param {fn=} callback Optional callback.
  * @example
  * const response = await getJson({ engine: "google", api_key: API_KEY, async: true, q: "coffee" });
  * const { id } = response.search_metadata;
@@ -319,14 +316,12 @@ export async function getJsonBySearchId(
  * Get a HTML response given a search ID.
  * - This search ID can be obtained from the `search_metadata.id` key in the response.
  * - Typically used together with the `async` parameter.
- * - Accepts an optional callback.
- * - Responds with a JSON if the search request hasn't completed.
  *
- * @param {string} searchId - search ID
+ * @param {string} searchId Search ID.
  * @param {object} parameters
- * @param {string=} [parameters.api_key] - API key
- * @param {number=} [parameters.timeout] - timeout in milliseconds
- * @param {fn=} callback - optional callback
+ * @param {string=} [parameters.api_key] API key.
+ * @param {number=} [parameters.timeout] Timeout in milliseconds.
+ * @param {fn=} callback Optional callback.
  * @example
  * const response = await getJson({ engine: "google", api_key: API_KEY, async: true, q: "coffee" });
  * const { id } = response.search_metadata;
@@ -359,12 +354,13 @@ export async function getHtmlBySearchId(
 
 /**
  * Get account information of an API key.
- * https://serpapi.com/account-api
+ *
+ * Refer to https://serpapi.com/account-api for response examples.
  *
  * @param {object} parameters
- * @param {string=} [parameters.api_key] - API key
- * @param {number=} [parameters.timeout] - timeout in milliseconds
- * @param {fn=} callback - optional callback
+ * @param {string=} [parameters.api_key] API key.
+ * @param {number=} [parameters.timeout] Timeout in milliseconds.
+ * @param {fn=} callback Optional callback.
  * @example
  * // async/await
  * const info = await getAccount({ api_key: API_KEY });
@@ -374,27 +370,29 @@ export async function getHtmlBySearchId(
  */
 export async function getAccount(
   parameters: AccountApiParameters = {},
-  callback?: (info: AccountInformation) => void,
+  // deno-lint-ignore no-explicit-any
+  callback?: (info: any) => void,
 ) {
   const key = validateApiKey(parameters.api_key);
   const timeout = validateTimeout(parameters.timeout);
   const response = await _internals.execute(ACCOUNT_PATH, {
     api_key: key,
   }, timeout);
-  const info = JSON.parse(response) as AccountInformation;
+  const info = JSON.parse(response);
   callback?.(info);
   return info;
 }
 
 /**
  * Get supported locations. Does not require an API key.
- * https://serpapi.com/locations-api
+ *
+ * Refer to https://serpapi.com/locations-api for response examples.
  *
  * @param {object} parameters
- * @param {string=} [parameters.q] - query for a location
- * @param {number=} [parameters.limit] - limit on number of locations returned
- * @param {number=} [parameters.timeout] - timeout in milliseconds
- * @param {fn=} callback - optional callback
+ * @param {string=} [parameters.q] Query for a location.
+ * @param {number=} [parameters.limit] Limit on number of locations returned.
+ * @param {number=} [parameters.timeout] Timeout in milliseconds.
+ * @param {fn=} callback Optional callback.
  * @example
  * // async/await
  * const locations = await getLocations({ limit: 3 });
@@ -404,7 +402,8 @@ export async function getAccount(
  */
 export async function getLocations(
   parameters: LocationsApiParameters = {},
-  callback?: (locations: Locations) => void,
+  // deno-lint-ignore no-explicit-any
+  callback?: (locations: any) => void,
 ) {
   const timeout = validateTimeout(parameters.timeout);
   const response = await _internals.execute(
@@ -412,7 +411,7 @@ export async function getLocations(
     parameters,
     timeout,
   );
-  const locations = JSON.parse(response) as Locations;
+  const locations = JSON.parse(response);
   callback?.(locations);
   return locations;
 }
