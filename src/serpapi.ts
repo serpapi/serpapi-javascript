@@ -21,12 +21,10 @@ const SEARCH_PATH = "/search";
 const SEARCH_ARCHIVE_PATH = `/searches`;
 
 /**
- * Get a JSON response based on search parameters.
- * - Accepts an optional callback.
- * - Get the next page of results by calling the `.next()` method on the returned response object.
+ * Get JSON response based on search parameters.
  *
- * @param {object} parameters - search query parameters for the engine
- * @param {fn=} callback - optional callback
+ * @param {object} parameters Search query parameters for the engine. Refer to https://serpapi.com/search-api for parameter explanations.
+ * @param {fn=} callback Optional callback.
  * @example
  * // single call (async/await)
  * const json = await getJson({ engine: "google", api_key: API_KEY, q: "coffee" });
@@ -67,6 +65,63 @@ const SEARCH_ARCHIVE_PATH = `/searches`;
  *   }
  * });
  */
+export function getJson(
+  parameters: EngineParameters,
+  callback?: (json: BaseResponse) => void,
+): Promise<BaseResponse>;
+
+/**
+ * Get JSON response based on search parameters.
+ *
+ * @param {string} engine Engine name. Refer to https://serpapi.com/search-api for valid engines.
+ * @param {object} parameters Search query parameters for the engine. Refer to https://serpapi.com/search-api for parameter explanations.
+ * @param {fn=} callback Optional callback.
+ * @example
+ * // single call (async/await)
+ * const json = await getJson("google", { api_key: API_KEY, q: "coffee" });
+ *
+ * // single call (callback)
+ * getJson("google", { api_key: API_KEY, q: "coffee" }, console.log);
+ *
+ * @example
+ * // pagination (async/await)
+ * const page1 = await getJson("google", { q: "coffee", start: 15 });
+ * const page2 = await page1.next?.();
+ *
+ * @example
+ * // pagination (callback)
+ * getJson("google", { q: "coffee", start: 15 }, (page1) => {
+ *   page1.next?.((page2) => {
+ *     console.log(page2);
+ *   });
+ * });
+ *
+ * @example
+ * // pagination loop (async/await)
+ * const organicResults = [];
+ * let page = await getJson("google", { api_key: API_KEY, q: "coffee" });
+ * while (page) {
+ *   organicResults.push(...page.organic_results);
+ *   if (organicResults.length >= 30) break;
+ *   page = await page.next?.();
+ * }
+ *
+ * @example
+ * // pagination loop (callback)
+ * const organicResults = [];
+ * getJson("google", { api_key: API_KEY, q: "coffee" }, (page) => {
+ *   organicResults.push(...page.organic_results);
+ *   if (organicResults.length < 30 && page.next) {
+ *     page.next();
+ *   }
+ * });
+ */
+export function getJson(
+  engine: string,
+  parameters: EngineParameters,
+  callback?: (json: BaseResponse) => void,
+): Promise<BaseResponse>;
+
 export function getJson(
   ...args:
     | [
@@ -134,12 +189,10 @@ async function _getJson(
 }
 
 /**
- * Get a HTML response based on search parameters.
- * - Accepts an optional callback.
- * - Responds with a JSON string if the search request hasn't completed.
+ * Get raw HTML response based on search parameters.
  *
- * @param {object} parameters - search query parameters for the engine
- * @param {fn=} callback - optional callback
+ * @param {object} parameters Search query parameters for the engine. Refer to https://serpapi.com/search-api for parameter explanations.
+ * @param {fn=} callback Optional callback.
  * @example
  * // async/await
  * const html = await getHtml({ engine: "google", api_key: API_KEY, q: "coffee" });
@@ -147,6 +200,30 @@ async function _getJson(
  * // callback
  * getHtml({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
  */
+export function getHtml(
+  parameters: EngineParameters,
+  callback?: (html: string) => void,
+): Promise<string>;
+
+/**
+ * Get raw HTML response based on search parameters.
+ *
+ * @param {string} engine Engine name. Refer to https://serpapi.com/search-api for valid engines.
+ * @param {object} parameters Search query parameters for the engine. Refer to https://serpapi.com/search-api for parameter explanations.
+ * @param {fn=} callback Optional callback.
+ * @example
+ * // async/await
+ * const html = await getHtml({ engine: "google", api_key: API_KEY, q: "coffee" });
+ *
+ * // callback
+ * getHtml({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
+ */
+export function getHtml(
+  engine: string,
+  parameters: EngineParameters,
+  callback?: (html: string) => void,
+): Promise<string>;
+
 export function getHtml(
   ...args:
     | [
