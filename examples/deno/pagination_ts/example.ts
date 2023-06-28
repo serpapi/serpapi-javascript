@@ -1,5 +1,5 @@
 import { loadSync } from "https://deno.land/std@0.173.0/dotenv/mod.ts";
-import { config, EngineParameters, getJson } from "../../../mod.ts";
+import { config, getJson } from "../../../mod.ts";
 
 const { API_KEY: apiKey } = loadSync();
 
@@ -10,7 +10,7 @@ const params = {
   engine: "google",
   q: "Coffee",
   api_key: apiKey,
-} satisfies EngineParameters<"google">;
+};
 
 // Pagination (async/await)
 let page1 = await getJson(params);

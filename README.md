@@ -74,7 +74,7 @@ import { getJson } from "https://deno.land/x/serpapi/mod.ts";
 
 ## Features
 
-- TypeScript types such as supported parameters and function argument types.
+- TypeScript support.
 - Works out-of-the-box with [Node.js](https://www.npmjs.com/package/serpapi) and
   [Deno](https://deno.land/x/serpapi).
 - Promises and async/await support.

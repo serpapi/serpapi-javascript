@@ -1,12 +1,9 @@
-import { EngineMap } from "./engines/engine_map.ts";
 import { InvalidArgumentError } from "./errors.ts";
 import {
   AccountApiParameters,
-  AccountInformation,
   BaseResponse,
   EngineParameters,
   GetBySearchIdParameters,
-  Locations,
   LocationsApiParameters,
 } from "./types.ts";
 import {
@@ -22,12 +19,10 @@ const SEARCH_PATH = "/search";
 const SEARCH_ARCHIVE_PATH = `/searches`;
 
 /**
- * Get a JSON response based on search parameters.
- * - Accepts an optional callback.
- * - Get the next page of results by calling the `.next()` method on the returned response object.
+ * Get JSON response based on search parameters.
  *
- * @param {object} parameters - search query parameters for the engine
- * @param {fn=} callback - optional callback
+ * @param {object} parameters Search query parameters for the engine. Refer to https://serpapi.com/search-api for parameter explanations.
+ * @param {fn=} callback Optional callback.
  * @example
  * // single call (async/await)
  * const json = await getJson({ engine: "google", api_key: API_KEY, q: "coffee" });
@@ -68,29 +63,84 @@ const SEARCH_ARCHIVE_PATH = `/searches`;
  *   }
  * });
  */
-export function getJson<
-  E extends keyof EngineMap,
->(
+export function getJson(
+  parameters: EngineParameters,
+  callback?: (json: BaseResponse) => void,
+): Promise<BaseResponse>;
+
+/**
+ * Get JSON response based on search parameters.
+ *
+ * @param {string} engine Engine name. Refer to https://serpapi.com/search-api for valid engines.
+ * @param {object} parameters Search query parameters for the engine. Refer to https://serpapi.com/search-api for parameter explanations.
+ * @param {fn=} callback Optional callback.
+ * @example
+ * // single call (async/await)
+ * const json = await getJson("google", { api_key: API_KEY, q: "coffee" });
+ *
+ * // single call (callback)
+ * getJson("google", { api_key: API_KEY, q: "coffee" }, console.log);
+ *
+ * @example
+ * // pagination (async/await)
+ * const page1 = await getJson("google", { q: "coffee", start: 15 });
+ * const page2 = await page1.next?.();
+ *
+ * @example
+ * // pagination (callback)
+ * getJson("google", { q: "coffee", start: 15 }, (page1) => {
+ *   page1.next?.((page2) => {
+ *     console.log(page2);
+ *   });
+ * });
+ *
+ * @example
+ * // pagination loop (async/await)
+ * const organicResults = [];
+ * let page = await getJson("google", { api_key: API_KEY, q: "coffee" });
+ * while (page) {
+ *   organicResults.push(...page.organic_results);
+ *   if (organicResults.length >= 30) break;
+ *   page = await page.next?.();
+ * }
+ *
+ * @example
+ * // pagination loop (callback)
+ * const organicResults = [];
+ * getJson("google", { api_key: API_KEY, q: "coffee" }, (page) => {
+ *   organicResults.push(...page.organic_results);
+ *   if (organicResults.length < 30 && page.next) {
+ *     page.next();
+ *   }
+ * });
+ */
+export function getJson(
+  engine: string,
+  parameters: EngineParameters,
+  callback?: (json: BaseResponse) => void,
+): Promise<BaseResponse>;
+
+export function getJson(
   ...args:
     | [
-      parameters: EngineParameters<E>,
-      callback?: (json: BaseResponse<E>) => void,
+      parameters: EngineParameters,
+      callback?: (json: BaseResponse) => void,
     ]
     | [
-      engine: E | string,
-      parameters: EngineParameters<E, false>,
-      callback?: (json: BaseResponse<E>) => void,
+      engine: string,
+      parameters: EngineParameters,
+      callback?: (json: BaseResponse) => void,
     ]
-): Promise<BaseResponse<E>> {
+): Promise<BaseResponse> {
   if (
     typeof args[0] === "string" &&
     typeof args[1] === "object"
   ) {
     const [engine, parameters, callback] = args;
-    const newParameters = { ...parameters, engine } as EngineParameters<E>;
+    const newParameters = { ...parameters, engine } as EngineParameters;
     return _getJson(newParameters, callback);
   } else if (
-    typeof args[0] === "object" &&
+    typeof args[0] === "object" && typeof args[1] !== "object" &&
     (typeof args[1] === "undefined" || typeof args[1] === "function")
   ) {
     const [parameters, callback] = args;
@@ -100,12 +150,10 @@ export function getJson<
   }
 }
 
-async function _getJson<
-  E extends keyof EngineMap,
->(
-  parameters: EngineParameters<E>,
-  callback?: (json: BaseResponse<E>) => void,
-): Promise<BaseResponse<E>> {
+async function _getJson(
+  parameters: EngineParameters,
+  callback?: (json: BaseResponse) => void,
+): Promise<BaseResponse> {
   const key = validateApiKey(parameters.api_key, true);
   const timeout = validateTimeout(parameters.timeout);
   const response = await _internals.execute(
@@ -117,8 +165,8 @@ async function _getJson<
     },
     timeout,
   );
-  const json = JSON.parse(response) as BaseResponse<E>;
-  const nextParametersFromResponse = await extractNextParameters<E>(json);
+  const json = JSON.parse(response) as BaseResponse;
+  const nextParametersFromResponse = await extractNextParameters(json);
   if (
     // https://github.com/serpapi/public-roadmap/issues/562
     // https://github.com/serpapi/public-roadmap/issues/563
@@ -139,12 +187,10 @@ async function _getJson<
 }
 
 /**
- * Get a HTML response based on search parameters.
- * - Accepts an optional callback.
- * - Responds with a JSON string if the search request hasn't completed.
+ * Get raw HTML response based on search parameters.
  *
- * @param {object} parameters - search query parameters for the engine
- * @param {fn=} callback - optional callback
+ * @param {object} parameters Search query parameters for the engine. Refer to https://serpapi.com/search-api for parameter explanations.
+ * @param {fn=} callback Optional callback.
  * @example
  * // async/await
  * const html = await getHtml({ engine: "google", api_key: API_KEY, q: "coffee" });
@@ -152,17 +198,39 @@ async function _getJson<
  * // callback
  * getHtml({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
  */
-export function getHtml<
-  E extends keyof EngineMap,
->(
+export function getHtml(
+  parameters: EngineParameters,
+  callback?: (html: string) => void,
+): Promise<string>;
+
+/**
+ * Get raw HTML response based on search parameters.
+ *
+ * @param {string} engine Engine name. Refer to https://serpapi.com/search-api for valid engines.
+ * @param {object} parameters Search query parameters for the engine. Refer to https://serpapi.com/search-api for parameter explanations.
+ * @param {fn=} callback Optional callback.
+ * @example
+ * // async/await
+ * const html = await getHtml({ engine: "google", api_key: API_KEY, q: "coffee" });
+ *
+ * // callback
+ * getHtml({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
+ */
+export function getHtml(
+  engine: string,
+  parameters: EngineParameters,
+  callback?: (html: string) => void,
+): Promise<string>;
+
+export function getHtml(
   ...args:
     | [
-      parameters: EngineParameters<E>,
+      parameters: EngineParameters,
       callback?: (html: string) => void,
     ]
     | [
-      engine: E | string,
-      parameters: EngineParameters<E, false>,
+      engine: string,
+      parameters: EngineParameters,
       callback?: (html: string) => void,
     ]
 ): Promise<string> {
@@ -171,10 +239,10 @@ export function getHtml<
     typeof args[1] === "object"
   ) {
     const [engine, parameters, callback] = args;
-    const newParameters = { ...parameters, engine } as EngineParameters<E>;
+    const newParameters = { ...parameters, engine } as EngineParameters;
     return _getHtml(newParameters, callback);
   } else if (
-    typeof args[0] === "object" &&
+    typeof args[0] === "object" && typeof args[1] !== "object" &&
     (typeof args[1] === "undefined" || typeof args[1] === "function")
   ) {
     const [parameters, callback] = args;
@@ -184,10 +252,8 @@ export function getHtml<
   }
 }
 
-async function _getHtml<
-  E extends keyof EngineMap,
->(
-  parameters: EngineParameters<E>,
+async function _getHtml(
+  parameters: EngineParameters,
   callback?: (html: string) => void,
 ): Promise<string> {
   const key = validateApiKey(parameters.api_key, true);
@@ -209,13 +275,12 @@ async function _getHtml<
  * Get a JSON response given a search ID.
  * - This search ID can be obtained from the `search_metadata.id` key in the response.
  * - Typically used together with the `async` parameter.
- * - Accepts an optional callback.
  *
- * @param {string} searchId - search ID
+ * @param {string} searchId Search ID.
  * @param {object} parameters
- * @param {string=} [parameters.api_key] - API key
- * @param {number=} [parameters.timeout] - timeout in milliseconds
- * @param {fn=} callback - optional callback
+ * @param {string=} [parameters.api_key] API key.
+ * @param {number=} [parameters.timeout] Timeout in milliseconds.
+ * @param {fn=} callback Optional callback.
  * @example
  * const response = await getJson({ engine: "google", api_key: API_KEY, async: true, q: "coffee" });
  * const { id } = response.search_metadata;
@@ -227,12 +292,10 @@ async function _getHtml<
  * // callback
  * getJsonBySearchId(id, { api_key: API_KEY }, console.log);
  */
-export async function getJsonBySearchId<
-  R extends BaseResponse<keyof EngineMap>,
->(
+export async function getJsonBySearchId(
   searchId: string,
   parameters: GetBySearchIdParameters = {},
-  callback?: (json: R) => void,
+  callback?: (json: BaseResponse) => void,
 ) {
   const key = validateApiKey(parameters.api_key);
   const timeout = validateTimeout(parameters.timeout);
@@ -244,7 +307,7 @@ export async function getJsonBySearchId<
     },
     timeout,
   );
-  const json = JSON.parse(response) as R;
+  const json = JSON.parse(response) as BaseResponse;
   callback?.(json);
   return json;
 }
@@ -253,14 +316,12 @@ export async function getJsonBySearchId<
  * Get a HTML response given a search ID.
  * - This search ID can be obtained from the `search_metadata.id` key in the response.
  * - Typically used together with the `async` parameter.
- * - Accepts an optional callback.
- * - Responds with a JSON if the search request hasn't completed.
  *
- * @param {string} searchId - search ID
+ * @param {string} searchId Search ID.
  * @param {object} parameters
- * @param {string=} [parameters.api_key] - API key
- * @param {number=} [parameters.timeout] - timeout in milliseconds
- * @param {fn=} callback - optional callback
+ * @param {string=} [parameters.api_key] API key.
+ * @param {number=} [parameters.timeout] Timeout in milliseconds.
+ * @param {fn=} callback Optional callback.
  * @example
  * const response = await getJson({ engine: "google", api_key: API_KEY, async: true, q: "coffee" });
  * const { id } = response.search_metadata;
@@ -293,12 +354,13 @@ export async function getHtmlBySearchId(
 
 /**
  * Get account information of an API key.
- * https://serpapi.com/account-api
+ *
+ * Refer to https://serpapi.com/account-api for response examples.
  *
  * @param {object} parameters
- * @param {string=} [parameters.api_key] - API key
- * @param {number=} [parameters.timeout] - timeout in milliseconds
- * @param {fn=} callback - optional callback
+ * @param {string=} [parameters.api_key] API key.
+ * @param {number=} [parameters.timeout] Timeout in milliseconds.
+ * @param {fn=} callback Optional callback.
  * @example
  * // async/await
  * const info = await getAccount({ api_key: API_KEY });
@@ -308,27 +370,29 @@ export async function getHtmlBySearchId(
  */
 export async function getAccount(
   parameters: AccountApiParameters = {},
-  callback?: (info: AccountInformation) => void,
+  // deno-lint-ignore no-explicit-any
+  callback?: (info: any) => void,
 ) {
   const key = validateApiKey(parameters.api_key);
   const timeout = validateTimeout(parameters.timeout);
   const response = await _internals.execute(ACCOUNT_PATH, {
     api_key: key,
   }, timeout);
-  const info = JSON.parse(response) as AccountInformation;
+  const info = JSON.parse(response);
   callback?.(info);
   return info;
 }
 
 /**
  * Get supported locations. Does not require an API key.
- * https://serpapi.com/locations-api
+ *
+ * Refer to https://serpapi.com/locations-api for response examples.
  *
  * @param {object} parameters
- * @param {string=} [parameters.q] - query for a location
- * @param {number=} [parameters.limit] - limit on number of locations returned
- * @param {number=} [parameters.timeout] - timeout in milliseconds
- * @param {fn=} callback - optional callback
+ * @param {string=} [parameters.q] Query for a location.
+ * @param {number=} [parameters.limit] Limit on number of locations returned.
+ * @param {number=} [parameters.timeout] Timeout in milliseconds.
+ * @param {fn=} callback Optional callback.
  * @example
  * // async/await
  * const locations = await getLocations({ limit: 3 });
@@ -338,7 +402,8 @@ export async function getAccount(
  */
 export async function getLocations(
   parameters: LocationsApiParameters = {},
-  callback?: (locations: Locations) => void,
+  // deno-lint-ignore no-explicit-any
+  callback?: (locations: any) => void,
 ) {
   const timeout = validateTimeout(parameters.timeout);
   const response = await _internals.execute(
@@ -346,7 +411,7 @@ export async function getLocations(
     parameters,
     timeout,
   );
-  const locations = JSON.parse(response) as Locations;
+  const locations = JSON.parse(response);
   callback?.(locations);
   return locations;
 }

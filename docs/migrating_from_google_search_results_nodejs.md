@@ -66,7 +66,7 @@ migrate over to the `serpapi` npm package.
 
 ## Added
 
-- TypeScript types for supported parameters.
+- TypeScript support.
 - First-class Promises support.
   ```js
   const json = await getJson({ engine: "google", q: "coffee" });
@@ -77,8 +77,10 @@ migrate over to the `serpapi` npm package.
   config.api_key = "new_api_key";
   config.timeout = 20000; // 20 seconds
   ```
-- Error classes (`MissingApiKeyError` and `InvalidTimeoutError`).
+- Error classes (`MissingApiKeyError`, `InvalidTimeoutError` and
+  `InvalidArgumentError`).
   ```js
   getJson({ engine: "google", api_key: "" }); // Throws `MissingApiKeyError`
   getAccount({ api_key: API_KEY, timeout: 0 }); // Throws `InvalidTimeoutError`
+  getJson("google"); // Throws `InvalidArgumentError`
   ```

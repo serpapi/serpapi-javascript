@@ -23,6 +23,10 @@ and this project adheres to
 
 ### Removed
 
+- Remove all types for engine parameters and responses. SerpApi's
+  [documentation](https://serpapi.com/search-api) should be the only source of
+  truth for valid engines and their parameters.
+
 ## [1.1.1] - 2023-02-15
 
 ### Added
