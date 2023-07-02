@@ -1,12 +1,8 @@
 // deno-lint-ignore no-explicit-any
 export type EngineParameters = Record<string, any>;
 
-export type BaseResponse = {
-  next?: (
-    callback?: (json: BaseResponse) => void,
-  ) => Promise<BaseResponse>;
-  // deno-lint-ignore no-explicit-any
-} & Record<string, any>;
+// deno-lint-ignore no-explicit-any
+export type BaseResponse = Record<string, any>;
 
 export type GetBySearchIdParameters = {
   api_key?: string;

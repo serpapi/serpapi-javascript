@@ -26,6 +26,7 @@ and this project adheres to
 - Remove all types for engine parameters and responses. SerpApi's
   [documentation](https://serpapi.com/search-api) should be the only source of
   truth for valid engines and their parameters.
+- Remove pagination support.
 
 ## [1.1.1] - 2023-02-15
 
