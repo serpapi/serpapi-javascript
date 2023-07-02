@@ -7,19 +7,30 @@ import {
   it,
 } from "https://deno.land/std@0.170.0/testing/bdd.ts";
 import {
+  assert,
+  assertArrayIncludes,
   assertEquals,
   assertExists,
   assertInstanceOf,
   assertRejects,
+  assertStringIncludes,
 } from "https://deno.land/std@0.170.0/testing/asserts.ts";
-import { Stub, stub } from "https://deno.land/std@0.170.0/testing/mock.ts";
+import {
+  assertSpyCallArg,
+  assertSpyCalls,
+  spy,
+  Stub,
+  stub,
+} from "https://deno.land/std@0.170.0/testing/mock.ts";
 import { _internals } from "../src/utils.ts";
 import {
   BaseResponse,
   config,
   getAccount,
   getHtml,
+  getHtmlBySearchId,
   getJson,
+  getJsonBySearchId,
   getLocations,
   InvalidArgumentError,
   InvalidTimeoutError,
@@ -247,10 +258,8 @@ describe("getJson", {
     );
   });
 
-  it("with invalid timeout", {
-    ignore: !HAS_API_KEY,
-  }, () => {
-    config.api_key = SERPAPI_TEST_KEY;
+  it("with invalid timeout", () => {
+    config.api_key = "test_api_key";
     assertRejects(
       async () => await getJson({ engine: "google", q: "Paris", timeout: 0 }),
       InvalidTimeoutError,
@@ -315,17 +324,49 @@ describe("getJson", {
     assertEquals(json2.search_metadata.id, json.search_metadata.id);
   });
 
-  it("rely on global config", {
-    ignore: !HAS_API_KEY,
-  }, async () => {
-    config.api_key = SERPAPI_TEST_KEY;
-    const json = await getJson({
+  it("rely on global config", async () => {
+    const executeSpy = spy(_internals, "execute");
+    config.api_key = "test_api_key";
+    try {
+      await getJson({
+        engine: "google",
+        q: "Paris",
+      });
+    } catch {
+      // pass
+    } finally {
+      executeSpy.restore();
+    }
+    assertSpyCalls(executeSpy, 1);
+    assertSpyCallArg(executeSpy, 0, 1, {
+      api_key: "test_api_key",
       engine: "google",
+      output: "json",
       q: "Paris",
-      timeout: 10000,
     });
-    assertEquals(json.search_metadata["status"], "Success");
-    assertExists(json.organic_results);
+  });
+
+  it("api_key param overrides global config", async () => {
+    const executeSpy = spy(_internals, "execute");
+    config.api_key = "test_initial_api_key";
+    try {
+      await getJson({
+        engine: "google",
+        api_key: "test_override_api_key",
+        q: "Paris",
+      });
+    } catch {
+      // pass
+    } finally {
+      executeSpy.restore();
+    }
+    assertSpyCalls(executeSpy, 1);
+    assertSpyCallArg(executeSpy, 0, 1, {
+      api_key: "test_override_api_key",
+      engine: "google",
+      output: "json",
+      q: "Paris",
+    });
   });
 });
 
@@ -442,15 +483,122 @@ describe("getHtml", {
     assertEquals(html2, html);
   });
 
-  it("rely on global config", {
-    ignore: !HAS_API_KEY,
-  }, async () => {
-    config.api_key = SERPAPI_TEST_KEY;
-    const html = await getHtml({
+  it("rely on global config", async () => {
+    const executeSpy = spy(_internals, "execute");
+    config.api_key = "test_api_key";
+    try {
+      await getHtml({
+        engine: "google",
+        q: "Paris",
+      });
+    } catch {
+      // pass
+    } finally {
+      executeSpy.restore();
+    }
+    assertSpyCalls(executeSpy, 1);
+    assertSpyCallArg(executeSpy, 0, 1, {
+      api_key: "test_api_key",
       engine: "google",
+      output: "html",
       q: "Paris",
-      timeout: 10000,
     });
-    assertEquals(html.includes("Paris"), true);
+  });
+
+  it("api_key param overrides global config", async () => {
+    const executeSpy = spy(_internals, "execute");
+    config.api_key = "test_initial_api_key";
+    try {
+      await getHtml({
+        engine: "google",
+        api_key: "test_override_api_key",
+        q: "Paris",
+      });
+    } catch {
+      // pass
+    } finally {
+      executeSpy.restore();
+    }
+    assertSpyCalls(executeSpy, 1);
+    assertSpyCallArg(executeSpy, 0, 1, {
+      api_key: "test_override_api_key",
+      engine: "google",
+      output: "html",
+      q: "Paris",
+    });
+  });
+});
+
+describe("getJsonBySearchId", {
+  sanitizeOps: false,
+  sanitizeResources: false,
+  ignore: !HAS_API_KEY,
+}, () => {
+  let id: string;
+
+  beforeAll(async () => {
+    const response = await getJson({
+      engine: "google",
+      api_key: SERPAPI_TEST_KEY,
+      q: "Paris",
+    });
+    let status;
+    ({ id, status } = response["search_metadata"]);
+    assert(id, "Missing search id");
+    assertEquals(status, "Success");
+  });
+
+  it("getJsonBySearchId (async/await)", async () => {
+    const json = await getJsonBySearchId(id, { api_key: SERPAPI_TEST_KEY });
+    assertArrayIncludes(Object.keys(json).sort(), [
+      "organic_results",
+    ]);
+  });
+
+  it("getJsonBySearchId (callback)", async () => {
+    const json = await new Promise<
+      Awaited<ReturnType<typeof getJsonBySearchId>>
+    >((res) => getJsonBySearchId(id, { api_key: SERPAPI_TEST_KEY }, res));
+    assertArrayIncludes(Object.keys(json).sort(), [
+      "organic_results",
+    ]);
+  });
+});
+
+describe("getHtmlBySearchId", {
+  sanitizeOps: false,
+  sanitizeResources: false,
+  ignore: !HAS_API_KEY,
+}, () => {
+  let id: string;
+
+  beforeAll(async () => {
+    const response = await getJson({
+      engine: "google",
+      api_key: SERPAPI_TEST_KEY,
+      q: "Paris",
+    });
+    let status;
+    ({ id, status } = response["search_metadata"]);
+    assert(id, "Missing search id");
+    assertEquals(status, "Success");
+  });
+
+  it("getHtmlBySearchId (async/await)", async () => {
+    const html = await getHtmlBySearchId(id, { api_key: SERPAPI_TEST_KEY });
+    assertStringIncludes(html, "<html");
+    assertStringIncludes(html, "<body");
+    assertStringIncludes(html, "</body>");
+    assertStringIncludes(html, "</html>");
+  });
+
+  it("getHtmlBySearchId (callback)", async () => {
+    const html = await new Promise<
+      Awaited<ReturnType<typeof getHtmlBySearchId>>
+    >((res) => getHtmlBySearchId(id, { api_key: SERPAPI_TEST_KEY }, res));
+    assertStringIncludes(html, "<html");
+    assertStringIncludes(html, "<body");
+    assertStringIncludes(html, "</body>");
+    assertStringIncludes(html, "</html>");
   });
 });
