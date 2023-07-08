@@ -4,4 +4,4 @@
  *
  * Changing this value creates a new release.
  */
-export const version = "1.1.1";
+export const version = "1.1.2";

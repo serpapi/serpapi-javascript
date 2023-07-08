@@ -21,6 +21,8 @@ and this project adheres to
 
 ### Fixed
 
+- Node polyfills were required to run it in Browsers.
+
 ### Removed
 
 - Remove all types for engine parameters and responses. SerpApi's

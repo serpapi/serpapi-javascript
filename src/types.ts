@@ -1,6 +1,11 @@
 // deno-lint-ignore no-explicit-any
 export type EngineParameters = Record<string, any>;
 
+export type ParsedUrlQueryInput = Record<
+  string,
+  string | number | boolean | undefined | null
+>;
+
 export type BaseResponse = {
   next?: (
     callback?: (json: BaseResponse) => void,
