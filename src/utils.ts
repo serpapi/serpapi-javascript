@@ -106,6 +106,7 @@ export function execute(
   });
   return new Promise((resolve, reject) => {
     let timer: number;
+    // deno-lint-ignore no-explicit-any
     let controller: any = undefined;
     try {
       controller = new AbortController();
