@@ -27,7 +27,7 @@ npm install serpapi
 ```js
 const { getJson } = require("serpapi");
 getJson({
-  engine: "google",
+  engine: "google_images",
   api_key: API_KEY, // Get your API_KEY from https://serpapi.com/manage-api-key
   q: "coffee",
   location: "Austin, Texas",
