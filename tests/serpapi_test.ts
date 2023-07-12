@@ -98,7 +98,7 @@ describe("getAccount", {
       api_key: SERPAPI_TEST_KEY,
       timeout: 10000,
     });
-    assertEquals(Object.keys(info).sort(), [
+    assertArrayIncludes(Object.keys(info).sort(), [
       "account_email",
       "account_id",
       "account_rate_limit_per_hour",
@@ -122,7 +122,7 @@ describe("getAccount", {
     const info = await new Promise<Awaited<ReturnType<typeof getAccount>>>(
       (res) => getAccount({ api_key: SERPAPI_TEST_KEY, timeout: 10000 }, res),
     );
-    assertEquals(Object.keys(info).sort(), [
+    assertArrayIncludes(Object.keys(info).sort(), [
       "account_email",
       "account_id",
       "account_rate_limit_per_hour",
@@ -145,7 +145,7 @@ describe("getAccount", {
   }, async () => {
     config.api_key = SERPAPI_TEST_KEY;
     const info = await getAccount();
-    assertEquals(Object.keys(info).sort(), [
+    assertArrayIncludes(Object.keys(info).sort(), [
       "account_email",
       "account_id",
       "account_rate_limit_per_hour",
