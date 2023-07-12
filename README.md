@@ -18,7 +18,7 @@ more.
 ### Node.js
 
 - Supports Node.js 7.10.1 and newer.
-- Refer to [this example](examples/node/basic_js_node_7_up) for help.
+- Refer to [this example](examples/node/js_node_7_up) for help.
 
 ```bash
 npm install serpapi
@@ -40,7 +40,7 @@ getJson({
 
 - If you prefer using the `import` syntax and top-level `await`, you need to use
   at least Node.js 14.8.0.
-- Refer to [this example](examples/node/basic_js_node_14_up) for help.
+- Refer to [this example](examples/node/js_node_14_up) for help.
 
 You will need to add `"type": "module"` to your `package.json`:
 
@@ -66,10 +66,17 @@ console.log(response);
 
 - Import directly from deno.land.
 - Usage is otherwise the same as above.
-- Refer to [this example](examples/deno/basic_ts) for help.
+- Refer to [this example](examples/deno) for help.
 
 ```ts
 import { getJson } from "https://deno.land/x/serpapi/mod.ts";
+const response = await getJson({
+  engine: "google",
+  api_key: API_KEY, // Get your API_KEY from https://serpapi.com/manage-api-key
+  q: "coffee",
+  location: "Austin, Texas",
+});
+console.log(response);
 ```
 
 ## Features
@@ -80,7 +87,6 @@ import { getJson } from "https://deno.land/x/serpapi/mod.ts";
 - Promises and async/await support.
 - Callbacks support.
 - [Examples in JavaScript/TypeScript on Node.js/Deno using ESM/CommonJS, and more](https://github.com/serpapi/serpapi-javascript/tree/master/examples).
-- (Planned) More error classes.
 
 ## Configuration
 
