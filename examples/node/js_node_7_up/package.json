@@ -4,6 +4,6 @@
     "serpapi": "*"
   },
   "scripts": {
-    "start": "node example.js"
+    "start": "node basic_example.js"
   }
 }
