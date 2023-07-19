@@ -110,8 +110,8 @@ await getJson({ engine: "google", api_key: API_KEY_2, q: "coffee" }); // API_KEY
 
 ## Pagination
 
-There's no built-in pagination support in this library, but you can always do it
-manually. You can find pagination examples here:
+Built-in pagination is not supported. Please refer to our pagination examples
+for a manual approach:
 
 - [Pagination example (Node.js >= 7)](examples/node/js_node_7_up/pagination_example.js)
 - [Pagination example (Node.js >= 14)](examples/node/js_node_14_up/pagination_example.js)
