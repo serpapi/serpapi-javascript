@@ -1,4 +1,4 @@
-import { build, emptyDir } from "https://deno.land/x/dnt@0.34.0/mod.ts";
+import { build, emptyDir } from "https://deno.land/x/dnt@0.37.0/mod.ts";
 import { version } from "../version.ts";
 
 await emptyDir("./npm");
@@ -21,7 +21,7 @@ await build({
   },
   compilerOptions: {
     // https://github.com/microsoft/TypeScript/wiki/Node-Target-Mapping
-    lib: ["es2017"],
+    lib: ["ES2017"],
     target: "ES2017",
   },
   package: {

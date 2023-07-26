@@ -1,10 +1,9 @@
 {
-  "type": "module",
   "dependencies": {
     "dotenv": "*",
     "serpapi": "*"
   },
   "scripts": {
-    "start": "node example.js"
+    "start": "node basic_example.js"
   }
 }

@@ -1,4 +1,4 @@
-# Deno pagination TypeScript example
+# Deno basic TypeScript example
 
 ## Usage
 
@@ -10,7 +10,8 @@
 2. Run the example
 
 ```
-deno run example.ts
+deno run basic_example.ts
+deno run pagination_example.ts
 ```
 
 ## Notes

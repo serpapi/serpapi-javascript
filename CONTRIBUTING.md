@@ -111,7 +111,7 @@ To run [examples](./examples/) on your local source files, follow these steps.
        "serpapi": "../../../npm"
      },
      "scripts": {
-       "start": "node example.js"
+       "start": "node basic_example.js"
      }
    }
    ```

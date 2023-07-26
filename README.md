@@ -18,7 +18,7 @@ more.
 ### Node.js
 
 - Supports Node.js 7.10.1 and newer.
-- Refer to [this example](examples/node/basic_js_node_7_up) for help.
+- Refer to [this example](examples/node/js_node_7_up) for help.
 
 ```bash
 npm install serpapi
@@ -40,7 +40,7 @@ getJson({
 
 - If you prefer using the `import` syntax and top-level `await`, you need to use
   at least Node.js 14.8.0.
-- Refer to [this example](examples/node/basic_js_node_14_up) for help.
+- Refer to [this example](examples/node/js_node_14_up) for help.
 
 You will need to add `"type": "module"` to your `package.json`:
 
@@ -66,10 +66,17 @@ console.log(response);
 
 - Import directly from deno.land.
 - Usage is otherwise the same as above.
-- Refer to [this example](examples/deno/basic_ts) for help.
+- Refer to [this example](examples/deno) for help.
 
 ```ts
 import { getJson } from "https://deno.land/x/serpapi/mod.ts";
+const response = await getJson({
+  engine: "google",
+  api_key: API_KEY, // Get your API_KEY from https://serpapi.com/manage-api-key
+  q: "coffee",
+  location: "Austin, Texas",
+});
+console.log(response);
 ```
 
 ## Features
@@ -80,8 +87,6 @@ import { getJson } from "https://deno.land/x/serpapi/mod.ts";
 - Promises and async/await support.
 - Callbacks support.
 - [Examples in JavaScript/TypeScript on Node.js/Deno using ESM/CommonJS, and more](https://github.com/serpapi/serpapi-javascript/tree/master/examples).
-- [Pagination support](#pagination).
-- (Planned) More error classes.
 
 ## Configuration
 
@@ -105,30 +110,12 @@ await getJson({ engine: "google", api_key: API_KEY_2, q: "coffee" }); // API_KEY
 
 ## Pagination
 
-Search engines handle pagination in several different ways. Some rely on an
-"offset" value to return results starting from a specific index, while some
-others rely on the typical notion of a "page". These are often combined with a
-"size" value to define how many results are returned in a search.
+Built-in pagination is not supported. Please refer to our pagination examples
+for a manual approach:
 
-This module helps you handle pagination easily. After receiving search results
-from `getJson`, simply call the `next()` method on the returned object to
-retrieve the next page of results. If there is no `next()` method, then either
-pagination is not supported for the search engine or there are no more pages to
-be retrieved.
-
-```js
-const page1 = await getJson({ engine: "google", q: "coffee", start: 15 });
-const page2 = await page1.next?.();
-```
-
-You may pass in the engine's supported pagination parameters as per normal. In
-the above example, the first page contains the 15th to the 24th result while the
-second page contains the 25th to the 34th result.
-
-Note that if you set `no_cache` to `true`, all subsequent `next()` calls will
-not return cached results.
-
-Refer to the [`getJson` definition below](#getjson) for more examples.
+- [Pagination example (Node.js >= 7)](examples/node/js_node_7_up/pagination_example.js)
+- [Pagination example (Node.js >= 14)](examples/node/js_node_14_up/pagination_example.js)
+- [Pagination example (Deno)](examples/deno/pagination_example.ts)
 
 ## Functions
 
@@ -159,10 +146,6 @@ Refer to the [`getJson` definition below](#getjson) for more examples.
 
 Get a JSON response based on search parameters.
 
-- Accepts an optional callback.
-- Get the next page of results by calling the `.next()` method on the returned
-  response object.
-
 #### Parameters
 
 - `parameters`
@@ -178,43 +161,6 @@ const json = await getJson({ engine: "google", api_key: API_KEY, q: "coffee" });
 
 // single call (callback)
 getJson({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
-```
-
-```javascript
-// pagination (async/await)
-const page1 = await getJson({ engine: "google", q: "coffee", start: 15 });
-const page2 = await page1.next?.();
-```
-
-```javascript
-// pagination (callback)
-getJson({ engine: "google", q: "coffee", start: 15 }, (page1) => {
-  page1.next?.((page2) => {
-    console.log(page2);
-  });
-});
-```
-
-```javascript
-// pagination loop (async/await)
-const organicResults = [];
-let page = await getJson({ engine: "google", api_key: API_KEY, q: "coffee" });
-while (page) {
-  organicResults.push(...page.organic_results);
-  if (organicResults.length >= 30) break;
-  page = await page.next?.();
-}
-```
-
-```javascript
-// pagination loop (callback)
-const organicResults = [];
-getJson({ engine: "google", api_key: API_KEY, q: "coffee" }, (page) => {
-  organicResults.push(...page.organic_results);
-  if (organicResults.length < 30 && page.next) {
-    page.next();
-  }
-});
 ```
 
 ### getHtml

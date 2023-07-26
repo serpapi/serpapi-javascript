@@ -28,5 +28,6 @@
       "dom.iterable",
       "deno.ns"
     ]
-  }
+  },
+  "lock": false
 }

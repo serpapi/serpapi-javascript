@@ -52,18 +52,6 @@ migrate over to the `serpapi` npm package.
   `getHtml` functions instead.
 - The `SerpApiSearch` class is removed as a public class.
 
-## Fixed
-
-- Setting the `api_key` parameter to `null` works for unmetered queries.
-  ```js
-  // ❌ Previously, error is thrown when api_key is undefined or null.
-  const engine = new GoogleSearch();
-  engine.json({ q: "coffee", api_key: undefined });
-
-  // ✅ Now, no error is thrown when api_key is null
-  getJson({ engine: "google", q: "coffee", api_key: null });
-  ```
-
 ## Added
 
 - TypeScript support.

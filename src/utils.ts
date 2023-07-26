@@ -1,8 +1,6 @@
-import type { EngineParameters } from "./types.ts";
 import { version } from "../version.ts";
 import https from "node:https";
 import qs from "node:querystring";
-import url from "node:url";
 import { RequestTimeoutError } from "./errors.ts";
 
 /**
@@ -20,45 +18,6 @@ export const _internals = {
 /** Facilitates stubbing in tests, e.g. localhost as the base url */
 function getBaseUrl() {
   return "https://serpapi.com";
-}
-
-type NextParameters = {
-  [
-    K in keyof Omit<
-      EngineParameters,
-      "api_key" | "no_cache" | "async" | "timeout"
-    >
-  ]: string;
-};
-export function extractNextParameters(
-  // deno-lint-ignore no-explicit-any
-  json: any,
-) {
-  const nextUrlString = json["serpapi_pagination"]?.["next"] ||
-    json["pagination"]?.["next"];
-
-  if (nextUrlString) {
-    const nextUrl = new url.URL(nextUrlString);
-    const nextParameters: Record<string, string> = {};
-    for (const [k, v] of nextUrl.searchParams.entries()) {
-      nextParameters[k] = v;
-    }
-    return nextParameters as NextParameters;
-  }
-}
-
-export function haveParametersChanged(
-  parameters: Record<string, unknown>,
-  nextParameters: Record<string, unknown>,
-) {
-  const keys = [
-    ...Object.keys(parameters),
-    ...Object.keys(nextParameters),
-  ];
-  const uniqueKeys = new Set(keys);
-  return [...uniqueKeys].some((key) =>
-    `${parameters[key]}` !== `${nextParameters[key]}` // string comparison
-  );
 }
 
 export function getSource() {

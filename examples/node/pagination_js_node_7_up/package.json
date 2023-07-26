@@ -1,9 +1,0 @@
-{
-  "dependencies": {
-    "dotenv": "*",
-    "serpapi": "*"
-  },
-  "scripts": {
-    "start": "node example.js"
-  }
-}
