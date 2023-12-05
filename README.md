@@ -18,7 +18,7 @@ more.
 ### Node.js
 
 - Supports Node.js 7.10.1 and newer.
-- Refer to [this example](examples/node/js_node_7_up) for help.
+- Refer to [this example](https://github.com/serpapi/serpapi-javascript/tree/master/examples/node/js_node_7_up) for help.
 
 ```bash
 npm install serpapi
@@ -40,7 +40,7 @@ getJson({
 
 - If you prefer using the `import` syntax and top-level `await`, you need to use
   at least Node.js 14.8.0.
-- Refer to [this example](examples/node/js_node_14_up) for help.
+- Refer to [this example](https://github.com/serpapi/serpapi-javascript/tree/master/examples/node/js_node_14_up) for help.
 
 You will need to add `"type": "module"` to your `package.json`:
 
@@ -66,7 +66,7 @@ console.log(response);
 
 - Import directly from deno.land.
 - Usage is otherwise the same as above.
-- Refer to [this example](examples/deno) for help.
+- Refer to [this example](https://github.com/serpapi/serpapi-javascript/tree/master/examples/deno) for help.
 
 ```ts
 import { getJson } from "https://deno.land/x/serpapi/mod.ts";
@@ -113,9 +113,9 @@ await getJson({ engine: "google", api_key: API_KEY_2, q: "coffee" }); // API_KEY
 Built-in pagination is not supported. Please refer to our pagination examples
 for a manual approach:
 
-- [Pagination example (Node.js >= 7)](examples/node/js_node_7_up/pagination_example.js)
-- [Pagination example (Node.js >= 14)](examples/node/js_node_14_up/pagination_example.js)
-- [Pagination example (Deno)](examples/deno/pagination_example.ts)
+- [Pagination example (Node.js >= 7)](https://github.com/serpapi/serpapi-javascript/tree/master/examples/node/js_node_7_up/pagination_example.js)
+- [Pagination example (Node.js >= 14)](https://github.com/serpapi/serpapi-javascript/tree/master/examples/node/js_node_14_up/pagination_example.js)
+- [Pagination example (Deno)](https://github.com/serpapi/serpapi-javascript/tree/master/examples/deno/pagination_example.ts)
 
 ## Functions
 
