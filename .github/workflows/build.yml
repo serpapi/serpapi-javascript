@@ -1,6 +1,6 @@
 name: Build
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   build:
@@ -52,6 +52,15 @@ jobs:
     strategy:
       matrix:
         node-version: [7.x, 8.x, 9.x, 10.x, 11.x, 12.x, 13.x, 14.x, 15.x, 16.x, 17.x, 18.x, 19.x]
+        include:
+          - command: test
+          - command: test:use-openssl-ca
+            node-version: 7.x
+          - command: test:use-openssl-ca
+            node-version: 8.x
+          - command: test:use-openssl-ca
+            node-version: 9.x
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -76,7 +85,7 @@ jobs:
         run: |
           cd smoke_tests/commonjs
           npm i
-          npm test
+          npm run ${{ matrix.command }}
 
   smoke-tests-esm:
     name: "Smoke tests (ESM)"
