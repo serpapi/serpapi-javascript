@@ -4,6 +4,7 @@
     "serpapi": "../../npm"
   },
   "scripts": {
-    "test": "node commonjs.js"
+    "test": "node commonjs.js",
+    "test:use-openssl-ca": "node --use-openssl-ca commonjs.js"
   }
 }

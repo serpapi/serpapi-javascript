@@ -63,6 +63,7 @@ export function execute(
   return new Promise((resolve, reject) => {
     let timer: number;
     const req = https.get(url, (resp) => {
+      resp.setEncoding("utf8");
       let data = "";
 
       // A chunk of data has been recieved.
