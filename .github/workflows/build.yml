@@ -5,15 +5,15 @@ on: [push]
 jobs:
   build:
     name: "Deno tests and build npm files"
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
 
       - name: Setup Deno
-        uses: denoland/setup-deno@v1.1.1
+        uses: denoland/setup-deno@v2
         with:
-          deno-version: v1.x
+          deno-version: v2.x
 
       - name: Check formatting
         run: deno fmt --check
@@ -27,9 +27,9 @@ jobs:
         run: deno task test:ci
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18.x'  # Build files using a fixed node version
+          node-version: '22.x'  # Build files using a fixed node version
           registry-url: 'https://registry.npmjs.org'
 
       - name: Build npm files
@@ -39,7 +39,7 @@ jobs:
         run: zip npm.zip ./npm -r
 
       - name: Upload build files for smoke tests
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: npm
           path: npm.zip
@@ -48,7 +48,7 @@ jobs:
   smoke-tests-commonjs:
     name: "Smoke tests (CommonJS)"
     needs: build
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [7.x, 8.x, 9.x, 10.x, 11.x, 12.x, 13.x, 14.x, 15.x, 16.x, 17.x, 18.x, 19.x]
@@ -63,16 +63,16 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           registry-url: 'https://registry.npmjs.org'
 
       - name: Download build files
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: npm
 
@@ -90,22 +90,22 @@ jobs:
   smoke-tests-esm:
     name: "Smoke tests (ESM)"
     needs: build
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [14.x, 15.x, 16.x, 17.x, 18.x, 19.x]
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           registry-url: 'https://registry.npmjs.org'
 
       - name: Download build files
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: npm
 
