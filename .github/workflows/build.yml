@@ -29,8 +29,8 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '22.x'  # Build files using a fixed node version
-          registry-url: 'https://registry.npmjs.org'
+          node-version: "22.x" # Build files using a fixed node version
+          registry-url: "https://registry.npmjs.org"
 
       - name: Build npm files
         run: deno task npm
@@ -51,7 +51,21 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [7.x, 8.x, 9.x, 10.x, 11.x, 12.x, 13.x, 14.x, 15.x, 16.x, 17.x, 18.x, 19.x]
+        node-version: [
+          7.x,
+          8.x,
+          9.x,
+          10.x,
+          11.x,
+          12.x,
+          13.x,
+          14.x,
+          15.x,
+          16.x,
+          17.x,
+          18.x,
+          19.x,
+        ]
         include:
           - command: test
           - command: test:use-openssl-ca
@@ -69,7 +83,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          registry-url: 'https://registry.npmjs.org'
+          registry-url: "https://registry.npmjs.org"
 
       - name: Download build files
         uses: actions/download-artifact@v4
@@ -102,7 +116,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          registry-url: 'https://registry.npmjs.org'
+          registry-url: "https://registry.npmjs.org"
 
       - name: Download build files
         uses: actions/download-artifact@v4
