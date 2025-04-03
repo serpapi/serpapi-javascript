@@ -8,9 +8,7 @@
     "npm": "deno run -A scripts/build_npm.ts"
   },
   "fmt": {
-    "files": {
-      "exclude": ["npm/", "examples/node", "smoke_tests/"]
-    }
+    "exclude": ["npm/", "examples/node", "smoke_tests/"]
   },
   "lint": {
     "files": {
