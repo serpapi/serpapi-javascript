@@ -1,7 +1,11 @@
 import { version } from "../version.ts";
 import https from "node:https";
+import http from "node:http";
 import qs from "node:querystring";
+import { HttpsProxyAgent } from "npm:https-proxy-agent";
 import { RequestTimeoutError } from "./errors.ts";
+import { config } from "./config.ts";
+import { Buffer } from "node:buffer";
 
 /**
  * This `_internals` object is needed to support stubbing/spying of
@@ -60,18 +64,30 @@ export function execute(
     ...parameters,
     source: getSource(),
   });
+
+  // Check if we should use a proxy
+  const urlObj = new URL(url);
+  const shouldUseProxy = !config.no_proxy?.split(",").some((domain) =>
+    urlObj.hostname.endsWith(domain.trim())
+  );
+
+  const proxyUrl = shouldUseProxy
+    ? (urlObj.protocol === "https:" ? config.https_proxy : config.http_proxy)
+    : undefined;
+
   return new Promise((resolve, reject) => {
     let timer: number;
-    const req = https.get(url, (resp) => {
+
+    const handleResponse = (resp: http.IncomingMessage) => {
       resp.setEncoding("utf8");
       let data = "";
 
-      // A chunk of data has been recieved.
-      resp.on("data", (chunk) => {
+      // A chunk of data has been received
+      resp.on("data", (chunk: Buffer) => {
         data += chunk;
       });
 
-      // The whole response has been received. Print out the result.
+      // The whole response has been received
       resp.on("end", () => {
         try {
           if (resp.statusCode == 200) {
@@ -85,10 +101,25 @@ export function execute(
           if (timer) clearTimeout(timer);
         }
       });
-    }).on("error", (err) => {
+    };
+
+    const handleError = (err: Error) => {
       reject(err);
       if (timer) clearTimeout(timer);
-    });
+    };
+
+    const options: https.RequestOptions = {
+      timeout: timeout > 0 ? timeout : undefined,
+    };
+
+    if (proxyUrl) {
+      options.agent = new HttpsProxyAgent(proxyUrl);
+    }
+
+    const req = https.get(url, options, handleResponse).on(
+      "error",
+      handleError,
+    );
 
     if (timeout > 0) {
       timer = setTimeout(() => {
