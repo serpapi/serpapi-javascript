@@ -1,3 +1,5 @@
+import process from "node:process";
+
 export type Config = {
   api_key: string | null;
   timeout: number;
@@ -9,9 +11,7 @@ export type Config = {
 function getEnvVar(name: string): string | undefined {
   if (typeof Deno !== "undefined") {
     return Deno.env.get(name);
-    // @ts-ignore: Node.js process
   } else if (typeof process !== "undefined") {
-    // @ts-ignore: Node.js process
     return process.env[name];
   }
   return undefined;

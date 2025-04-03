@@ -6,6 +6,7 @@ import { HttpsProxyAgent } from "npm:https-proxy-agent";
 import { RequestTimeoutError } from "./errors.ts";
 import { config } from "./config.ts";
 import { Buffer } from "node:buffer";
+import process from "node:process";
 
 /**
  * This `_internals` object is needed to support stubbing/spying of
@@ -31,9 +32,7 @@ export function getSource() {
     if (denoVersion) {
       return `deno@${denoVersion},${moduleSource}`;
     }
-    // @ts-ignore: scope of nodejs
   } else if (typeof process == "object") {
-    // @ts-ignore: scope of nodejs
     const nodeVersion = process.versions?.node;
     if (nodeVersion) {
       return `nodejs@${nodeVersion},${moduleSource}`;
