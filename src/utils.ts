@@ -16,12 +16,15 @@ import process from "node:process";
  */
 export const _internals = {
   execute: execute,
-  getBaseUrl: getBaseUrl,
+  getHostnameAndPort: getHostnameAndPort,
 };
 
 /** Facilitates stubbing in tests, e.g. localhost as the base url */
-function getBaseUrl() {
-  return "https://serpapi.com";
+function getHostnameAndPort() {
+  return {
+    hostname: "serpapi.com",
+    port: 443,
+  };
 }
 
 export function getSource() {
@@ -40,17 +43,27 @@ export function getSource() {
   return `nodejs,${moduleSource}`;
 }
 
-export function buildUrl(
+export function buildRequestOptions(
   path: string,
   parameters: qs.ParsedUrlQueryInput,
-): string {
+): http.RequestOptions {
   const clonedParams = { ...parameters };
   for (const k in clonedParams) {
     if (clonedParams[k] === undefined) {
       delete clonedParams[k];
     }
   }
-  return `${_internals.getBaseUrl()}${path}?${qs.stringify(clonedParams)}`;
+  const base = {
+    ..._internals.getHostnameAndPort(),
+    path: `${path}?${qs.stringify(clonedParams)}`,
+    method: "GET",
+  };
+
+  return {
+    ...base,
+    ...(parameters.requestOptions as http.RequestOptions),
+    ...config.requestOptions,
+  };
 }
 
 export function execute(
@@ -58,7 +71,7 @@ export function execute(
   parameters: qs.ParsedUrlQueryInput,
   timeout: number,
 ): Promise<string> {
-  const url = buildUrl(path, {
+  const options = buildRequestOptions(path, {
     ...parameters,
     source: getSource(),
   });
@@ -96,13 +109,7 @@ export function execute(
       if (timer) clearTimeout(timer);
     };
 
-    const options = (parameters.requestOptions as http.RequestOptions) ||
-      config.requestOptions ||
-      {};
-
-    const req = https
-      .get(url, options, handleResponse)
-      .on("error", handleError);
+    const req = https.get(options, handleResponse).on("error", handleError);
 
     if (timeout > 0) {
       timer = setTimeout(() => {
