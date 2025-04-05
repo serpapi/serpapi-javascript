@@ -2,7 +2,6 @@ import { version } from "../version.ts";
 import https from "node:https";
 import http from "node:http";
 import qs from "node:querystring";
-import { HttpsProxyAgent } from "npm:https-proxy-agent";
 import { RequestTimeoutError } from "./errors.ts";
 import { config } from "./config.ts";
 import { Buffer } from "node:buffer";
@@ -64,16 +63,6 @@ export function execute(
     source: getSource(),
   });
 
-  // Check if we should use a proxy
-  const urlObj = new URL(url);
-  const shouldUseProxy = !config.no_proxy?.split(",").some((domain) =>
-    urlObj.hostname.endsWith(domain.trim())
-  );
-
-  const proxyUrl = shouldUseProxy
-    ? (urlObj.protocol === "https:" ? config.https_proxy : config.http_proxy)
-    : undefined;
-
   return new Promise((resolve, reject) => {
     let timer: number;
 
@@ -107,18 +96,13 @@ export function execute(
       if (timer) clearTimeout(timer);
     };
 
-    const options: https.RequestOptions = {
-      timeout: timeout > 0 ? timeout : undefined,
-    };
+    const options = (parameters.requestOptions as http.RequestOptions) ||
+      config.requestOptions ||
+      {};
 
-    if (proxyUrl) {
-      options.agent = new HttpsProxyAgent(proxyUrl);
-    }
-
-    const req = https.get(url, options, handleResponse).on(
-      "error",
-      handleError,
-    );
+    const req = https
+      .get(url, options, handleResponse)
+      .on("error", handleError);
 
     if (timeout > 0) {
       timer = setTimeout(() => {
