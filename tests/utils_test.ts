@@ -177,7 +177,7 @@ describe("buildRequestOptions", () => {
           "User-Agent": "Parameter User Agent",
           "X-Custom-Header": "param-value",
         },
-        hostname: "localhost",
+        agent: true,
       };
 
       config.requestOptions = configOptions;
@@ -191,9 +191,24 @@ describe("buildRequestOptions", () => {
 
       assertEquals(options.headers?.["User-Agent"], "Parameter User Agent");
       assertEquals(options.headers?.["X-Custom-Header"], "param-value");
-      assertEquals(options.hostname, "localhost");
+      assertEquals(options.agent, true);
       assertEquals(options.timeout, 5000);
       assertEquals(options.path, "/search?q=coffee");
+    });
+
+    it("basic options are not allowed to be changed", async () => {
+      config.requestOptions = {
+        hostname: "localhost",
+        port: 3000,
+        path: "/test",
+        method: "POST",
+      };
+
+      const options = await buildRequestOptions("/search", { q: "coffee" });
+      assertEquals(options.hostname, "serpapi.com");
+      assertEquals(options.port, 443);
+      assertEquals(options.path, "/search?q=coffee");
+      assertEquals(options.method, "GET");
     });
   });
 });

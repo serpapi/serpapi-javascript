@@ -57,16 +57,16 @@ export function buildRequestOptions(
       delete clonedParams[k];
     }
   }
-  const base = {
+  const basicOptions = {
     ..._internals.getHostnameAndPort(),
     path: `${path}?${qs.stringify(clonedParams)}`,
     method: "GET",
   };
 
   return {
-    ...base,
     ...config.requestOptions,
     ...(parameters.requestOptions as http.RequestOptions),
+    ...basicOptions,
   };
 }
 
