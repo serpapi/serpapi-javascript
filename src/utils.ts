@@ -4,7 +4,6 @@ import http from "node:http";
 import qs from "node:querystring";
 import { RequestTimeoutError } from "./errors.ts";
 import { config } from "./config.ts";
-import { Buffer } from "node:buffer";
 import process from "node:process";
 
 /**
@@ -88,7 +87,7 @@ export function execute(
       let data = "";
 
       // A chunk of data has been received
-      resp.on("data", (chunk: Buffer) => {
+      resp.on("data", (chunk) => {
         data += chunk;
       });
 
