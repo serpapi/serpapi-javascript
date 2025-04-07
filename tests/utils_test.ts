@@ -18,6 +18,9 @@ import {
   getSource,
 } from "../src/utils.ts";
 import { RequestTimeoutError } from "../src/errors.ts";
+import { Config, config } from "../src/config.ts";
+import http from "node:http";
+import qs from "node:querystring";
 
 loadSync({ export: true });
 const BASE_OPTIONS = Deno.env.get("ENV_TYPE") === "local"
@@ -100,6 +103,98 @@ describe("buildRequestOptions", () => {
         path: "/search?q=coffee&hl=",
       },
     );
+  });
+
+  describe("with requestOptions", () => {
+    let originalConfig: Config;
+
+    beforeAll(() => {
+      originalConfig = { ...config };
+    });
+
+    afterAll(() => {
+      Object.assign(config, originalConfig);
+    });
+
+    it("uses default options when no custom options provided", async () => {
+      const options = await buildRequestOptions("/search", { q: "coffee" });
+      assertEquals(options.method, "GET");
+      assertEquals(options.path, "/search?q=coffee");
+    });
+
+    it("uses custom request options from parameters", async () => {
+      const customOptions: http.RequestOptions = {
+        headers: {
+          "User-Agent": "Custom User Agent",
+          "X-Custom-Header": "param-value",
+        },
+        timeout: 5000,
+      };
+
+      const params = {
+        q: "coffee",
+        requestOptions: customOptions,
+      } as unknown as qs.ParsedUrlQueryInput;
+
+      const options = await buildRequestOptions("/search", params);
+
+      assertEquals(options.headers?.["User-Agent"], "Custom User Agent");
+      assertEquals(options.headers?.["X-Custom-Header"], "param-value");
+      assertEquals(options.timeout, 5000);
+      assertEquals(options.path, "/search?q=coffee");
+    });
+
+    it("uses request options from config when no options in parameters", async () => {
+      const configOptions: http.RequestOptions = {
+        headers: {
+          "User-Agent": "Config User Agent",
+          "X-Custom-Header": "config-value",
+        },
+        timeout: 5000,
+      };
+
+      config.requestOptions = configOptions;
+
+      const options = await buildRequestOptions("/search", { q: "coffee" });
+
+      assertEquals(options.headers?.["User-Agent"], "Config User Agent");
+      assertEquals(options.headers?.["X-Custom-Header"], "config-value");
+      assertEquals(options.timeout, 5000);
+      assertEquals(options.path, "/search?q=coffee");
+    });
+
+    it("parameters requestOptions merges over config options", async () => {
+      const configOptions: http.RequestOptions = {
+        headers: {
+          "User-Agent": "Config User Agent",
+          "X-Custom-Header": "config-value",
+        },
+        timeout: 5000,
+      };
+
+      const paramOptions: http.RequestOptions = {
+        headers: {
+          "User-Agent": "Parameter User Agent",
+          "X-Custom-Header": "param-value",
+        },
+        hostname: "localhost",
+      };
+
+      config.requestOptions = configOptions;
+
+      const params = {
+        q: "coffee",
+        requestOptions: paramOptions,
+      } as unknown as qs.ParsedUrlQueryInput;
+
+      const options = await buildRequestOptions("/search", params);
+
+      assertEquals(options.headers?.["User-Agent"], "Parameter User Agent");
+      assertEquals(options.headers?.["X-Custom-Header"], "param-value");
+      assertEquals(options.hostname, "localhost");
+      assertEquals(options.timeout, 5000);
+      assertEquals(options.path, "/search?q=coffee");
+    });
   });
 });
 

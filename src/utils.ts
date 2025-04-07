@@ -49,7 +49,11 @@ export function buildRequestOptions(
 ): http.RequestOptions {
   const clonedParams = { ...parameters };
   for (const k in clonedParams) {
-    if (clonedParams[k] === undefined) {
+    if (
+      k === "requestOptions" ||
+      k === "timeout" ||
+      clonedParams[k] === undefined
+    ) {
       delete clonedParams[k];
     }
   }
@@ -61,8 +65,8 @@ export function buildRequestOptions(
 
   return {
     ...base,
-    ...(parameters.requestOptions as http.RequestOptions),
     ...config.requestOptions,
+    ...(parameters.requestOptions as http.RequestOptions),
   };
 }
 
