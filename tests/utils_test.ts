@@ -133,8 +133,10 @@ describe("buildRequestOptions", () => {
 
       const options = await buildRequestOptions("/search", params);
 
-      assertEquals(options.headers?.["User-Agent"], "Custom User Agent");
-      assertEquals(options.headers?.["X-Custom-Header"], "param-value");
+      const headers = options.headers as Record<string, string> | undefined;
+
+      assertEquals(headers?.["User-Agent"], "Custom User Agent");
+      assertEquals(headers?.["X-Custom-Header"], "param-value");
       assertEquals(options.timeout, 5000);
       assertEquals(options.path, "/search?q=coffee");
     });
@@ -152,8 +154,10 @@ describe("buildRequestOptions", () => {
 
       const options = await buildRequestOptions("/search", { q: "coffee" });
 
-      assertEquals(options.headers?.["User-Agent"], "Config User Agent");
-      assertEquals(options.headers?.["X-Custom-Header"], "config-value");
+      const headers = options.headers as Record<string, string> | undefined;
+
+      assertEquals(headers?.["User-Agent"], "Config User Agent");
+      assertEquals(headers?.["X-Custom-Header"], "config-value");
       assertEquals(options.timeout, 5000);
       assertEquals(options.path, "/search?q=coffee");
     });
@@ -184,8 +188,10 @@ describe("buildRequestOptions", () => {
 
       const options = await buildRequestOptions("/search", params);
 
-      assertEquals(options.headers?.["User-Agent"], "Parameter User Agent");
-      assertEquals(options.headers?.["X-Custom-Header"], "param-value");
+      const headers = options.headers as Record<string, string> | undefined;
+
+      assertEquals(headers?.["User-Agent"], "Parameter User Agent");
+      assertEquals(headers?.["X-Custom-Header"], "param-value");
       assertEquals(options.agent, true);
       assertEquals(options.timeout, 5000);
       assertEquals(options.path, "/search?q=coffee");
