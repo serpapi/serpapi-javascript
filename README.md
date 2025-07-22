@@ -24,6 +24,8 @@ more.
 
 ```bash
 npm install serpapi
+# or if you prefer yarn
+yarn add serpapi
 ```
 
 ```js
@@ -124,6 +126,8 @@ First, install the required package:
 
 ```bash
 npm install https-proxy-agent
+# or if you prefer yarn
+yarn add https-proxy-agent
 ```
 
 Then use it in your code:
