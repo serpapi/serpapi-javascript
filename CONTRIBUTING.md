@@ -66,8 +66,8 @@ and you're good to go.
 
 ### Tests that require an API key
 
-- When testing functionality that requires an API key, you need to ensure your API
-  key is specified as an environment variable.
+- When testing functionality that requires an API key, you need to ensure your
+  API key is specified as an environment variable.
 - Create a `.env` file with the following contents, replacing `YOUR_API_KEY`
   with your API key for the appropriate environment.
 
