@@ -18,7 +18,7 @@ export const _internals = {
   getHostnameAndPort: getHostnameAndPort,
 };
 
-/** Facilitates stubbing in tests, e.g. localhost as the base url */
+/** Facilitates stubbing in tests */
 function getHostnameAndPort() {
   return {
     hostname: "serpapi.com",

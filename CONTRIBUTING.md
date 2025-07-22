@@ -66,8 +66,7 @@ and you're good to go.
 
 ### Tests that require an API key
 
-- When testing functionality that hits either `localhost` or
-  `https://serpapi.com`, and requires an API key, you need to ensure your API
+- When testing functionality that requires an API key, you need to ensure your API
   key is specified as an environment variable.
 - Create a `.env` file with the following contents, replacing `YOUR_API_KEY`
   with your API key for the appropriate environment.
@@ -91,10 +90,9 @@ it("getJson with api key from config", {
 ## Run tests
 
 ```bash
-deno task test         # Run tests that hit "localhost"
-deno task test:watch   # Run tests that hit "localhost" and in watch mode: https://deno.land/manual/getting_started/command_line_interface#watch-mode
-deno task test:cov     # Get test coverage by running tests that hit "localhost"
-deno task test:ci      # Run tests that hit "https://serpapi.com"
+deno task test         # Run tests
+deno task test:watch   # Run tests and in watch mode: https://deno.land/manual/getting_started/command_line_interface#watch-mode
+deno task test:cov     # Get test coverage by running tests
 ```
 
 ## Run examples on local source files

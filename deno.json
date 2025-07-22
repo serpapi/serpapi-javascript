@@ -1,10 +1,9 @@
 {
   "tasks": {
     "docs:gen": "npx documentation readme src/serpapi.ts --section=Functions --shallow && deno fmt",
-    "test": "ENV_TYPE=local deno test tests/ --allow-env --allow-read --allow-net --fail-fast",
+    "test": "deno test tests/ --allow-env --allow-read --allow-net",
     "test:watch": "deno task test --watch",
     "test:cov": "rm -rf cov_profile && deno task test --coverage=cov_profile && deno coverage cov_profile",
-    "test:ci": "deno test tests/ --allow-env --allow-read --allow-net",
     "npm": "deno run -A scripts/build_npm.ts"
   },
   "fmt": {

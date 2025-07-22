@@ -24,7 +24,7 @@ jobs:
       - name: Run tests
         env:
           SERPAPI_TEST_KEY: ${{ secrets.SERPAPI_TEST_KEY }}
-        run: deno task test:ci
+        run: deno task test
 
       - name: Setup Node
         uses: actions/setup-node@v4

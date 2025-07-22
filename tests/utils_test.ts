@@ -23,15 +23,10 @@ import http from "node:http";
 import qs from "node:querystring";
 
 loadSync({ export: true });
-const BASE_OPTIONS = Deno.env.get("ENV_TYPE") === "local"
-  ? {
-    hostname: "localhost",
-    port: 3000,
-  }
-  : {
-    hostname: "serpapi.com",
-    port: 443,
-  };
+const BASE_OPTIONS = {
+  hostname: "serpapi.com",
+  port: 443,
+};
 
 describe("getSource", () => {
   it("use runtime version", async () => {
