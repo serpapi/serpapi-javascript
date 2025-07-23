@@ -1,3 +1,5 @@
+import http from "node:http";
+import qs from "node:querystring";
 import { loadSync } from "https://deno.land/std@0.170.0/dotenv/mod.ts";
 import {
   afterAll,
@@ -19,8 +21,6 @@ import {
 } from "../src/utils.ts";
 import { RequestTimeoutError } from "../src/errors.ts";
 import { Config, config } from "../src/config.ts";
-import http from "node:http";
-import qs from "node:querystring";
 
 loadSync({ export: true });
 const BASE_OPTIONS = {

@@ -2,9 +2,9 @@ import { version } from "../version.ts";
 import https from "node:https";
 import http from "node:http";
 import qs from "node:querystring";
+import process from "node:process";
 import { RequestTimeoutError } from "./errors.ts";
 import { config } from "./config.ts";
-import process from "node:process";
 
 /**
  * This `_internals` object is needed to support stubbing/spying of
