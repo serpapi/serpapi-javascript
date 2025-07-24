@@ -3,6 +3,7 @@
  */
 
 const Dotenv = require("dotenv");
+const process = require("process");
 const { config, getJson } = require("serpapi");
 
 Dotenv.config();

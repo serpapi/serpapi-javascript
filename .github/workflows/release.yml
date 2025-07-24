@@ -5,19 +5,19 @@ on:
     branches:
       - master
     paths:
-      - 'version.ts'
+      - "version.ts"
 
 jobs:
   release:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Deno
-        uses: denoland/setup-deno@v1.1.1
+        uses: denoland/setup-deno@v2
         with:
-          deno-version: v1.x
+          deno-version: v2.x
 
       - name: Check formatting
         run: deno fmt --check
@@ -28,13 +28,13 @@ jobs:
       - name: Run tests
         env:
           SERPAPI_TEST_KEY: ${{ secrets.SERPAPI_TEST_KEY }}
-        run: deno task test:ci
+        run: deno task test
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18.x'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: "22.x"
+          registry-url: "https://registry.npmjs.org"
 
       - name: Build npm files
         run: deno task npm

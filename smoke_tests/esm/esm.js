@@ -7,6 +7,7 @@
  */
 
 import Dotenv from "dotenv";
+import process from "process";
 import {
   config,
   getAccount,

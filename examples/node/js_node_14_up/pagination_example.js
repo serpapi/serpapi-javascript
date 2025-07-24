@@ -7,6 +7,7 @@
  */
 
 import * as Dotenv from "dotenv";
+import process from "process";
 import { config, getJson } from "serpapi";
 
 Dotenv.config();

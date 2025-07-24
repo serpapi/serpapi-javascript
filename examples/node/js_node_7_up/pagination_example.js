@@ -6,6 +6,7 @@ const Dotenv = require("dotenv");
 const { config, getJson } = require("serpapi");
 const url = require("url");
 const qs = require("querystring");
+const process = require("process");
 
 Dotenv.config();
 config.api_key = process.env.API_KEY;

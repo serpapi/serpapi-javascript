@@ -24,6 +24,8 @@ more.
 
 ```bash
 npm install serpapi
+# or if you prefer yarn
+yarn add serpapi
 ```
 
 ```js
@@ -112,6 +114,41 @@ config.timeout = 60000;
 
 await getJson({ engine: "google", q: "coffee" }); // uses the API key defined in the config
 await getJson({ engine: "google", api_key: API_KEY_2, q: "coffee" }); // API_KEY_2 will be used
+```
+
+### Using a Proxy
+
+You can use a proxy by passing `requestOptions` with an `HttpsProxyAgent`
+instance. This can be done either globally through the config object or
+per-request in the parameters.
+
+First, install the required package:
+
+```bash
+npm install https-proxy-agent
+# or if you prefer yarn
+yarn add https-proxy-agent
+```
+
+Then use it in your code:
+
+```js
+import { config, getJson } from "serpapi";
+import { HttpsProxyAgent } from "https-proxy-agent";
+
+// Global configuration
+config.requestOptions = {
+  agent: new HttpsProxyAgent("http://proxy-server:port"),
+};
+
+// Or per-request configuration
+await getJson({
+  engine: "google",
+  q: "coffee",
+  requestOptions: {
+    agent: new HttpsProxyAgent("http://proxy-server:port"),
+  },
+});
 ```
 
 ## Pagination

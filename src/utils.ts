@@ -1,7 +1,10 @@
 import { version } from "../version.ts";
 import https from "node:https";
+import http from "node:http";
 import qs from "node:querystring";
+import process from "node:process";
 import { RequestTimeoutError } from "./errors.ts";
+import { config } from "./config.ts";
 
 /**
  * This `_internals` object is needed to support stubbing/spying of
@@ -12,12 +15,15 @@ import { RequestTimeoutError } from "./errors.ts";
  */
 export const _internals = {
   execute: execute,
-  getBaseUrl: getBaseUrl,
+  getHostnameAndPort: getHostnameAndPort,
 };
 
-/** Facilitates stubbing in tests, e.g. localhost as the base url */
-function getBaseUrl() {
-  return "https://serpapi.com";
+/** Facilitates stubbing in tests */
+function getHostnameAndPort() {
+  return {
+    hostname: "serpapi.com",
+    port: 443,
+  };
 }
 
 export function getSource() {
@@ -27,9 +33,7 @@ export function getSource() {
     if (denoVersion) {
       return `deno@${denoVersion},${moduleSource}`;
     }
-    // @ts-ignore: scope of nodejs
   } else if (typeof process == "object") {
-    // @ts-ignore: scope of nodejs
     const nodeVersion = process.versions?.node;
     if (nodeVersion) {
       return `nodejs@${nodeVersion},${moduleSource}`;
@@ -38,17 +42,31 @@ export function getSource() {
   return `nodejs,${moduleSource}`;
 }
 
-export function buildUrl(
+export function buildRequestOptions(
   path: string,
   parameters: qs.ParsedUrlQueryInput,
-): string {
+): http.RequestOptions {
   const clonedParams = { ...parameters };
   for (const k in clonedParams) {
-    if (clonedParams[k] === undefined) {
+    if (
+      k === "requestOptions" ||
+      k === "timeout" ||
+      clonedParams[k] === undefined
+    ) {
       delete clonedParams[k];
     }
   }
-  return `${_internals.getBaseUrl()}${path}?${qs.stringify(clonedParams)}`;
+  const basicOptions = {
+    ..._internals.getHostnameAndPort(),
+    path: `${path}?${qs.stringify(clonedParams)}`,
+    method: "GET",
+  };
+
+  return {
+    ...config.requestOptions,
+    ...(parameters.requestOptions as http.RequestOptions),
+    ...basicOptions,
+  };
 }
 
 export function execute(
@@ -56,22 +74,24 @@ export function execute(
   parameters: qs.ParsedUrlQueryInput,
   timeout: number,
 ): Promise<string> {
-  const url = buildUrl(path, {
+  const options = buildRequestOptions(path, {
     ...parameters,
     source: getSource(),
   });
+
   return new Promise((resolve, reject) => {
     let timer: number;
-    const req = https.get(url, (resp) => {
+
+    const handleResponse = (resp: http.IncomingMessage) => {
       resp.setEncoding("utf8");
       let data = "";
 
-      // A chunk of data has been recieved.
+      // A chunk of data has been received
       resp.on("data", (chunk) => {
         data += chunk;
       });
 
-      // The whole response has been received. Print out the result.
+      // The whole response has been received
       resp.on("end", () => {
         try {
           if (resp.statusCode == 200) {
@@ -85,10 +105,14 @@ export function execute(
           if (timer) clearTimeout(timer);
         }
       });
-    }).on("error", (err) => {
+    };
+
+    const handleError = (err: Error) => {
       reject(err);
       if (timer) clearTimeout(timer);
-    });
+    };
+
+    const req = https.get(options, handleResponse).on("error", handleError);
 
     if (timeout > 0) {
       timer = setTimeout(() => {
