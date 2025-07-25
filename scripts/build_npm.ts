@@ -75,3 +75,13 @@ await build({
 
 Deno.copyFileSync("LICENSE", "npm/LICENSE");
 Deno.copyFileSync("README.md", "npm/README.md");
+
+// Fix wrong .npmignore file
+Deno.writeFileSync(
+  "npm/.npmignore",
+  new TextEncoder().encode(
+    new TextDecoder()
+      .decode(Deno.readFileSync("npm/.npmignore"))
+      .replace("src/", "/src/"),
+  ),
+);
