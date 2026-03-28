@@ -12,7 +12,15 @@ export type {
   BaseResponse,
   EngineParameters,
   GetBySearchIdParameters,
+  GoogleSearchParameters,
+  GoogleSearchResponse,
+  KnowledgeGraph,
   LocationsApiParameters,
+  OrganicResult,
+  RelatedQuestion,
+  SearchInformation,
+  SearchMetadata,
+  SearchParameters,
 } from "./src/types.ts";
 export {
   getAccount,

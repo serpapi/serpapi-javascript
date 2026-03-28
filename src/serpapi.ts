@@ -4,6 +4,8 @@ import {
   BaseResponse,
   EngineParameters,
   GetBySearchIdParameters,
+  GoogleSearchParameters,
+  GoogleSearchResponse,
   LocationsApiParameters,
 } from "./types.ts";
 import { _internals } from "./utils.ts";
@@ -13,6 +15,14 @@ const ACCOUNT_PATH = "/account";
 const LOCATIONS_PATH = "/locations.json";
 const SEARCH_PATH = "/search";
 const SEARCH_ARCHIVE_PATH = `/searches`;
+
+/**
+ * Get typed JSON response for Google Search.
+ */
+export function getJson(
+  parameters: GoogleSearchParameters,
+  callback?: (json: GoogleSearchResponse) => void,
+): Promise<GoogleSearchResponse>;
 
 /**
  * Get JSON response based on search parameters.
@@ -52,13 +62,15 @@ export function getJson(
 
 export function getJson(
   ...args:
-    | [parameters: EngineParameters, callback?: (json: BaseResponse) => void]
+    // deno-lint-ignore no-explicit-any
+    | [parameters: EngineParameters, callback?: (json: any) => void]
     | [
       engine: string,
       parameters: EngineParameters,
-      callback?: (json: BaseResponse) => void,
+      // deno-lint-ignore no-explicit-any
+      callback?: (json: any) => void,
     ]
-): Promise<BaseResponse> {
+): Promise<BaseResponse | GoogleSearchResponse> {
   if (typeof args[0] === "string" && typeof args[1] === "object") {
     const [engine, parameters, callback] = args;
     const newParameters = { ...parameters, engine } as EngineParameters;
