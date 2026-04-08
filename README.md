@@ -118,9 +118,13 @@ await getJson({ engine: "google", api_key: API_KEY_2, q: "coffee" }); // API_KEY
 
 ### Using a Proxy
 
-You can use a proxy by passing `requestOptions` with an `HttpsProxyAgent`
-instance. This can be done either globally through the config object or
-per-request in the parameters.
+> **Note:** SerpApi handles proxies on its end — you do **not** need to supply
+> your own proxy to avoid blocks or CAPTCHAs. This option is only for users who
+> need to route all outbound requests through a corporate or network proxy.
+
+You can route requests through your own proxy by passing `requestOptions` with
+an `HttpsProxyAgent` instance. This can be done either globally through the
+config object or per-request in the parameters.
 
 First, install the required package:
 
