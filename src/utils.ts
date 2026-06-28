@@ -44,7 +44,7 @@ export function getSource() {
 
 export function buildRequestOptions(
   path: string,
-  parameters: qs.ParsedUrlQueryInput,
+  parameters: Record<string, unknown>,
 ): http.RequestOptions {
   const clonedParams = { ...parameters };
   for (const k in clonedParams) {
@@ -58,7 +58,7 @@ export function buildRequestOptions(
   }
   const basicOptions = {
     ..._internals.getHostnameAndPort(),
-    path: `${path}?${qs.stringify(clonedParams)}`,
+    path: `${path}?${qs.stringify(clonedParams as qs.ParsedUrlQueryInput)}`,
     method: "GET",
   };
 
@@ -71,7 +71,7 @@ export function buildRequestOptions(
 
 export function execute(
   path: string,
-  parameters: qs.ParsedUrlQueryInput,
+  parameters: Record<string, unknown>,
   timeout: number,
 ): Promise<string> {
   const options = buildRequestOptions(path, {

@@ -10,6 +10,8 @@ and this project adheres to
 
 ### Added
 
+- Add basic TypeScript coverage for engine names and core search parameters.
+- Expose `EngineName` type.
 - Expose `EngineParameters` type.
 - Expose `InvalidArgumentError` error.
 

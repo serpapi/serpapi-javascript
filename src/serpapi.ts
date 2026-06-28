@@ -2,6 +2,7 @@ import { InvalidArgumentError } from "./errors.ts";
 import {
   AccountApiParameters,
   BaseResponse,
+  EngineName,
   EngineParameters,
   GetBySearchIdParameters,
   LocationsApiParameters,
@@ -45,8 +46,8 @@ export function getJson(
  * getJson("google", { api_key: API_KEY, q: "coffee" }, console.log);
  */
 export function getJson(
-  engine: string,
-  parameters: EngineParameters,
+  engine: EngineName,
+  parameters: EngineParameters<false>,
   callback?: (json: BaseResponse) => void,
 ): Promise<BaseResponse>;
 
@@ -54,14 +55,14 @@ export function getJson(
   ...args:
     | [parameters: EngineParameters, callback?: (json: BaseResponse) => void]
     | [
-      engine: string,
-      parameters: EngineParameters,
+      engine: EngineName,
+      parameters: EngineParameters<false>,
       callback?: (json: BaseResponse) => void,
     ]
 ): Promise<BaseResponse> {
   if (typeof args[0] === "string" && typeof args[1] === "object") {
     const [engine, parameters, callback] = args;
-    const newParameters = { ...parameters, engine } as EngineParameters;
+    const newParameters = { ...parameters, engine };
     return _getJson(newParameters, callback);
   } else if (
     typeof args[0] === "object" &&
@@ -126,8 +127,8 @@ export function getHtml(
  * getHtml({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
  */
 export function getHtml(
-  engine: string,
-  parameters: EngineParameters,
+  engine: EngineName,
+  parameters: EngineParameters<false>,
   callback?: (html: string) => void,
 ): Promise<string>;
 
@@ -135,14 +136,14 @@ export function getHtml(
   ...args:
     | [parameters: EngineParameters, callback?: (html: string) => void]
     | [
-      engine: string,
-      parameters: EngineParameters,
+      engine: EngineName,
+      parameters: EngineParameters<false>,
       callback?: (html: string) => void,
     ]
 ): Promise<string> {
   if (typeof args[0] === "string" && typeof args[1] === "object") {
     const [engine, parameters, callback] = args;
-    const newParameters = { ...parameters, engine } as EngineParameters;
+    const newParameters = { ...parameters, engine };
     return _getHtml(newParameters, callback);
   } else if (
     typeof args[0] === "object" &&
