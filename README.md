@@ -199,6 +199,7 @@ Get a JSON response based on search parameters.
   **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**
   search query parameters for the engine
 - `callback` **fn?** optional callback
+- `errorCallback` **fn?** optional callback invoked when the request fails
 
 #### Examples
 
@@ -206,8 +207,12 @@ Get a JSON response based on search parameters.
 // single call (async/await)
 const json = await getJson({ engine: "google", api_key: API_KEY, q: "coffee" });
 
-// single call (callback)
-getJson({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
+// single call (callback with error handling)
+getJson(
+  { engine: "google", api_key: API_KEY, q: "coffee" },
+  console.log,
+  console.error,
+);
 ```
 
 ### getHtml
@@ -223,6 +228,7 @@ Get a HTML response based on search parameters.
   **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**
   search query parameters for the engine
 - `callback` **fn?** optional callback
+- `errorCallback` **fn?** optional callback invoked when the request fails
 
 #### Examples
 
@@ -230,8 +236,12 @@ Get a HTML response based on search parameters.
 // async/await
 const html = await getHtml({ engine: "google", api_key: API_KEY, q: "coffee" });
 
-// callback
-getHtml({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
+// callback with error handling
+getHtml(
+  { engine: "google", api_key: API_KEY, q: "coffee" },
+  console.log,
+  console.error,
+);
 ```
 
 ### getJsonBySearchId
