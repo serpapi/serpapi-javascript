@@ -14,21 +14,33 @@ const LOCATIONS_PATH = "/locations.json";
 const SEARCH_PATH = "/search";
 const SEARCH_ARCHIVE_PATH = `/searches`;
 
+type ErrorCallback = (error: unknown) => void;
+
+function observeError<T>(
+  promise: Promise<T>,
+  errorCallback?: ErrorCallback,
+): Promise<T> {
+  if (errorCallback) void promise.catch(errorCallback);
+  return promise;
+}
+
 /**
  * Get JSON response based on search parameters.
  *
  * @param {object} parameters Search query parameters for the engine. Refer to https://serpapi.com/search-api for parameter explanations.
  * @param {fn=} callback Optional callback.
+ * @param {fn=} errorCallback Optional callback invoked when the request fails.
  * @example
  * // single call (async/await)
  * const json = await getJson({ engine: "google", api_key: API_KEY, q: "coffee" });
  *
- * // single call (callback)
- * getJson({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
+ * // single call (callback with error handling)
+ * getJson({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log, console.error);
  */
 export function getJson(
   parameters: EngineParameters,
   callback?: (json: BaseResponse) => void,
+  errorCallback?: ErrorCallback,
 ): Promise<BaseResponse>;
 
 /**
@@ -37,39 +49,50 @@ export function getJson(
  * @param {string} engine Engine name. Refer to https://serpapi.com/search-api for valid engines.
  * @param {object} parameters Search query parameters for the engine. Refer to https://serpapi.com/search-api for parameter explanations.
  * @param {fn=} callback Optional callback.
+ * @param {fn=} errorCallback Optional callback invoked when the request fails.
  * @example
  * // single call (async/await)
  * const json = await getJson("google", { api_key: API_KEY, q: "coffee" });
  *
- * // single call (callback)
- * getJson("google", { api_key: API_KEY, q: "coffee" }, console.log);
+ * // single call (callback with error handling)
+ * getJson("google", { api_key: API_KEY, q: "coffee" }, console.log, console.error);
  */
 export function getJson(
   engine: string,
   parameters: EngineParameters,
   callback?: (json: BaseResponse) => void,
+  errorCallback?: ErrorCallback,
 ): Promise<BaseResponse>;
 
 export function getJson(
   ...args:
-    | [parameters: EngineParameters, callback?: (json: BaseResponse) => void]
+    | [
+      parameters: EngineParameters,
+      callback?: (json: BaseResponse) => void,
+      errorCallback?: ErrorCallback,
+    ]
     | [
       engine: string,
       parameters: EngineParameters,
       callback?: (json: BaseResponse) => void,
+      errorCallback?: ErrorCallback,
     ]
 ): Promise<BaseResponse> {
   if (typeof args[0] === "string" && typeof args[1] === "object") {
-    const [engine, parameters, callback] = args;
+    const [engine, parameters, callback, errorCallback] = args;
     const newParameters = { ...parameters, engine } as EngineParameters;
-    return _getJson(newParameters, callback);
+    return observeError(_getJson(newParameters, callback), errorCallback);
   } else if (
     typeof args[0] === "object" &&
     typeof args[1] !== "object" &&
     (typeof args[1] === "undefined" || typeof args[1] === "function")
   ) {
-    const [parameters, callback] = args;
-    return _getJson(parameters, callback);
+    const [parameters, callback, errorCallback] = args as [
+      EngineParameters,
+      ((json: BaseResponse) => void)?,
+      ErrorCallback?,
+    ];
+    return observeError(_getJson(parameters, callback), errorCallback);
   } else {
     throw new InvalidArgumentError();
   }
@@ -100,16 +123,18 @@ async function _getJson(
  *
  * @param {object} parameters Search query parameters for the engine. Refer to https://serpapi.com/search-api for parameter explanations.
  * @param {fn=} callback Optional callback.
+ * @param {fn=} errorCallback Optional callback invoked when the request fails.
  * @example
  * // async/await
  * const html = await getHtml({ engine: "google", api_key: API_KEY, q: "coffee" });
  *
- * // callback
- * getHtml({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
+ * // callback with error handling
+ * getHtml({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log, console.error);
  */
 export function getHtml(
   parameters: EngineParameters,
   callback?: (html: string) => void,
+  errorCallback?: ErrorCallback,
 ): Promise<string>;
 
 /**
@@ -118,39 +143,50 @@ export function getHtml(
  * @param {string} engine Engine name. Refer to https://serpapi.com/search-api for valid engines.
  * @param {object} parameters Search query parameters for the engine. Refer to https://serpapi.com/search-api for parameter explanations.
  * @param {fn=} callback Optional callback.
+ * @param {fn=} errorCallback Optional callback invoked when the request fails.
  * @example
  * // async/await
  * const html = await getHtml({ engine: "google", api_key: API_KEY, q: "coffee" });
  *
- * // callback
- * getHtml({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
+ * // callback with error handling
+ * getHtml("google", { api_key: API_KEY, q: "coffee" }, console.log, console.error);
  */
 export function getHtml(
   engine: string,
   parameters: EngineParameters,
   callback?: (html: string) => void,
+  errorCallback?: ErrorCallback,
 ): Promise<string>;
 
 export function getHtml(
   ...args:
-    | [parameters: EngineParameters, callback?: (html: string) => void]
+    | [
+      parameters: EngineParameters,
+      callback?: (html: string) => void,
+      errorCallback?: ErrorCallback,
+    ]
     | [
       engine: string,
       parameters: EngineParameters,
       callback?: (html: string) => void,
+      errorCallback?: ErrorCallback,
     ]
 ): Promise<string> {
   if (typeof args[0] === "string" && typeof args[1] === "object") {
-    const [engine, parameters, callback] = args;
+    const [engine, parameters, callback, errorCallback] = args;
     const newParameters = { ...parameters, engine } as EngineParameters;
-    return _getHtml(newParameters, callback);
+    return observeError(_getHtml(newParameters, callback), errorCallback);
   } else if (
     typeof args[0] === "object" &&
     typeof args[1] !== "object" &&
     (typeof args[1] === "undefined" || typeof args[1] === "function")
   ) {
-    const [parameters, callback] = args;
-    return _getHtml(parameters, callback);
+    const [parameters, callback, errorCallback] = args as [
+      EngineParameters,
+      ((html: string) => void)?,
+      ErrorCallback?,
+    ];
+    return observeError(_getHtml(parameters, callback), errorCallback);
   } else {
     throw new InvalidArgumentError();
   }

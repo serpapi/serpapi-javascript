@@ -10,6 +10,7 @@ and this project adheres to
 
 ### Added
 
+- Add optional error callbacks to `getJson` and `getHtml`.
 - Expose `EngineParameters` type.
 - Expose `InvalidArgumentError` error.
 

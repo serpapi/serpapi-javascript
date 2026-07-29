@@ -361,6 +361,67 @@ describe(
       },
     );
 
+    it("error callback", async () => {
+      const requestError = new Error("request failed");
+      const executeStub = stub(
+        _internals,
+        "execute",
+        () => Promise.reject(requestError),
+      );
+      const successCallback = spy((_json: BaseResponse) => {});
+      const errorCallback = spy((_error: unknown) => {});
+
+      try {
+        await assertRejects(
+          () =>
+            getJson(
+              {
+                engine: "google",
+                q: "Paris",
+                api_key: "test_api_key",
+              },
+              successCallback,
+              errorCallback,
+            ),
+          Error,
+          "request failed",
+        );
+        await assertRejects(
+          () =>
+            getJson(
+              "google",
+              { q: "Paris", api_key: "test_api_key" },
+              successCallback,
+              errorCallback,
+            ),
+          Error,
+          "request failed",
+        );
+        await new Promise<void>((done) => {
+          void getJson(
+            {
+              engine: "google",
+              q: "Paris",
+              api_key: "test_api_key",
+            },
+            successCallback,
+            (error) => {
+              errorCallback(error);
+              done();
+            },
+          );
+        });
+      } finally {
+        executeStub.restore();
+      }
+
+      assertSpyCalls(successCallback, 0);
+      assertSpyCalls(errorCallback, 3);
+      assertSpyCallArg(errorCallback, 0, 0, requestError);
+      assertSpyCallArg(errorCallback, 1, 0, requestError);
+      assertSpyCallArg(errorCallback, 2, 0, requestError);
+    });
+
     it("rely on global config", async () => {
       const executeSpy = spy(_internals, "execute");
       config.api_key = "test_api_key";
@@ -544,6 +605,67 @@ describe(
         assertEquals(html2, html);
       },
     );
+
+    it("error callback", async () => {
+      const requestError = new Error("request failed");
+      const executeStub = stub(
+        _internals,
+        "execute",
+        () => Promise.reject(requestError),
+      );
+      const successCallback = spy((_html: string) => {});
+      const errorCallback = spy((_error: unknown) => {});
+
+      try {
+        await assertRejects(
+          () =>
+            getHtml(
+              {
+                engine: "google",
+                q: "Paris",
+                api_key: "test_api_key",
+              },
+              successCallback,
+              errorCallback,
+            ),
+          Error,
+          "request failed",
+        );
+        await assertRejects(
+          () =>
+            getHtml(
+              "google",
+              { q: "Paris", api_key: "test_api_key" },
+              successCallback,
+              errorCallback,
+            ),
+          Error,
+          "request failed",
+        );
+        await new Promise<void>((done) => {
+          void getHtml(
+            {
+              engine: "google",
+              q: "Paris",
+              api_key: "test_api_key",
+            },
+            successCallback,
+            (error) => {
+              errorCallback(error);
+              done();
+            },
+          );
+        });
+      } finally {
+        executeStub.restore();
+      }
+
+      assertSpyCalls(successCallback, 0);
+      assertSpyCalls(errorCallback, 3);
+      assertSpyCallArg(errorCallback, 0, 0, requestError);
+      assertSpyCallArg(errorCallback, 1, 0, requestError);
+      assertSpyCallArg(errorCallback, 2, 0, requestError);
+    });
 
     it("rely on global config", async () => {
       const executeSpy = spy(_internals, "execute");
