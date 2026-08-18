@@ -94,7 +94,26 @@ console.log(response);
   [Deno](https://deno.land/x/serpapi).
 - Promises and async/await support.
 - Callbacks support.
+- JSON, HTML, and token-efficient Markdown response formats.
 - [Examples in JavaScript/TypeScript on Node.js/Deno using ESM/CommonJS, and more](https://github.com/serpapi/serpapi-javascript/tree/master/examples).
+
+## Markdown output for AI agents
+
+Use `getMd` to get token-efficient Markdown optimized for LLMs and AI agents:
+
+```js
+import { getMd } from "serpapi";
+
+const markdown = await getMd({
+  engine: "google",
+  api_key: API_KEY,
+  q: "coffee",
+});
+```
+
+Archived results are also available as Markdown with `getMdBySearchId`.
+
+Learn more about [SerpApi Markdown output](https://serpapi.com/markdown-output).
 
 ## Configuration
 
@@ -176,21 +195,27 @@ for a manual approach:
 - [getHtml](#gethtml)
   - [Parameters](#parameters-1)
   - [Examples](#examples-1)
-- [getJsonBySearchId](#getjsonbysearchid)
+- [getMd](#getmd)
   - [Parameters](#parameters-2)
   - [Examples](#examples-2)
-- [getHtmlBySearchId](#gethtmlbysearchid)
+- [getJsonBySearchId](#getjsonbysearchid)
   - [Parameters](#parameters-3)
   - [Examples](#examples-3)
-- [getAccount](#getaccount)
+- [getHtmlBySearchId](#gethtmlbysearchid)
   - [Parameters](#parameters-4)
   - [Examples](#examples-4)
-- [getLocations](#getlocations)
+- [getMdBySearchId](#getmdbysearchid)
   - [Parameters](#parameters-5)
   - [Examples](#examples-5)
-- [uploadImage](#uploadimage)
+- [getAccount](#getaccount)
   - [Parameters](#parameters-6)
   - [Examples](#examples-6)
+- [getLocations](#getlocations)
+  - [Parameters](#parameters-7)
+  - [Examples](#examples-7)
+- [uploadImage](#uploadimage)
+  - [Parameters](#parameters-8)
+  - [Examples](#examples-8)
 
 ### getJson
 
@@ -235,6 +260,31 @@ const html = await getHtml({ engine: "google", api_key: API_KEY, q: "coffee" });
 
 // callback
 getHtml({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
+```
+
+### getMd
+
+Get a Markdown response based on search parameters.
+
+#### Parameters
+
+- `parameters`
+  **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**
+  search query parameters for the engine
+- `callback` **fn?** optional callback
+
+#### Examples
+
+```javascript
+// async/await
+const markdown = await getMd({
+  engine: "google",
+  api_key: API_KEY,
+  q: "coffee",
+});
+
+// callback
+getMd({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
 ```
 
 ### getJsonBySearchId
@@ -326,6 +376,51 @@ const html = await getHtmlBySearchId(id, { api_key: API_KEY });
 
 // callback
 getHtmlBySearchId(id, { api_key: API_KEY }, console.log);
+```
+
+### getMdBySearchId
+
+Get a Markdown response given a search ID.
+
+- This search ID can be obtained from the `search_metadata.id` key in the
+  response.
+- Typically used together with the `async` parameter.
+- Accepts an optional callback.
+
+#### Parameters
+
+- `searchId`
+  **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**
+  search ID
+- `parameters`
+  **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)**
+  (optional, default `{}`)
+
+  - `parameters.api_key`
+    **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?**
+    API key
+  - `parameters.timeout`
+    **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?**
+    timeout in milliseconds
+- `callback` **fn?** optional callback
+
+#### Examples
+
+```javascript
+const response = await getJson({
+  engine: "google",
+  api_key: API_KEY,
+  async: true,
+  q: "coffee",
+});
+const { id } = response.search_metadata;
+await delay(1000); // wait for the request to be processed.
+
+// async/await
+const markdown = await getMdBySearchId(id, { api_key: API_KEY });
+
+// callback
+getMdBySearchId(id, { api_key: API_KEY }, console.log);
 ```
 
 ### getAccount

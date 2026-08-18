@@ -23,5 +23,7 @@ export {
   getJson,
   getJsonBySearchId,
   getLocations,
+  getMd,
+  getMdBySearchId,
   uploadImage,
 } from "./src/serpapi.ts";

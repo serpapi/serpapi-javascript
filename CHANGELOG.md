@@ -10,6 +10,8 @@ and this project adheres to
 
 ### Added
 
+- Add Markdown search and archive output support with `getMd` and
+  `getMdBySearchId`.
 - Expose `EngineParameters` type.
 - Expose `InvalidArgumentError` error.
 
