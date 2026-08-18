@@ -1,18 +1,13 @@
 import http from "node:http";
 import qs from "node:querystring";
-import { loadSync } from "https://deno.land/std@0.170.0/dotenv/mod.ts";
-import {
-  afterAll,
-  beforeAll,
-  describe,
-  it,
-} from "https://deno.land/std@0.170.0/testing/bdd.ts";
-import { Stub, stub } from "https://deno.land/std@0.170.0/testing/mock.ts";
+import { loadSync } from "@std/dotenv";
+import { afterAll, beforeAll, describe, it } from "@std/testing/bdd";
+import { Stub, stub } from "@std/testing/mock";
 import {
   assertEquals,
   assertInstanceOf,
   assertMatch,
-} from "https://deno.land/std@0.170.0/testing/asserts.ts";
+} from "@std/testing/asserts";
 import {
   _internals,
   buildRequestOptions,

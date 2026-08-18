@@ -6,6 +6,13 @@
     "test:cov": "rm -rf cov_profile && deno task test --coverage=cov_profile && deno coverage cov_profile",
     "npm": "deno run -A scripts/build_npm.ts"
   },
+  "imports": {
+    "@deno/dnt": "https://deno.land/x/dnt@0.40.0/mod.ts",
+    "@std/dotenv": "https://deno.land/std@0.173.0/dotenv/mod.ts",
+    "@std/testing/asserts": "https://deno.land/std@0.170.0/testing/asserts.ts",
+    "@std/testing/bdd": "https://deno.land/std@0.170.0/testing/bdd.ts",
+    "@std/testing/mock": "https://deno.land/std@0.170.0/testing/mock.ts"
+  },
   "fmt": {
     "exclude": ["npm/", "examples/node", "smoke_tests/"]
   },

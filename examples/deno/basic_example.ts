@@ -1,4 +1,4 @@
-import { loadSync } from "https://deno.land/std@0.173.0/dotenv/mod.ts";
+import { loadSync } from "@std/dotenv";
 import { config, getJson } from "../../mod.ts";
 
 const { API_KEY: apiKey } = loadSync();

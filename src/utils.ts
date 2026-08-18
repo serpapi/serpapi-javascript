@@ -80,7 +80,7 @@ export function execute(
   });
 
   return new Promise((resolve, reject) => {
-    let timer: number;
+    let timer: ReturnType<typeof setTimeout>;
 
     const handleResponse = (resp: http.IncomingMessage) => {
       resp.setEncoding("utf8");

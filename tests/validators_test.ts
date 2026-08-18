@@ -1,12 +1,5 @@
-import {
-  afterEach,
-  describe,
-  it,
-} from "https://deno.land/std@0.170.0/testing/bdd.ts";
-import {
-  assertEquals,
-  assertThrows,
-} from "https://deno.land/std@0.170.0/testing/asserts.ts";
+import { afterEach, describe, it } from "@std/testing/bdd";
+import { assertEquals, assertThrows } from "@std/testing/asserts";
 import { validateApiKey, validateTimeout } from "../src/validators.ts";
 import { config, InvalidTimeoutError, MissingApiKeyError } from "../mod.ts";
 
