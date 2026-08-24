@@ -21,6 +21,14 @@ export class InvalidTimeoutError extends Error {
   }
 }
 
+export class ImageApiError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ImageApiError";
+    Object.setPrototypeOf(this, ImageApiError.prototype);
+  }
+}
+
 export class RequestTimeoutError extends Error {
   constructor() {
     super("The request was timed out");

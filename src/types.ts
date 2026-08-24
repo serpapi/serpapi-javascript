@@ -29,7 +29,6 @@ export type ImageApiParameters = {
 };
 
 export type ImageApiResponse = {
-  message?: string;
-  image_id?: string;
-  error?: string;
+  message: string;
+  image_id: string;
 };

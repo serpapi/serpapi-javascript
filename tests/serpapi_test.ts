@@ -32,6 +32,7 @@ import {
   getJson,
   getJsonBySearchId,
   getLocations,
+  ImageApiError,
   InvalidArgumentError,
   InvalidTimeoutError,
   MissingApiKeyError,
@@ -236,6 +237,24 @@ describe("uploadImage", () => {
       await assertImageUpload(imagePath);
     } finally {
       await Deno.remove(imagePath);
+    }
+  });
+
+  it("throws ImageApiError", async () => {
+    const executeStub = stub(
+      _internals,
+      "uploadImage",
+      () => Promise.reject('{"error":"Invalid image"}'),
+    );
+    config.api_key = "test_api_key";
+    try {
+      await assertRejects(
+        async () => await uploadImage({ image }),
+        ImageApiError,
+        "Invalid image",
+      );
+    } finally {
+      executeStub.restore();
     }
   });
 });

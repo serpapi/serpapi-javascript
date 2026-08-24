@@ -1,4 +1,4 @@
-import { InvalidArgumentError } from "./errors.ts";
+import { ImageApiError, InvalidArgumentError } from "./errors.ts";
 import { readFile } from "node:fs";
 import type {
   AccountApiParameters,
@@ -362,14 +362,23 @@ export async function uploadImage(
   } else {
     image = parameters.image;
   }
-  const response = await _internals.uploadImage(
-    image,
-    {
-      api_key: key,
-      requestOptions: parameters.requestOptions,
-    },
-    timeout,
-  );
+  let response: string;
+  try {
+    response = await _internals.uploadImage(
+      image,
+      {
+        api_key: key,
+        requestOptions: parameters.requestOptions,
+      },
+      timeout,
+    );
+  } catch (error) {
+    let message = "Image upload failed";
+    try {
+      message = JSON.parse(String(error)).error || message;
+    } catch { /* */ }
+    throw new ImageApiError(message);
+  }
   const result = JSON.parse(response) as ImageApiResponse;
   callback?.(result);
   return result;
