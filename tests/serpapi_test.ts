@@ -35,6 +35,7 @@ import {
   InvalidArgumentError,
   InvalidTimeoutError,
   MissingApiKeyError,
+  uploadImage,
 } from "../mod.ts";
 
 loadSync({ export: true });
@@ -179,6 +180,65 @@ describe(
     );
   },
 );
+
+describe("uploadImage", () => {
+  const image = new Uint8Array([0x89, 0x50, 0x4e, 0x47]);
+
+  afterEach(() => {
+    config.api_key = null;
+  });
+
+  async function assertImageUpload(input: Uint8Array | string) {
+    const executeStub = stub(
+      _internals,
+      "uploadImage",
+      () =>
+        Promise.resolve(
+          '{"message":"Image uploaded successfully.","image_id":"abc"}',
+        ),
+    );
+    config.api_key = "test_api_key";
+    try {
+      const result = await uploadImage({ image: input });
+      assertEquals(result, {
+        message: "Image uploaded successfully.",
+        image_id: "abc",
+      });
+      assertSpyCalls(executeStub, 1);
+    } finally {
+      executeStub.restore();
+    }
+  }
+
+  it("with no api_key", () => {
+    assertRejects(
+      async () => await uploadImage({ image, api_key: "" }),
+      MissingApiKeyError,
+    );
+  });
+
+  it("with invalid timeout", () => {
+    config.api_key = "test_api_key";
+    assertRejects(
+      async () => await uploadImage({ image, timeout: 0 }),
+      InvalidTimeoutError,
+    );
+  });
+
+  it("accepts image bytes", async () => {
+    await assertImageUpload(image);
+  });
+
+  it("accepts an image file path", async () => {
+    const imagePath = await Deno.makeTempFile({ suffix: ".png" });
+    await Deno.writeFile(imagePath, image);
+    try {
+      await assertImageUpload(imagePath);
+    } finally {
+      await Deno.remove(imagePath);
+    }
+  });
+});
 
 describe(
   "getLocations",
