@@ -7,7 +7,7 @@
 [![SerpApi Libraries](https://img.shields.io/badge/SerpApi-Libraries-blue)](https://serpapi.com/integrations)
 
 Scrape and parse search engine results using [SerpApi](https://serpapi.com). Get
-search results from Google, Bing, Baidu, Yandex, Yahoo, Home Depot, eBay and
+search results from Google, Bing, Baidu, Yandex, Yahoo, Home Depot, eBay, and
 more.
 
 | 🪧 Coming from `google-search-results-nodejs`? <br /> Check out the [migration document](https://github.com/serpapi/serpapi-javascript/blob/master/docs/migrating_from_google_search_results_nodejs.md) to find out how to upgrade. |
@@ -93,7 +93,7 @@ console.log(response);
 - Works out-of-the-box with [Node.js](https://www.npmjs.com/package/serpapi) and
   [Deno](https://deno.land/x/serpapi).
 - Promises and async/await support.
-- Callbacks support.
+- Callback support.
 - [Examples in JavaScript/TypeScript on Node.js/Deno using ESM/CommonJS, and more](https://github.com/serpapi/serpapi-javascript/tree/master/examples).
 
 ## Configuration
@@ -101,7 +101,7 @@ console.log(response);
 You can declare a global `api_key` and `timeout` value by modifying the `config`
 object. `timeout` is defined in milliseconds and defaults to 60 seconds.
 
-All functions, other than `getLocations`, accepts an optional `api_key` and
+All functions, other than `getLocations`, accept an optional `api_key` and
 `timeout` that will take precedence over the values defined in `config`.
 
 `getLocations` doesn't require an API key.
@@ -212,7 +212,7 @@ getJson({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
 
 ### getHtml
 
-Get a HTML response based on search parameters.
+Get an HTML response based on search parameters.
 
 - Accepts an optional callback.
 - Responds with a JSON string if the search request hasn't completed.
@@ -281,13 +281,13 @@ getJsonBySearchId(id, { api_key: API_KEY }, console.log);
 
 ### getHtmlBySearchId
 
-Get a HTML response given a search ID.
+Get an HTML response given a search ID.
 
 - This search ID can be obtained from the `search_metadata.id` key in the
   response.
 - Typically used together with the `async` parameter.
 - Accepts an optional callback.
-- Responds with a JSON if the search request hasn't completed.
+- Responds with JSON if the search request hasn't completed.
 
 #### Parameters
 
@@ -327,7 +327,7 @@ getHtmlBySearchId(id, { api_key: API_KEY }, console.log);
 
 ### getAccount
 
-Get account information of an API key. <https://serpapi.com/account-api>
+Get account information for an API key. <https://serpapi.com/account-api>
 
 #### Parameters
 
@@ -369,7 +369,7 @@ Get supported locations. Does not require an API key.
     query for a location
   - `parameters.limit`
     **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?**
-    limit on number of locations returned
+    limit on the number of locations returned
   - `parameters.timeout`
     **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?**
     timeout in milliseconds
