@@ -1,4 +1,4 @@
-alphadesk.com
+alphadeskpro.com
 
 [![npm version](https://img.shields.io/npm/v/serpapi)](https://www.npmjs.com/package/serpapi)
 [![Deno version](https://deno.land/badge/serpapi/version)](https://deno.land/x/serpapi)
