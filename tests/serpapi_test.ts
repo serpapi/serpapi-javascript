@@ -32,7 +32,6 @@ import {
   getJson,
   getJsonBySearchId,
   getLocations,
-  ImageApiError,
   InvalidArgumentError,
   InvalidTimeoutError,
   MissingApiKeyError,
@@ -226,6 +225,14 @@ describe("uploadImage", () => {
     );
   });
 
+  it("with no image", () => {
+    assertRejects(
+      // @ts-expect-error Test runtime validation for JavaScript callers.
+      async () => await uploadImage({ api_key: "test_api_key" }),
+      InvalidArgumentError,
+    );
+  });
+
   it("accepts image bytes", async () => {
     await assertImageUpload(image);
   });
@@ -240,19 +247,17 @@ describe("uploadImage", () => {
     }
   });
 
-  it("throws ImageApiError", async () => {
+  it("rejects upon error response", async () => {
+    const apiError = '{"error":"Invalid image"}';
     const executeStub = stub(
       _internals,
       "uploadImage",
-      () => Promise.reject('{"error":"Invalid image"}'),
+      () => Promise.reject(apiError),
     );
     config.api_key = "test_api_key";
     try {
-      await assertRejects(
-        async () => await uploadImage({ image }),
-        ImageApiError,
-        "Invalid image",
-      );
+      const error = await uploadImage({ image }).catch((error) => error);
+      assertEquals(error, apiError);
     } finally {
       executeStub.restore();
     }

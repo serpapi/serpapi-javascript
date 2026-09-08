@@ -2,7 +2,6 @@ export type { Config } from "./src/config.ts";
 export { config } from "./src/config.ts";
 
 export {
-  ImageApiError,
   InvalidArgumentError,
   InvalidTimeoutError,
   MissingApiKeyError,
