@@ -353,6 +353,7 @@ export async function getHtmlBySearchId(
  * @param {number=} [parameters.timeout] Timeout in milliseconds.
  * @param {fn=} callback Optional callback.
  * @example
+ * // Submit as JSON so the search ID is available in the structured response.
  * const response = await getJson({ engine: "google", api_key: API_KEY, async: true, q: "coffee" });
  * const { id } = response.search_metadata;
  * await delay(1000); // wait for the request to be processed.

@@ -6,9 +6,9 @@
 [![License](https://img.shields.io/github/license/serpapi/serpapi-javascript)](https://github.com/serpapi/serpapi-javascript/blob/master/LICENSE)
 [![SerpApi Libraries](https://img.shields.io/badge/SerpApi-Libraries-blue)](https://serpapi.com/integrations)
 
-Scrape and parse search engine results using [SerpApi](https://serpapi.com). Get
-search results from Google, Bing, Baidu, Yandex, Yahoo, Home Depot, eBay and
-more.
+Scrape and parse search engine results using [SerpApi](https://serpapi.com).
+Retrieve structured JSON, token-efficient Markdown for AI agents, or raw HTML
+from Google, Bing, Baidu, Yandex, Yahoo, Home Depot, eBay and more.
 
 | 🪧 Coming from `google-search-results-nodejs`? <br /> Check out the [migration document](https://github.com/serpapi/serpapi-javascript/blob/master/docs/migrating_from_google_search_results_nodejs.md) to find out how to upgrade. |
 | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -407,6 +407,7 @@ Get a Markdown response given a search ID.
 #### Examples
 
 ```javascript
+// Submit as JSON so the search ID is available in the structured response.
 const response = await getJson({
   engine: "google",
   api_key: API_KEY,
