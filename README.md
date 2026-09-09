@@ -87,6 +87,26 @@ const response = await getJson({
 console.log(response);
 ```
 
+### TypeScript
+
+The library exposes basic TypeScript types for engine names and core search
+parameters. These types validate the `engine` value while still allowing
+engine-specific query parameters that are not modeled yet.
+
+```ts
+import { type EngineParameters, getJson } from "serpapi";
+
+const parameters: EngineParameters = {
+  engine: "google_light",
+  api_key: API_KEY,
+  q: "coffee",
+  timeout: 60000,
+};
+
+const response = await getJson(parameters);
+console.log(response.search_metadata);
+```
+
 ## Features
 
 - TypeScript support.
