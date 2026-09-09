@@ -1,11 +1,5 @@
-import { loadSync } from "https://deno.land/std@0.170.0/dotenv/mod.ts";
-import {
-  afterAll,
-  afterEach,
-  beforeAll,
-  describe,
-  it,
-} from "https://deno.land/std@0.170.0/testing/bdd.ts";
+import { loadSync } from "@std/dotenv";
+import { afterAll, afterEach, beforeAll, describe, it } from "@std/testing/bdd";
 import {
   assert,
   assertArrayIncludes,
@@ -14,14 +8,14 @@ import {
   assertInstanceOf,
   assertRejects,
   assertStringIncludes,
-} from "https://deno.land/std@0.170.0/testing/asserts.ts";
+} from "@std/testing/asserts";
 import {
   assertSpyCallArg,
   assertSpyCalls,
   spy,
   Stub,
   stub,
-} from "https://deno.land/std@0.170.0/testing/mock.ts";
+} from "@std/testing/mock";
 import { _internals } from "../src/utils.ts";
 import {
   BaseResponse,
