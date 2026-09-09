@@ -12,6 +12,8 @@ export type {
   BaseResponse,
   EngineParameters,
   GetBySearchIdParameters,
+  ImageApiParameters,
+  ImageApiResponse,
   LocationsApiParameters,
 } from "./src/types.ts";
 export {
@@ -21,4 +23,5 @@ export {
   getJson,
   getJsonBySearchId,
   getLocations,
+  uploadImage,
 } from "./src/serpapi.ts";

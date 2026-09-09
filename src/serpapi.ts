@@ -1,9 +1,12 @@
 import { InvalidArgumentError } from "./errors.ts";
-import {
+import { readFile } from "node:fs";
+import type {
   AccountApiParameters,
   BaseResponse,
   EngineParameters,
   GetBySearchIdParameters,
+  ImageApiParameters,
+  ImageApiResponse,
   LocationsApiParameters,
 } from "./types.ts";
 import { _internals } from "./utils.ts";
@@ -322,4 +325,54 @@ export async function getLocations(
   const locations = JSON.parse(response);
   callback?.(locations);
   return locations;
+}
+
+/**
+ * Upload an image using Image API
+ *
+ * Refer to https://serpapi.com/image-api for more details.
+ *
+ * @param {object} parameters
+ * @param {Uint8Array|ArrayBuffer|string} parameters.image Binary image contents or file path.
+ * @param {string=} [parameters.api_key] API key.
+ * @param {number=} [parameters.timeout] Timeout in milliseconds.
+ * @param {fn=} callback Optional callback.
+ * @example
+ * const result = await uploadImage({
+ *   api_key: API_KEY,
+ *   image: "image.png",
+ * });
+ * console.log(result.image_id);
+ */
+export async function uploadImage(
+  parameters: ImageApiParameters,
+  callback?: (result: ImageApiResponse) => void,
+): Promise<ImageApiResponse> {
+  if (!parameters?.image) throw new InvalidArgumentError();
+
+  const key = validateApiKey(parameters.api_key);
+  const timeout = validateTimeout(parameters.timeout);
+  let image: Uint8Array | ArrayBuffer;
+  if (typeof parameters.image === "string") {
+    const path = parameters.image;
+    image = await new Promise<Uint8Array>((resolve, reject) => {
+      readFile(
+        path,
+        (error, data) => error ? reject(error) : resolve(data),
+      );
+    });
+  } else {
+    image = parameters.image;
+  }
+  const response = await _internals.uploadImage(
+    image,
+    {
+      api_key: key,
+      requestOptions: parameters.requestOptions,
+    },
+    timeout,
+  );
+  const result = JSON.parse(response) as ImageApiResponse;
+  callback?.(result);
+  return result;
 }

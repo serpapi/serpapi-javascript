@@ -188,6 +188,9 @@ for a manual approach:
 - [getLocations](#getlocations)
   - [Parameters](#parameters-5)
   - [Examples](#examples-5)
+- [uploadImage](#uploadimage)
+  - [Parameters](#parameters-6)
+  - [Examples](#examples-6)
 
 ### getJson
 
@@ -383,4 +386,27 @@ const locations = await getLocations({ limit: 3 });
 
 // callback
 getLocations({ limit: 3 }, console.log);
+```
+
+### uploadImage
+
+Upload an image for use with supported engines.
+
+#### Parameters
+
+- `parameters` **object**
+  - `parameters.image` **(Uint8Array | ArrayBuffer | string)** binary image
+    contents or file path
+  - `parameters.api_key` **string?** API key
+  - `parameters.timeout` **number?** timeout in milliseconds
+- `callback` **fn?** optional callback
+
+#### Examples
+
+```javascript
+const result = await uploadImage({
+  api_key: API_KEY,
+  image: "image.png",
+});
+console.log(result.image_id);
 ```

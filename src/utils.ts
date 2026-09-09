@@ -5,6 +5,7 @@ import qs from "node:querystring";
 import process from "node:process";
 import { RequestTimeoutError } from "./errors.ts";
 import { config } from "./config.ts";
+import { createMultipartBody } from "./multipart.ts";
 
 /**
  * This `_internals` object is needed to support stubbing/spying of
@@ -15,6 +16,7 @@ import { config } from "./config.ts";
  */
 export const _internals = {
   execute: execute,
+  uploadImage: uploadImage,
   getHostnameAndPort: getHostnameAndPort,
 };
 
@@ -120,5 +122,67 @@ export function execute(
         req.destroy();
       }, timeout);
     }
+  });
+}
+
+export function uploadImage(
+  image: Uint8Array | ArrayBuffer,
+  parameters: {
+    api_key: string;
+    requestOptions?: http.RequestOptions;
+  },
+  timeout: number,
+): Promise<string> {
+  const bytes = image instanceof ArrayBuffer ? new Uint8Array(image) : image;
+  const multipart = createMultipartBody([
+    { name: "api_key", value: parameters.api_key },
+    { name: "source", value: getSource() },
+    {
+      name: "image",
+      value: bytes,
+      filename: "image",
+      contentType: "application/octet-stream",
+    },
+  ]);
+
+  const customOptions = {
+    ...config.requestOptions,
+    ...parameters.requestOptions,
+  };
+  const options: http.RequestOptions = {
+    ...customOptions,
+    ..._internals.getHostnameAndPort(),
+    path: "/image",
+    method: "POST",
+    headers: {
+      ...(customOptions.headers || {}),
+      "Content-Type": multipart.contentType,
+      "Content-Length": multipart.body.length,
+    },
+  };
+
+  return new Promise((resolve, reject) => {
+    let timer: ReturnType<typeof setTimeout>;
+    const req = https.request(options, (resp) => {
+      resp.setEncoding("utf8");
+      let data = "";
+      resp.on("data", (chunk) => data += chunk);
+      resp.on("end", () => {
+        if (timer) clearTimeout(timer);
+        if (resp.statusCode === 200) resolve(data);
+        else reject(data);
+      });
+    });
+    req.on("error", (error) => {
+      if (timer) clearTimeout(timer);
+      reject(error);
+    });
+    if (timeout > 0) {
+      timer = setTimeout(() => {
+        reject(new RequestTimeoutError());
+        req.destroy();
+      }, timeout);
+    }
+    req.end(multipart.body);
   });
 }
