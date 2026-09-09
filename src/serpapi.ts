@@ -353,16 +353,16 @@ export async function getHtmlBySearchId(
  * @param {number=} [parameters.timeout] Timeout in milliseconds.
  * @param {fn=} callback Optional callback.
  * @example
- * // Submit as JSON so the search ID is available in the structured response.
- * const response = await getJson({ engine: "google", api_key: API_KEY, async: true, q: "coffee" });
- * const { id } = response.search_metadata;
- * await delay(1000); // wait for the request to be processed.
+ * const markdown = await getMd({ engine: "google", api_key: API_KEY, q: "coffee" });
+ * const idMatch = markdown.match(/^  id:\s*(.+)$/m);
+ * if (!idMatch) throw new Error("Search ID missing from Markdown frontmatter");
+ * const searchId = idMatch[1].trim();
  *
  * // async/await
- * const markdown = await getMdBySearchId(id, { api_key: API_KEY });
+ * const archivedMarkdown = await getMdBySearchId(searchId, { api_key: API_KEY });
  *
  * // callback
- * getMdBySearchId(id, { api_key: API_KEY }, console.log);
+ * getMdBySearchId(searchId, { api_key: API_KEY }, console.log);
  */
 export async function getMdBySearchId(
   searchId: string,
