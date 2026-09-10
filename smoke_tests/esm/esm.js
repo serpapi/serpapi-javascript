@@ -16,6 +16,8 @@ import {
   getJson,
   getJsonBySearchId,
   getLocations,
+  getMd,
+  getMdBySearchId,
 } from "serpapi";
 
 Dotenv.config();
@@ -93,6 +95,12 @@ let searchId;
 }
 
 {
+  console.log("getMd");
+  const markdown = await getMd(Object.assign({ engine: "google" }, params));
+  if (!markdown.startsWith("---")) throw new Error("Incorrect Markdown");
+}
+
+{
   console.log("getJsonBySearchId");
   config.api_key = apiKey;
   const json = await getJsonBySearchId(searchId);
@@ -112,6 +120,13 @@ let searchId;
   getHtmlBySearchId(searchId, {}, (html) => {
     if (html.length < 1000) throw new Error("Incorrect HTML");
   });
+}
+
+{
+  console.log("getMdBySearchId");
+  config.api_key = apiKey;
+  const markdown = await getMdBySearchId(searchId);
+  if (!markdown.startsWith("---")) throw new Error("Incorrect Markdown");
 }
 
 {

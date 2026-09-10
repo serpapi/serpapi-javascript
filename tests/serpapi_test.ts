@@ -26,6 +26,8 @@ import {
   getJson,
   getJsonBySearchId,
   getLocations,
+  getMd,
+  getMdBySearchId,
   InvalidArgumentError,
   InvalidTimeoutError,
   MissingApiKeyError,
@@ -665,6 +667,198 @@ describe(
         engine: "google",
         output: "html",
         q: "Paris",
+      });
+    });
+  },
+);
+
+describe(
+  "getMd",
+  {
+    sanitizeOps: false,
+    sanitizeResources: false,
+  },
+  () => {
+    let urlStub: Stub;
+
+    beforeAll(() => {
+      urlStub = stub(_internals, "getHostnameAndPort", () => BASE_OPTIONS);
+    });
+
+    afterEach(() => {
+      config.api_key = null;
+    });
+
+    afterAll(() => {
+      urlStub.restore();
+    });
+
+    it("with no api_key", () => {
+      assertRejects(
+        async () => await getMd({ engine: "google", q: "Paris" }),
+        MissingApiKeyError,
+      );
+      assertRejects(
+        async () => await getMd("google", { q: "Paris" }),
+        MissingApiKeyError,
+      );
+      assertRejects(
+        // @ts-ignore testing invalid usage
+        async () => await getMd({}),
+        MissingApiKeyError,
+      );
+    });
+
+    it("with invalid arguments", () => {
+      assertRejects(
+        // @ts-ignore testing invalid usage
+        async () => await getMd("google"),
+        InvalidArgumentError,
+      );
+      assertRejects(
+        // @ts-ignore testing invalid usage
+        async () => await getMd(),
+        InvalidArgumentError,
+      );
+    });
+
+    it("with invalid timeout", () => {
+      config.api_key = "test_api_key";
+      assertRejects(
+        async () => await getMd({ engine: "google", q: "Paris", timeout: 0 }),
+        InvalidTimeoutError,
+      );
+      assertRejects(
+        async () => await getMd({ engine: "google", q: "Paris", timeout: -10 }),
+        InvalidTimeoutError,
+      );
+      assertRejects(
+        async () => await getMd("google", { q: "Paris", timeout: 0 }),
+        InvalidTimeoutError,
+      );
+      assertRejects(
+        async () => await getMd("google", { q: "Paris", timeout: -10 }),
+        InvalidTimeoutError,
+      );
+    });
+
+    it(
+      "async/await",
+      {
+        ignore: !HAS_API_KEY,
+      },
+      async () => {
+        const markdown = await getMd({
+          engine: "google",
+          q: "Paris",
+          api_key: SERPAPI_TEST_KEY,
+          timeout: 10000,
+        });
+        assert(markdown.startsWith("---"));
+      },
+    );
+
+    it("returns Markdown with async/await and callbacks", async () => {
+      const markdownResponse = "---\n## Organic Results\n";
+      const executeStub = stub(
+        _internals,
+        "execute",
+        () => Promise.resolve(markdownResponse),
+      );
+      config.api_key = "test_api_key";
+
+      try {
+        const markdown = await getMd({
+          engine: "google",
+          q: "Paris",
+          output: "json",
+        });
+        assertEquals(markdown, markdownResponse);
+
+        const markdownFromOldApi = await getMd("google", { q: "Paris" });
+        assertEquals(markdownFromOldApi, markdownResponse);
+
+        const markdownFromCallback = await new Promise<string>((done) => {
+          getMd({ engine: "google", q: "Paris" }, done);
+        });
+        assertEquals(markdownFromCallback, markdownResponse);
+
+        const markdownFromOldApiCallback = await new Promise<string>((done) => {
+          getMd("google", { q: "Paris" }, done);
+        });
+        assertEquals(markdownFromOldApiCallback, markdownResponse);
+      } finally {
+        executeStub.restore();
+      }
+
+      assertSpyCalls(executeStub, 4);
+      assertSpyCallArg(executeStub, 0, 0, "/search");
+      assertSpyCallArg(executeStub, 0, 1, {
+        api_key: "test_api_key",
+        engine: "google",
+        output: "md",
+        q: "Paris",
+      });
+    });
+  },
+);
+
+describe(
+  "getMdBySearchId",
+  {
+    sanitizeOps: false,
+    sanitizeResources: false,
+  },
+  () => {
+    afterEach(() => {
+      config.api_key = null;
+    });
+
+    it(
+      "async/await",
+      {
+        ignore: !HAS_API_KEY,
+      },
+      async () => {
+        const response = await getJson({
+          engine: "google",
+          api_key: SERPAPI_TEST_KEY,
+          q: "Paris",
+        });
+        const markdown = await getMdBySearchId(response.search_metadata.id, {
+          api_key: SERPAPI_TEST_KEY,
+          timeout: 10000,
+        });
+        assert(markdown.startsWith("---"));
+      },
+    );
+
+    it("returns archived Markdown with async/await and callbacks", async () => {
+      const markdownResponse = "---\n## Organic Results\n";
+      const executeStub = stub(
+        _internals,
+        "execute",
+        () => Promise.resolve(markdownResponse),
+      );
+      config.api_key = "test_api_key";
+
+      try {
+        const markdown = await getMdBySearchId("search-id");
+        assertEquals(markdown, markdownResponse);
+
+        const markdownFromCallback = await new Promise<string>((done) => {
+          getMdBySearchId("search-id", {}, done);
+        });
+        assertEquals(markdownFromCallback, markdownResponse);
+      } finally {
+        executeStub.restore();
+      }
+
+      assertSpyCalls(executeStub, 2);
+      assertSpyCallArg(executeStub, 0, 0, "/searches/search-id");
+      assertSpyCallArg(executeStub, 0, 1, {
+        api_key: "test_api_key",
+        output: "md",
       });
     });
   },

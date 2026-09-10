@@ -179,6 +179,89 @@ async function _getHtml(
 }
 
 /**
+ * Get Markdown response based on search parameters.
+ *
+ * @param {object} parameters Search query parameters for the engine. Refer to https://serpapi.com/search-api for parameter explanations.
+ * @param {fn=} callback Optional callback.
+ * @example
+ * // async/await
+ * const markdown = await getMd({ engine: "google", api_key: API_KEY, q: "coffee" });
+ *
+ * // callback
+ * getMd({ engine: "google", api_key: API_KEY, q: "coffee" }, console.log);
+ */
+export function getMd(
+  parameters: EngineParameters,
+  callback?: (markdown: string) => void,
+): Promise<string>;
+
+/**
+ * Get Markdown response based on search parameters.
+ *
+ * @param {string} engine Engine name. Refer to https://serpapi.com/search-api for valid engines.
+ * @param {object} parameters Search query parameters for the engine. Refer to https://serpapi.com/search-api for parameter explanations.
+ * @param {fn=} callback Optional callback.
+ * @example
+ * // async/await
+ * const markdown = await getMd("google", { api_key: API_KEY, q: "coffee" });
+ *
+ * // callback
+ * getMd("google", { api_key: API_KEY, q: "coffee" }, console.log);
+ */
+export function getMd(
+  engine: string,
+  parameters: EngineParameters,
+  callback?: (markdown: string) => void,
+): Promise<string>;
+
+export function getMd(
+  ...args:
+    | [
+      parameters: EngineParameters,
+      callback?: (markdown: string) => void,
+    ]
+    | [
+      engine: string,
+      parameters: EngineParameters,
+      callback?: (markdown: string) => void,
+    ]
+): Promise<string> {
+  if (typeof args[0] === "string" && typeof args[1] === "object") {
+    const [engine, parameters, callback] = args;
+    const newParameters = { ...parameters, engine } as EngineParameters;
+    return _getMd(newParameters, callback);
+  } else if (
+    typeof args[0] === "object" &&
+    typeof args[1] !== "object" &&
+    (typeof args[1] === "undefined" || typeof args[1] === "function")
+  ) {
+    const [parameters, callback] = args;
+    return _getMd(parameters, callback);
+  } else {
+    throw new InvalidArgumentError();
+  }
+}
+
+async function _getMd(
+  parameters: EngineParameters,
+  callback?: (markdown: string) => void,
+): Promise<string> {
+  const key = validateApiKey(parameters.api_key, true);
+  const timeout = validateTimeout(parameters.timeout);
+  const markdown = await _internals.execute(
+    SEARCH_PATH,
+    {
+      ...parameters,
+      api_key: key,
+      output: "md",
+    },
+    timeout,
+  );
+  callback?.(markdown);
+  return markdown;
+}
+
+/**
  * Get a JSON response given a search ID.
  * - This search ID can be obtained from the `search_metadata.id` key in the response.
  * - Typically used together with the `async` parameter.
@@ -257,6 +340,47 @@ export async function getHtmlBySearchId(
   );
   callback?.(html);
   return html;
+}
+
+/**
+ * Get a Markdown response given a search ID.
+ * - This search ID can be obtained from the `search_metadata.id` key in the response.
+ * - Typically used together with the `async` parameter.
+ *
+ * @param {string} searchId Search ID.
+ * @param {object} parameters
+ * @param {string=} [parameters.api_key] API key.
+ * @param {number=} [parameters.timeout] Timeout in milliseconds.
+ * @param {fn=} callback Optional callback.
+ * @example
+ * const markdown = await getMd({ engine: "google", api_key: API_KEY, q: "coffee" });
+ * const idMatch = markdown.match(/^  id:\s*(.+)$/m);
+ * if (!idMatch) throw new Error("Search ID missing from Markdown frontmatter");
+ * const searchId = idMatch[1].trim();
+ *
+ * // async/await
+ * const archivedMarkdown = await getMdBySearchId(searchId, { api_key: API_KEY });
+ *
+ * // callback
+ * getMdBySearchId(searchId, { api_key: API_KEY }, console.log);
+ */
+export async function getMdBySearchId(
+  searchId: string,
+  parameters: GetBySearchIdParameters = {},
+  callback?: (markdown: string) => void,
+) {
+  const key = validateApiKey(parameters.api_key);
+  const timeout = validateTimeout(parameters.timeout);
+  const markdown = await _internals.execute(
+    `${SEARCH_ARCHIVE_PATH}/${searchId}`,
+    {
+      api_key: key,
+      output: "md",
+    },
+    timeout,
+  );
+  callback?.(markdown);
+  return markdown;
 }
 
 /**
