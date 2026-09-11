@@ -14,7 +14,7 @@ import {
   execute,
   getSource,
 } from "../src/utils.ts";
-import { RequestTimeoutError } from "../src/errors.ts";
+import { HTTPError, RequestTimeoutError } from "../src/errors.ts";
 import { Config, config } from "../src/config.ts";
 
 loadSync({ export: true });
@@ -232,6 +232,21 @@ describe(
       } catch (e) {
         assertInstanceOf(e, RequestTimeoutError);
       }
+    });
+
+    it("with error response", async () => {
+      const error = await execute(
+        "/account",
+        { api_key: "invalid_api_key" },
+        20000,
+      ).catch((error) => error);
+      assertInstanceOf(error, HTTPError);
+      assertEquals(error.statusCode, 401);
+      assertMatch(error.body, /"error"/);
+      assertEquals(
+        error.message,
+        "Invalid API key. Your API key should be here: https://serpapi.com/manage-api-key",
+      );
     });
   },
 );

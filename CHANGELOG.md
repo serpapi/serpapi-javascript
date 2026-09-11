@@ -14,6 +14,8 @@ and this project adheres to
   `getMdBySearchId`.
 - Expose `EngineParameters` type.
 - Expose `InvalidArgumentError` error.
+- Expose `HTTPError` error raised on non-200 responses, with `statusCode` and
+  `body` properties.
 
 ### Changed
 
@@ -22,6 +24,9 @@ and this project adheres to
   not yet been updated do not throw warnings.
 
 ### Fixed
+
+- Reject with an `HTTPError` instead of the raw response body when SerpApi
+  responds with a non-200 status code.
 
 ### Removed
 

@@ -135,6 +135,30 @@ await getJson({ engine: "google", q: "coffee" }); // uses the API key defined in
 await getJson({ engine: "google", api_key: API_KEY_2, q: "coffee" }); // API_KEY_2 will be used
 ```
 
+### Error handling
+
+When SerpApi responds with a non-200 status code, the returned promise rejects
+with an `HTTPError`. It exposes the response `statusCode` and the raw `body`,
+and its message is set to the `error` field of the response when one is present.
+
+```js
+import { getJson, HTTPError } from "serpapi";
+
+try {
+  const json = await getJson({
+    engine: "google",
+    api_key: API_KEY,
+    q: "coffee",
+  });
+} catch (error) {
+  if (error instanceof HTTPError) {
+    console.log(error.statusCode); // e.g. 401
+    console.log(error.body); // e.g. '{"error":"Invalid API key. ..."}'
+    console.log(error.message); // e.g. 'Invalid API key. ...'
+  }
+}
+```
+
 ### Using a Proxy
 
 > **Note:** SerpApi handles proxies on its end — you do **not** need to supply
