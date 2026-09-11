@@ -3,7 +3,7 @@ import https from "node:https";
 import http from "node:http";
 import qs from "node:querystring";
 import process from "node:process";
-import { RequestTimeoutError } from "./errors.ts";
+import { HTTPError, RequestTimeoutError } from "./errors.ts";
 import { config } from "./config.ts";
 import { createMultipartBody } from "./multipart.ts";
 
@@ -99,7 +99,7 @@ export function execute(
           if (resp.statusCode == 200) {
             resolve(data);
           } else {
-            reject(data);
+            reject(new HTTPError(resp.statusCode, data));
           }
         } catch (e) {
           reject(e);
@@ -170,7 +170,7 @@ export function uploadImage(
       resp.on("end", () => {
         if (timer) clearTimeout(timer);
         if (resp.statusCode === 200) resolve(data);
-        else reject(data);
+        else reject(new HTTPError(resp.statusCode, data));
       });
     });
     req.on("error", (error) => {
