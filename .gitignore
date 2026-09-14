@@ -3,3 +3,7 @@ cov_profile/
 npm/
 node_modules/
 .vscode/
+
+.env
+.env.*
+!.env.example
