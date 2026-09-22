@@ -1,5 +1,4 @@
 import http from "node:http";
-import qs from "node:querystring";
 import { loadSync } from "@std/dotenv";
 import { afterAll, beforeAll, describe, it } from "@std/testing/bdd";
 import { Stub, stub } from "@std/testing/mock";
@@ -124,7 +123,7 @@ describe("buildRequestOptions", () => {
       const params = {
         q: "coffee",
         requestOptions: customOptions,
-      } as unknown as qs.ParsedUrlQueryInput;
+      } as unknown as Record<string, unknown>;
 
       const options = await buildRequestOptions("/search", params);
 
@@ -179,7 +178,7 @@ describe("buildRequestOptions", () => {
       const params = {
         q: "coffee",
         requestOptions: paramOptions,
-      } as unknown as qs.ParsedUrlQueryInput;
+      } as unknown as Record<string, unknown>;
 
       const options = await buildRequestOptions("/search", params);
 
