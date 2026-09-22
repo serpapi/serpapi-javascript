@@ -110,16 +110,20 @@ export function execute(
     };
 
     const handleError = (err: Error) => {
-      reject(err);
       if (timer) clearTimeout(timer);
+      reject(err);
     };
 
     const req = https.get(options, handleResponse).on("error", handleError);
 
     if (timeout > 0) {
       timer = setTimeout(() => {
-        reject(new RequestTimeoutError());
+        if (timer) clearTimeout(timer);
+        req.off("error", handleError);
+        req.on("error", () => {});
+        const timeoutError = new RequestTimeoutError();
         req.destroy();
+        reject(timeoutError);
       }, timeout);
     }
   });
@@ -163,6 +167,11 @@ export function uploadImage(
 
   return new Promise((resolve, reject) => {
     let timer: ReturnType<typeof setTimeout>;
+    const handleError = (error: Error) => {
+      if (timer) clearTimeout(timer);
+      reject(error);
+    };
+
     const req = https.request(options, (resp) => {
       resp.setEncoding("utf8");
       let data = "";
@@ -173,14 +182,16 @@ export function uploadImage(
         else reject(data);
       });
     });
-    req.on("error", (error) => {
-      if (timer) clearTimeout(timer);
-      reject(error);
-    });
+    req.on("error", handleError);
+
     if (timeout > 0) {
       timer = setTimeout(() => {
-        reject(new RequestTimeoutError());
+        if (timer) clearTimeout(timer);
+        req.off("error", handleError);
+        req.on("error", () => {});
+        const timeoutError = new RequestTimeoutError();
         req.destroy();
+        reject(timeoutError);
       }, timeout);
     }
     req.end(multipart.body);
