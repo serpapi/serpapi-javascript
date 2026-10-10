@@ -1,11 +1,23 @@
 import { version } from "../version.ts";
-import https from "node:https";
-import http from "node:http";
-import qs from "node:querystring";
+import https from "https";
+import http from "http";
 import process from "node:process";
 import { RequestTimeoutError } from "./errors.ts";
 import { config } from "./config.ts";
 import { createMultipartBody } from "./multipart.ts";
+
+function stringifyParams(parameters: Record<string, unknown>): string {
+  const searchParams = new URLSearchParams();
+  for (const k of Object.keys(parameters)) {
+    const val = parameters[k];
+    if (val !== undefined && val !== null) {
+      searchParams.append(k, String(val));
+    } else if (val === null) {
+      searchParams.append(k, "");
+    }
+  }
+  return searchParams.toString();
+}
 
 /**
  * This `_internals` object is needed to support stubbing/spying of
@@ -46,7 +58,7 @@ export function getSource() {
 
 export function buildRequestOptions(
   path: string,
-  parameters: qs.ParsedUrlQueryInput,
+  parameters: Record<string, unknown>,
 ): http.RequestOptions {
   const clonedParams = { ...parameters };
   for (const k in clonedParams) {
@@ -60,9 +72,10 @@ export function buildRequestOptions(
   }
   const basicOptions = {
     ..._internals.getHostnameAndPort(),
-    path: `${path}?${qs.stringify(clonedParams)}`,
+    path: `${path}?${stringifyParams(clonedParams)}`,
     method: "GET",
   };
+
 
   return {
     ...config.requestOptions,
@@ -73,7 +86,7 @@ export function buildRequestOptions(
 
 export function execute(
   path: string,
-  parameters: qs.ParsedUrlQueryInput,
+  parameters: Record<string, unknown>,
   timeout: number,
 ): Promise<string> {
   const options = buildRequestOptions(path, {
