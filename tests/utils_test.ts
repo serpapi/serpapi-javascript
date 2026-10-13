@@ -1,4 +1,5 @@
 import http from "node:http";
+import https from "node:https";
 import qs from "node:querystring";
 import { loadSync } from "@std/dotenv";
 import { afterAll, beforeAll, describe, it } from "@std/testing/bdd";
@@ -232,6 +233,61 @@ describe(
       } catch (e) {
         assertInstanceOf(e, RequestTimeoutError);
       }
+    });
+  },
+);
+
+describe(
+  "execute with a dropped connection",
+  {
+    sanitizeOps: false,
+    sanitizeResources: false,
+  },
+  () => {
+    let server: http.Server;
+    let urlStub: Stub;
+    let getStub: Stub;
+
+    beforeAll(async () => {
+      // A server that promises 1000 bytes, sends a few, then kills the socket.
+      server = http.createServer((req, res) => {
+        res.writeHead(200, { "Content-Length": 1000 });
+        res.write('{"organic_results":[');
+        setTimeout(() => req.socket.destroy(), 100);
+      });
+      await new Promise<void>((resolve) =>
+        server.listen(0, "127.0.0.1", resolve)
+      );
+      const { port } = server.address() as { port: number };
+
+      // Talk plain HTTP to the local server instead of HTTPS to serpapi.com.
+      urlStub = stub(
+        _internals,
+        "getHostnameAndPort",
+        () => ({ hostname: "127.0.0.1", port }),
+      );
+      getStub = stub(https, "get", http.get as typeof https.get);
+    });
+
+    afterAll(() => {
+      getStub.restore();
+      urlStub.restore();
+      server.close();
+    });
+
+    it("rejects quickly instead of waiting for the timeout", async () => {
+      const start = Date.now();
+      let error: unknown;
+      try {
+        await execute("/search", { q: "coffee" }, 3000);
+      } catch (e) {
+        error = e;
+      }
+      const elapsed = Date.now() - start;
+
+      assertInstanceOf(error, Error);
+      assertEquals(error instanceof RequestTimeoutError, false);
+      assertEquals(elapsed < 1500, true);
     });
   },
 );

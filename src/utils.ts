@@ -107,6 +107,24 @@ export function execute(
           if (timer) clearTimeout(timer);
         }
       });
+
+      // when the connection breaks mid-response
+      const onAborted = () => {
+        if (timer) clearTimeout(timer);
+        reject(
+          new Error(
+            "The connection was closed before the full response arrived",
+          ),
+        );
+      };
+      resp.on("aborted", onAborted);
+      resp.on("error", (error) => {
+        if (timer) clearTimeout(timer);
+        reject(error);
+      });
+      resp.on("close", () => {
+        if (!resp.complete) onAborted();
+      });
     };
 
     const handleError = (err: Error) => {
