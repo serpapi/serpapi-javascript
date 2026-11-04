@@ -14,6 +14,7 @@ const {
   getMdBySearchId,
   getAccount,
   getLocations,
+  extract,
 } = require("serpapi");
 
 Dotenv.config();
@@ -124,6 +125,16 @@ const run = async () => {
     config.api_key = apiKey;
     const markdown = await getMdBySearchId(searchId);
     if (!markdown.startsWith("---")) throw new Error("Incorrect Markdown");
+  }
+
+  {
+    console.log("extract");
+    const json = await extract({ url: "https://example.com/", api_key: apiKey });
+    if (!json["page_information"]) throw new Error("No page information");
+
+    extract({ url: "https://example.com/", api_key: apiKey }, (json) => {
+      if (!json["page_information"]) throw new Error("No page information");
+    });
   }
 
   {

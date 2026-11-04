@@ -4,6 +4,7 @@ import type {
   AccountApiParameters,
   BaseResponse,
   EngineParameters,
+  ExtractApiParameters,
   GetBySearchIdParameters,
   ImageApiParameters,
   ImageApiResponse,
@@ -499,4 +500,43 @@ export async function uploadImage(
   const result = JSON.parse(response) as ImageApiResponse;
   callback?.(result);
   return result;
+}
+
+/**
+ * Get structured JSON for any public web page using the Extract API.
+ * The `engine` parameter is always set to `extract`.
+ *
+ * Refer to https://serpapi.com/extract-api for parameter explanations and response examples.
+ *
+ * @param {object} parameters Extract API parameters.
+ * @param {string} parameters.url Absolute `http` or `https` URL of the page to extract.
+ * @param {string=} [parameters.mode] `scrape` (default), `map`, or `crawl`.
+ * @param {string=} [parameters.api_key] API key.
+ * @param {number=} [parameters.timeout] Timeout in milliseconds for the request to SerpApi.
+ * @param {number=} [parameters.fetch_timeout] Extract API `timeout` parameter, in milliseconds.
+ * @param {fn=} callback Optional callback.
+ * @example
+ * // async/await
+ * const json = await extract({ api_key: API_KEY, url: "https://example.com/" });
+ *
+ * // callback
+ * extract({ api_key: API_KEY, url: "https://example.com/" }, console.log);
+ *
+ * // crawl a website
+ * const { pages } = await extract({
+ *   api_key: API_KEY,
+ *   url: "https://books.toscrape.com/",
+ *   mode: "crawl",
+ *   max_pages: 3,
+ *   max_depth: 1,
+ * });
+ */
+export async function extract(
+  parameters: ExtractApiParameters,
+  callback?: (json: BaseResponse) => void,
+): Promise<BaseResponse> {
+  if (typeof parameters?.url !== "string" || parameters.url === "") {
+    throw new InvalidArgumentError();
+  }
+  return await _getJson({ ...parameters, engine: "extract" }, callback);
 }

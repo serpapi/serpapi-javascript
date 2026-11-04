@@ -95,6 +95,28 @@ describe("buildRequestOptions", () => {
     );
   });
 
+  it("with fetch_timeout", async () => {
+    assertEquals(
+      await buildRequestOptions("/search", {
+        engine: "extract",
+        timeout: 60000,
+        fetch_timeout: 5000,
+      }),
+      {
+        ...BASE_OPTIONS,
+        method: "GET",
+        path: "/search?engine=extract&timeout=5000",
+      },
+    );
+    assertEquals(
+      (await buildRequestOptions("/search", {
+        engine: "extract",
+        fetch_timeout: undefined,
+      })).path,
+      "/search?engine=extract",
+    );
+  });
+
   describe("with requestOptions", () => {
     let originalConfig: Config;
 
