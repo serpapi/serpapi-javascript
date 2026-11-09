@@ -11,12 +11,14 @@ export type {
   AccountApiParameters,
   BaseResponse,
   EngineParameters,
+  ExtractApiParameters,
   GetBySearchIdParameters,
   ImageApiParameters,
   ImageApiResponse,
   LocationsApiParameters,
 } from "./src/types.ts";
 export {
+  extract,
   getAccount,
   getHtml,
   getHtmlBySearchId,

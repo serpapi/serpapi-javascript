@@ -20,6 +20,7 @@ import { _internals } from "../src/utils.ts";
 import {
   BaseResponse,
   config,
+  extract,
   getAccount,
   getHtml,
   getHtmlBySearchId,
@@ -799,6 +800,161 @@ describe(
         output: "md",
         q: "Paris",
       });
+    });
+  },
+);
+
+describe(
+  "extract",
+  {
+    sanitizeOps: false,
+    sanitizeResources: false,
+  },
+  () => {
+    let urlStub: Stub;
+
+    beforeAll(() => {
+      urlStub = stub(_internals, "getHostnameAndPort", () => BASE_OPTIONS);
+    });
+
+    afterEach(() => {
+      config.api_key = null;
+    });
+
+    afterAll(() => {
+      urlStub.restore();
+    });
+
+    it("with no api_key", async () => {
+      await assertRejects(
+        async () => await extract({ url: "https://example.com/" }),
+        MissingApiKeyError,
+      );
+    });
+
+    it("with no url", async () => {
+      config.api_key = "test_api_key";
+      await assertRejects(
+        // @ts-expect-error Test runtime validation for JavaScript callers.
+        async () => await extract(),
+        InvalidArgumentError,
+      );
+      await assertRejects(
+        // @ts-expect-error Test runtime validation for JavaScript callers.
+        async () => await extract({ mode: "map" }),
+        InvalidArgumentError,
+      );
+      await assertRejects(
+        async () => await extract({ url: "" }),
+        InvalidArgumentError,
+      );
+      await assertRejects(
+        // @ts-expect-error Test runtime validation for JavaScript callers.
+        async () => await extract("https://example.com/"),
+        InvalidArgumentError,
+      );
+    });
+
+    it("with invalid timeout", async () => {
+      config.api_key = "test_api_key";
+      await assertRejects(
+        async () => await extract({ url: "https://example.com/", timeout: 0 }),
+        InvalidTimeoutError,
+      );
+    });
+
+    it(
+      "async/await",
+      {
+        ignore: !HAS_API_KEY,
+      },
+      async () => {
+        const json = await extract({
+          url: "https://example.com/",
+          api_key: SERPAPI_TEST_KEY,
+          timeout: 10000,
+          fetch_timeout: 5000,
+        });
+        assertEquals(json.search_parameters.engine, "extract");
+        assertEquals(json.search_parameters.timeout, "5000");
+        assertExists(json.page_information);
+      },
+    );
+
+    it("sends Extract API parameters with the extract engine", async () => {
+      const jsonResponse = '{"markdown":"# Example Domain"}';
+      const executeStub = stub(
+        _internals,
+        "execute",
+        () => Promise.resolve(jsonResponse),
+      );
+      config.api_key = "test_api_key";
+
+      try {
+        const json = await extract({
+          engine: "google",
+          url: "https://books.toscrape.com/",
+          mode: "crawl",
+          max_pages: 3,
+          max_depth: 1,
+          output: "md",
+        });
+        assertEquals(json, { markdown: "# Example Domain" });
+
+        const jsonFromCallback = await new Promise<BaseResponse>((done) => {
+          extract({ url: "https://example.com/" }, done);
+        });
+        assertEquals(jsonFromCallback, { markdown: "# Example Domain" });
+      } finally {
+        executeStub.restore();
+      }
+
+      assertSpyCalls(executeStub, 2);
+      assertSpyCallArg(executeStub, 0, 0, "/search");
+      assertSpyCallArg(executeStub, 0, 1, {
+        api_key: "test_api_key",
+        engine: "extract",
+        max_depth: 1,
+        max_pages: 3,
+        mode: "crawl",
+        output: "json",
+        url: "https://books.toscrape.com/",
+      });
+      assertSpyCallArg(executeStub, 1, 1, {
+        api_key: "test_api_key",
+        engine: "extract",
+        output: "json",
+        url: "https://example.com/",
+      });
+    });
+
+    it("uses timeout for the request and passes fetch_timeout", async () => {
+      const executeStub = stub(
+        _internals,
+        "execute",
+        () => Promise.resolve("{}"),
+      );
+      config.api_key = "test_api_key";
+
+      try {
+        await extract({
+          url: "https://example.com/",
+          timeout: 90000,
+          fetch_timeout: 5000,
+        });
+      } finally {
+        executeStub.restore();
+      }
+
+      assertSpyCallArg(executeStub, 0, 1, {
+        api_key: "test_api_key",
+        engine: "extract",
+        fetch_timeout: 5000,
+        output: "json",
+        timeout: 90000,
+        url: "https://example.com/",
+      });
+      assertSpyCallArg(executeStub, 0, 2, 90000);
     });
   },
 );

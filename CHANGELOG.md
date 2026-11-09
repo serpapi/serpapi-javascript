@@ -12,6 +12,9 @@ and this project adheres to
 
 - Add Markdown search and archive output support with `getMd` and
   `getMdBySearchId`.
+- Add [Extract API](https://serpapi.com/extract-api) support with `extract`.
+- Add `fetch_timeout` to set the API `timeout` parameter, since `timeout` is the
+  request timeout of this library.
 - Expose `EngineParameters` type.
 - Expose `InvalidArgumentError` error.
 

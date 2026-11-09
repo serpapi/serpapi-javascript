@@ -10,6 +10,7 @@ import Dotenv from "dotenv";
 import process from "process";
 import {
   config,
+  extract,
   getAccount,
   getHtml,
   getHtmlBySearchId,
@@ -127,6 +128,21 @@ let searchId;
   config.api_key = apiKey;
   const markdown = await getMdBySearchId(searchId);
   if (!markdown.startsWith("---")) throw new Error("Incorrect Markdown");
+}
+
+{
+  console.log("extract");
+  let callbackJson;
+  const json = await extract(
+    { url: "https://example.com/", api_key: apiKey },
+    (result) => {
+      callbackJson = result;
+    },
+  );
+  if (!json["page_information"]) throw new Error("No page information");
+  if (callbackJson !== json) {
+    throw new Error("Callback result does not match returned result");
+  }
 }
 
 {

@@ -58,6 +58,12 @@ export function buildRequestOptions(
       delete clonedParams[k];
     }
   }
+  // `timeout` is reserved for the client request timeout, so the API
+  // `timeout` parameter (e.g. in the Extract API) is passed as `fetch_timeout`.
+  if ("fetch_timeout" in clonedParams) {
+    clonedParams.timeout = clonedParams.fetch_timeout;
+    delete clonedParams.fetch_timeout;
+  }
   const basicOptions = {
     ..._internals.getHostnameAndPort(),
     path: `${path}?${qs.stringify(clonedParams)}`,

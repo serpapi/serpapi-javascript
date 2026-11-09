@@ -94,6 +94,8 @@ console.log(response);
 - Promises and async/await support.
 - Callbacks support.
 - JSON, HTML, and token-efficient Markdown response formats.
+- [Extract API](https://serpapi.com/extract-api) support to get any public web
+  page as structured JSON or Markdown.
 - [Examples in JavaScript/TypeScript on Node.js/Deno using ESM/CommonJS, and more](https://github.com/serpapi/serpapi-javascript/tree/master/examples).
 
 ## Markdown output for AI agents
@@ -113,6 +115,81 @@ const markdown = await getMd({
 Archived results are also available as Markdown with `getMdBySearchId`.
 
 Learn more about [SerpApi Markdown output](https://serpapi.com/markdown-output).
+
+## Extract API
+
+Use `extract` to get any public web page as structured JSON with the
+[Extract API](https://serpapi.com/extract-api). `url` is required, and `engine`
+is always set to `extract`.
+
+```js
+import { config, extract } from "serpapi";
+
+config.api_key = API_KEY;
+
+const page = await extract({ url: "https://example.com/" });
+console.log(page.page_information);
+console.log(page.markdown);
+```
+
+Set `mode` to `map` to list a website's URLs, or to `crawl` to extract every
+page visited. Crawl mode consumes one search credit per extracted page.
+
+```js
+// List URLs from the page links and sitemaps
+const { urls } = await extract({
+  url: "https://books.toscrape.com/",
+  mode: "map",
+});
+
+// Extract up to 3 pages, following links 1 level deep
+const { pages } = await extract({
+  url: "https://books.toscrape.com/",
+  mode: "crawl",
+  max_pages: 3,
+  max_depth: 1,
+});
+```
+
+To extract a page found in the results, pass its URL to `extract` again.
+Settings such as `device` or `include_tags` are not carried over, so pass them
+again if needed:
+
+```js
+const page = await extract({ url: "https://books.toscrape.com/" });
+const link = page.inline_links?.[0]?.link;
+if (link) {
+  const linkedPage = await extract({ url: link });
+  console.log(linkedPage.page_information);
+}
+```
+
+To get only the Markdown, use `getMd` with the `extract` engine:
+
+```js
+const markdown = await getMd({
+  engine: "extract",
+  url: "https://example.com/",
+});
+```
+
+> **Note:** Search pages covered by a dedicated SerpApi engine (such as Google,
+> Bing, eBay, or Walmart) are redirected to that engine, and the response
+> follows that engine's JSON structure.
+
+As in the other functions, `timeout` sets how long this library waits for
+SerpApi to respond. To set the Extract API `timeout` parameter (how long SerpApi
+waits for the page), use `fetch_timeout`. It also works with `getJson`,
+`getHtml`, and `getMd`. Keep `timeout` higher than `fetch_timeout`, since the
+request to SerpApi includes fetching the page:
+
+```js
+const page = await extract({
+  url: "https://example.com/",
+  fetch_timeout: 10000, // sent to the Extract API as `timeout`
+  timeout: 60000, // request timeout of this library
+});
+```
 
 ## Configuration
 
@@ -215,6 +292,9 @@ for a manual approach:
 - [uploadImage](#uploadimage)
   - [Parameters](#parameters-8)
   - [Examples](#examples-8)
+- [extract](#extract)
+  - [Parameters](#parameters-9)
+  - [Examples](#examples-9)
 
 ### getJson
 
@@ -503,4 +583,44 @@ const result = await uploadImage({
   image: "image.png",
 });
 console.log(result.image_id);
+```
+
+### extract
+
+Get structured JSON for any public web page using the Extract API.
+<https://serpapi.com/extract-api>
+
+- The `engine` parameter is always set to `extract`.
+- Accepts an optional callback.
+
+#### Parameters
+
+- `parameters` **object** Extract API parameters
+  - `parameters.url` **string** absolute `http` or `https` URL of the page to
+    extract
+  - `parameters.mode` **string?** `scrape` (default), `map`, or `crawl`
+  - `parameters.api_key` **string?** API key
+  - `parameters.timeout` **number?** timeout in milliseconds for the request to
+    SerpApi
+  - `parameters.fetch_timeout` **number?** Extract API `timeout` parameter, in
+    milliseconds
+- `callback` **fn?** optional callback
+
+#### Examples
+
+```javascript
+// async/await
+const json = await extract({ api_key: API_KEY, url: "https://example.com/" });
+
+// callback
+extract({ api_key: API_KEY, url: "https://example.com/" }, console.log);
+
+// crawl a website
+const { pages } = await extract({
+  api_key: API_KEY,
+  url: "https://books.toscrape.com/",
+  mode: "crawl",
+  max_pages: 3,
+  max_depth: 1,
+});
 ```
