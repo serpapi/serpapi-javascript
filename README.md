@@ -156,8 +156,12 @@ Settings such as `device` or `include_tags` are not carried over, so pass them
 again if needed:
 
 ```js
-const page = await extract({ url: "https://example.com/" });
-const linkedPage = await extract({ url: page.inline_links[0].link });
+const page = await extract({ url: "https://books.toscrape.com/" });
+const link = page.inline_links?.[0]?.link;
+if (link) {
+  const linkedPage = await extract({ url: link });
+  console.log(linkedPage.page_information);
+}
 ```
 
 To get only the Markdown, use `getMd` with the `extract` engine:

@@ -132,12 +132,17 @@ let searchId;
 
 {
   console.log("extract");
-  const json = await extract({ url: "https://example.com/", api_key: apiKey });
+  let callbackJson;
+  const json = await extract(
+    { url: "https://example.com/", api_key: apiKey },
+    (result) => {
+      callbackJson = result;
+    },
+  );
   if (!json["page_information"]) throw new Error("No page information");
-
-  extract({ url: "https://example.com/", api_key: apiKey }, (json) => {
-    if (!json["page_information"]) throw new Error("No page information");
-  });
+  if (callbackJson !== json) {
+    throw new Error("Callback result does not match returned result");
+  }
 }
 
 {
