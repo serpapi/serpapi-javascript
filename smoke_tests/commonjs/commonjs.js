@@ -130,12 +130,9 @@ const run = async () => {
   {
     console.log("extract");
     let callbackJson;
-    const json = await extract(
-      { url: "https://example.com/", api_key: apiKey },
-      (result) => {
-        callbackJson = result;
-      },
-    );
+    const json = await extract({ url: "https://example.com/", api_key: apiKey }, (result) => {
+      callbackJson = result;
+    });
     if (!json["page_information"]) throw new Error("No page information");
     if (callbackJson !== json) {
       throw new Error("Callback result does not match returned result");
