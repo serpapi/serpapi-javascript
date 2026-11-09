@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "dotenv": "*",
+    "dotenv": "17.4.2",
     "serpapi": "../../npm"
   },
   "scripts": {
