@@ -88,4 +88,14 @@ describe("validateTimeout", () => {
     assertEquals(validateTimeout(1), 1);
     assertEquals(validateTimeout(10000), 10000);
   });
+
+  it("with NaN", () => {
+    assertThrows(() => validateTimeout(NaN), InvalidTimeoutError);
+  });
+
+  it("with a value too big for setTimeout", () => {
+    assertEquals(validateTimeout(2147483647), 2147483647);
+    assertEquals(validateTimeout(2147483648), 2147483647);
+    assertEquals(validateTimeout(Infinity), 2147483647);
+  });
 });

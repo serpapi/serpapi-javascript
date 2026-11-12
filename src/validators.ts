@@ -19,8 +19,11 @@ export function validateApiKey(
   return key;
 }
 
+const MAX_TIMEOUT = 2147483647; // i chose this value because it is 2^32 - 1 ,largest number a signed 32-bit integer can hold
+
 export function validateTimeout(value: number | undefined): number {
   const timeout = value ?? config.timeout;
-  if (timeout <= 0) throw new InvalidTimeoutError();
-  return timeout;
+
+  if (!(timeout > 0)) throw new InvalidTimeoutError();
+  return Math.min(timeout, MAX_TIMEOUT);
 }
