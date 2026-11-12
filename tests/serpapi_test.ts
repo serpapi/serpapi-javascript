@@ -29,6 +29,7 @@ import {
   getLocations,
   getMd,
   getMdBySearchId,
+  HTTPError,
   InvalidArgumentError,
   InvalidTimeoutError,
   MissingApiKeyError,
@@ -249,12 +250,15 @@ describe("uploadImage", () => {
     const executeStub = stub(
       _internals,
       "uploadImage",
-      () => Promise.reject(apiError),
+      () => Promise.reject(new HTTPError(401, apiError)),
     );
     config.api_key = "test_api_key";
     try {
       const error = await uploadImage({ image }).catch((error) => error);
-      assertEquals(error, apiError);
+      assertInstanceOf(error, HTTPError);
+      assertEquals(error.statusCode, 401);
+      assertEquals(error.body, apiError);
+      assertEquals(error.message, "Invalid image");
     } finally {
       executeStub.restore();
     }

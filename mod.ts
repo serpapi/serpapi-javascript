@@ -2,6 +2,7 @@ export type { Config } from "./src/config.ts";
 export { config } from "./src/config.ts";
 
 export {
+  HTTPError,
   InvalidArgumentError,
   InvalidTimeoutError,
   MissingApiKeyError,

@@ -27,3 +27,40 @@ export class RequestTimeoutError extends Error {
     Object.setPrototypeOf(this, RequestTimeoutError.prototype);
   }
 }
+
+/**
+ * Error raised when SerpApi responds with a non-200 status code.
+ *
+ * @property {number} statusCode HTTP status code of the response.
+ * @property {string} body Raw response body.
+ * @example
+ * try {
+ *   const json = await getJson({ engine: "google", api_key: API_KEY, q: "coffee" });
+ * } catch (error) {
+ *   if (error instanceof HTTPError) {
+ *     console.log(error.statusCode, error.body);
+ *   }
+ * }
+ */
+export class HTTPError extends Error {
+  readonly statusCode: number | undefined;
+  readonly body: string;
+
+  constructor(statusCode: number | undefined, body: string) {
+    let message = `Request failed with status code ${statusCode}`;
+    try {
+      const parsed = JSON.parse(body) as { error?: string };
+      if (
+        parsed && typeof parsed.error === "string" && parsed.error.length > 0
+      ) {
+        message = parsed.error;
+      }
+    } catch {
+      // The body is not JSON. Fall back to the status code message.
+    }
+    super(message);
+    this.statusCode = statusCode;
+    this.body = body;
+    Object.setPrototypeOf(this, HTTPError.prototype);
+  }
+}
