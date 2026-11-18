@@ -12,49 +12,37 @@ deno --version
 deno upgrade  # to upgrade to the latest version
 ```
 
+### Fork and clone the repository
+
+Fork the repository on GitHub:
+
+1. Go to the repository page on GitHub -
+   https://github.com/serpapi/serpapi-javascript
+2. Click the **Fork** button (top-right corner)
+3. Clone your fork locally:
+
+```bash
+git clone https://github.com/<your-username>/serpapi-javascript.git
+cd serpapi-javascript
+```
+
+4. Add the upstream repository:
+
+```bash
+git remote add upstream https://github.com/serpapi/serpapi-javascript.git
+```
+
+### Extension installation
+
 Install the appropriate extension for your preferred editor/IDE:
 https://deno.land/manual/getting_started/setup_your_environment. The extension
 "integrates directly to the Deno CLI using the language server protocol. This
 helps ensure that the information you get about your code aligns to how that
 code will work when you try to run it under the Deno CLI."[^1]
 
-If you use VSCode, use the following settings (`.vscode/settings.json`):
-
-```json
-{
-  "deno.enablePaths": [
-    "mod.ts",
-    "version.ts",
-    "src",
-    "tests/*.ts",
-    "tests/engines/",
-    "scripts",
-    "examples/deno"
-  ],
-  "deno.inlayHints.enumMemberValues.enabled": false,
-  "deno.inlayHints.functionLikeReturnTypes.enabled": false,
-  "deno.inlayHints.parameterNames.enabled": "none",
-  "deno.inlayHints.parameterTypes.enabled": false,
-  "deno.inlayHints.propertyDeclarationTypes.enabled": false,
-  "deno.inlayHints.variableTypes.enabled": false,
-  "[json]": {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "denoland.vscode-deno"
-  },
-  "[markdown]": {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "denoland.vscode-deno"
-  },
-  "[typescript]": {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "denoland.vscode-deno"
-  }
-}
-```
-
-Subsequently, install the
-[vscode_deno extension](https://marketplace.visualstudio.com/items?itemName=denoland.vscode-deno)
-and you're good to go.
+Install the
+[Deno extension](https://marketplace.visualstudio.com/items?itemName=denoland.vscode-deno)
+for vscode and open the project — no manual configuration is required.
 
 ## Write tests
 
