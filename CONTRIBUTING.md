@@ -27,7 +27,6 @@ If you use VSCode, use the following settings (`.vscode/settings.json`):
     "version.ts",
     "src",
     "tests/*.ts",
-    "tests/engines/",
     "scripts",
     "examples/deno"
   ],
@@ -138,17 +137,6 @@ To run these locally, follow these steps.
 ```bash
 deno task docs:gen
 ```
-
-## Generate types
-
-TypeScript types are generated from the backend code. Follow these steps to
-update the types.
-
-1. Run `bundle exec rails libraries:generate_ts_types` in the backend
-   repository.
-2. Replace everything in `src/engines` with the generated files from
-   `tmp/ts/engines`.
-3. Update `mod.ts` with the new engine exports from `tmp/ts/mod.ts`.
 
 ## Get approval
 

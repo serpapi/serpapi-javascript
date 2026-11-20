@@ -23,6 +23,5 @@ deno run pagination_example.ts
   import {
     config,
     getJson,
-    GoogleParameters,
   } from "https://deno.land/x/serpapi/mod.ts";
   ```
