@@ -63,8 +63,17 @@ describe("validateApiKey", () => {
 });
 
 describe("validateTimeout", () => {
+  const defaultTimeout = config.timeout;
+
   afterEach(() => {
-    config.timeout = 60000;
+    config.timeout = defaultTimeout;
+  });
+
+  it("with default timeout", () => {
+    // SerpApi times out searches after 90 seconds on its side, so the
+    // default must wait longer than that.
+    assertEquals(defaultTimeout > 90000, true);
+    assertEquals(validateTimeout(undefined), defaultTimeout);
   });
 
   it("with invalid timeout", () => {
