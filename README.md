@@ -187,14 +187,15 @@ request to SerpApi includes fetching the page:
 const page = await extract({
   url: "https://example.com/",
   fetch_timeout: 10000, // sent to the Extract API as `timeout`
-  timeout: 60000, // request timeout of this library
+  timeout: 95000, // request timeout of this library
 });
 ```
 
 ## Configuration
 
 You can declare a global `api_key` and `timeout` value by modifying the `config`
-object. `timeout` is defined in milliseconds and defaults to 60 seconds.
+object. `timeout` is defined in milliseconds and defaults to 95 seconds, a bit
+longer than SerpApi's 90 second server-side timeout.
 
 All functions, other than `getLocations`, accepts an optional `api_key` and
 `timeout` that will take precedence over the values defined in `config`.
@@ -205,7 +206,7 @@ All functions, other than `getLocations`, accepts an optional `api_key` and
 import { config, getJson } from "serpapi";
 
 config.api_key = API_KEY;
-config.timeout = 60000;
+config.timeout = 95000;
 
 await getJson({ engine: "google", q: "coffee" }); // uses the API key defined in the config
 await getJson({ engine: "google", api_key: API_KEY_2, q: "coffee" }); // API_KEY_2 will be used

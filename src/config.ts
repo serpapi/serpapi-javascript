@@ -8,5 +8,5 @@ export type Config = {
 
 export const config: Config = {
   api_key: null,
-  timeout: 60000,
+  timeout: 95000,
 };

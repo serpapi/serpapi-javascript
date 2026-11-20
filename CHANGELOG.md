@@ -23,6 +23,8 @@ and this project adheres to
 - Remove `settings.json`, update CONTRIBUTING.md.
 - Make types more lenient so newly supported engines/parameters whose types have
   not yet been updated do not throw warnings.
+- Raise the default `timeout` from 60 to 95 seconds, so slow searches are not
+  cut off before SerpApi's 90 second server-side timeout.
 
 ### Fixed
 
