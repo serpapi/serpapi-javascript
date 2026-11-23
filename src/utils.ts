@@ -94,6 +94,13 @@ export function execute(
       resp.setEncoding("utf8");
       let data = "";
 
+      resp.on("error", handleError);
+      resp.on("close", () => {
+        if (!resp.complete) {
+          handleError(new Error("Response closed before completion"));
+        }
+      });
+
       // A chunk of data has been received
       resp.on("data", (chunk) => {
         data += chunk;
@@ -172,6 +179,18 @@ export function uploadImage(
     const req = https.request(options, (resp) => {
       resp.setEncoding("utf8");
       let data = "";
+
+      resp.on("error", (error) => {
+        if (timer) clearTimeout(timer);
+        reject(error);
+      });
+
+      resp.on("close", () => {
+        if (!resp.complete) {
+          if (timer) clearTimeout(timer);
+          reject(new Error("Response closed before completion"));
+        }
+      });
       resp.on("data", (chunk) => data += chunk);
       resp.on("end", () => {
         if (timer) clearTimeout(timer);
